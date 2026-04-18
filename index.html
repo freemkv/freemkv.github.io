@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>freemkv — Open Source Disc Archiving</title>
+<meta name="description" content="Open source 4K UHD, Blu-ray, and DVD backup. One binary, no dependencies. Rip, stream, automate.">
+<meta property="og:title" content="freemkv — Open Source Disc Archiving">
+<meta property="og:description" content="Open source 4K UHD, Blu-ray, and DVD backup. One binary, no dependencies.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://freemkv.org">
+<link rel="icon" type="image/svg+xml" href="assets/freemkv-icon.svg">
+<style>
+:root {
+  --teal: #0D9488;
+  --teal-dark: #0F766E;
+  --teal-light: #14B8A6;
+  --teal-mint: #F0FDFA;
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --border: #262626;
+  --text: #e5e5e5;
+  --text2: #a3a3a3;
+  --text3: #737373;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+a { color: var(--teal-light); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, .mono { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace; }
+
+/* Layout */
+.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+section { padding: 80px 0; }
+section + section { border-top: 1px solid var(--border); }
+
+/* Hero */
+.hero { padding: 100px 0 80px; text-align: center; }
+.hero-logo { width: 120px; height: 120px; margin-bottom: 32px; }
+.hero h1 { font-size: 2.8rem; font-weight: 500; letter-spacing: -1px; margin-bottom: 8px; }
+.hero h1 span { color: var(--teal); font-weight: 400; }
+.hero .tagline { font-size: 1.15rem; color: var(--text2); margin-bottom: 12px; }
+.hero .sub { font-size: 0.9rem; color: var(--text3); margin-bottom: 40px; }
+.btn-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; transition: all 0.15s; border: 1px solid transparent; }
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-primary:hover { background: var(--teal-light); text-decoration: none; }
+.btn-secondary { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { border-color: var(--text3); text-decoration: none; }
+
+/* Cards */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+.card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.card p { font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+.card .icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
+
+/* Terminal */
+.terminal { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 48px; max-width: 720px; margin-left: auto; margin-right: auto; }
+.terminal-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--bg3); border-bottom: 1px solid var(--border); }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.r { background: #ef4444; }
+.terminal-dot.y { background: #eab308; }
+.terminal-dot.g { background: #22c55e; }
+.terminal-body { padding: 20px 24px; font-size: 0.8rem; line-height: 1.8; color: var(--text2); overflow-x: auto; white-space: pre; }
+.terminal-body .prompt { color: var(--teal-light); }
+.terminal-body .cmd { color: var(--text); font-weight: 500; }
+.terminal-body .dim { color: var(--text3); }
+.terminal-body .ok { color: #22c55e; }
+.terminal-body .hl { color: var(--teal-light); }
+.progress-bar { display: inline-block; }
+.progress-bar .filled { color: var(--teal); }
+.progress-bar .empty { color: var(--border); }
+
+/* Features */
+.features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 32px; margin-top: 48px; }
+.feature { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; }
+.feature .check { color: var(--teal); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+.feature .label { font-size: 0.85rem; color: var(--text2); }
+.feature .label strong { color: var(--text); font-weight: 500; }
+
+/* Autorip */
+.autorip-block { display: flex; gap: 40px; align-items: flex-start; margin-top: 48px; }
+.autorip-info { flex: 1; }
+.autorip-info h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 8px; }
+.autorip-info p { font-size: 0.9rem; color: var(--text2); margin-bottom: 16px; line-height: 1.7; }
+.autorip-cmd { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; font-size: 0.8rem; color: var(--text2); overflow-x: auto; margin-top: 12px; }
+.autorip-cmd .prompt { color: var(--teal-light); }
+.autorip-cmd .cmd { color: var(--text); }
+
+/* Install */
+.install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+.install-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 24px; text-align: center; }
+.install-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.install-card code { display: block; background: var(--bg3); border-radius: 6px; padding: 10px 12px; font-size: 0.75rem; color: var(--text2); margin-bottom: 12px; text-align: left; overflow-x: auto; white-space: nowrap; }
+.install-card .btn { width: 100%; justify-content: center; padding: 10px; font-size: 0.8rem; }
+
+/* Stream table */
+.stream-table { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 0.85rem; }
+.stream-table th { text-align: left; color: var(--text3); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 16px; border-bottom: 2px solid var(--border); }
+.stream-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.stream-table tr:hover { background: var(--bg2); }
+.stream-table .yes { color: var(--teal-light); }
+.stream-table code { font-size: 0.8rem; color: var(--text3); background: var(--bg3); padding: 2px 6px; border-radius: 4px; }
+
+/* Examples */
+.examples { margin-top: 32px; }
+.examples pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; font-size: 0.8rem; color: var(--text2); line-height: 1.8; overflow-x: auto; }
+.examples pre .comment { color: var(--text3); }
+
+/* Section headers */
+.sh { text-align: center; margin-bottom: 8px; }
+.sh h2 { font-size: 1.8rem; font-weight: 500; letter-spacing: -0.5px; }
+.sh p { font-size: 0.95rem; color: var(--text2); margin-top: 8px; }
+
+/* Footer */
+footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; }
+footer .links { display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; font-size: 0.85rem; }
+footer .copy { font-size: 0.75rem; color: var(--text3); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 2rem; }
+  .cards { grid-template-columns: 1fr; }
+  .features { grid-template-columns: 1fr; }
+  .install-grid { grid-template-columns: 1fr; }
+  .autorip-block { flex-direction: column; }
+  section { padding: 60px 0; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.6rem; }
+  .btn-row { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+<div class="container">
+  <img src="assets/freemkv-icon.svg" alt="freemkv" class="hero-logo">
+  <h1>free<span>MKV</span></h1>
+  <p class="tagline">Open source 4K UHD / Blu-ray / DVD backup</p>
+  <p class="sub">One binary, no dependencies. Plug in your drive, rip to MKV.</p>
+  <div class="btn-row">
+    <a href="https://github.com/freemkv/freemkv/releases/latest" class="btn btn-primary">Download</a>
+    <a href="https://github.com/freemkv" class="btn btn-secondary">GitHub</a>
+  </div>
+</div>
+</section>
+
+<!-- What It Does -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>Three ways to use it</h2>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <span class="icon">$</span>
+      <h3>Rip</h3>
+      <p>Disc to MKV in one command. AACS + CSS decryption. All codecs, chapters, subtitles, and audio tracks preserved. HDR10, Dolby Vision, TrueHD, DTS-HD MA.</p>
+    </div>
+    <div class="card">
+      <span class="icon">&harr;</span>
+      <h3>Stream</h3>
+      <p>Seven stream types. Disc, ISO, MKV, M2TS, network, stdio, null. Any source to any destination. Pipe to ffmpeg. Stream over your LAN. Remux between formats.</p>
+    </div>
+    <div class="card">
+      <span class="icon">&circlearrowright;</span>
+      <h3>Automate</h3>
+      <p>Docker container with web UI. Insert a disc, get an MKV on your NAS. TMDB metadata, poster art, organized into Movies/Title (Year)/. Jellyfin webhooks.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Terminal Demo -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>See it work</h2>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span class="terminal-dot r"></span>
+      <span class="terminal-dot y"></span>
+      <span class="terminal-dot g"></span>
+    </div>
+    <div class="terminal-body"><span class="prompt">$</span> <span class="cmd">freemkv disc:// mkv://Dune.mkv</span>
+<span class="dim">freemkv 0.11.5</span>
+
+Opening disc:///dev/sg4...<span class="ok">OK</span>
+Scanning...<span class="hl">Dune</span> (UHD, AACS: Encrypted)
+
+  HEVC 2160p HDR10
+  TrueHD 7.1 eng
+  AC-3 5.1 eng &middot; AC-3 5.1 fra &middot; TrueHD 5.1 deu
+  PGS eng &middot; PGS fra &middot; PGS deu &middot; +9 more
+  19 chapters
+
+Ripping title 1 of 1...
+<span class="progress-bar"><span class="filled">&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;&block;</span><span class="empty">&block;&block;&block;&block;&block;&block;&block;&block;</span></span> <span class="hl">78%</span> &middot; 52.3 / 67.1 GB &middot; 18.2 MB/s &middot; ETA 14:22</div>
+  </div>
+</div>
+</section>
+
+<!-- Features -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>Features</h2>
+  </div>
+  <div class="features">
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>4K UHD + Blu-ray + DVD</strong> &mdash; all disc formats, all codecs</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>AACS 1.0/2.0 + CSS</strong> &mdash; transparent decryption, automatic key lookup</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>HDR10 / Dolby Vision</strong> &mdash; passthrough with correct metadata in MKV</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>Chapters + subtitles</strong> &mdash; full chapter marks, all subtitle tracks, forced flags</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>Stream labels</strong> &mdash; audio purpose, codec detail, language variants from BD-J</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>Firmware unlock</strong> &mdash; removes riplock for full-speed reads, 17+ MB/s</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>7 stream types</strong> &mdash; disc, ISO, MKV, M2TS, network, stdio, null</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>Batch mode</strong> &mdash; all titles in one command, organized by playlist</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>Pure Rust</strong> &mdash; single static binary, no runtime dependencies</div></div>
+    <div class="feature"><span class="check">&check;</span><div class="label"><strong>AGPL-3.0</strong> &mdash; truly open source, library on <a href="https://crates.io/crates/libfreemkv">crates.io</a></div></div>
+  </div>
+</div>
+</section>
+
+<!-- Autorip -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>Autorip</h2>
+    <p>Insert a disc. Get an MKV.</p>
+  </div>
+  <div class="autorip-block">
+    <div class="autorip-info">
+      <p>Docker container with a built-in web dashboard. Detects disc insertion automatically, rips to MKV, looks up the title on TMDB, organizes into your media library, triggers a Jellyfin scan, and ejects. No interaction needed.</p>
+      <p>Configurable webhooks for Discord, Jellyfin, n8n, or any HTTP endpoint. Supports MKV, M2TS, ISO, and network output formats.</p>
+      <div class="autorip-cmd"><span class="prompt">$</span> <span class="cmd">docker run -d --privileged \
+  -v /mnt/media:/output \
+  -p 8080:8080 \
+  ghcr.io/freemkv/autorip:latest</span></div>
+      <p style="margin-top: 16px; font-size: 0.8rem; color: var(--text3);">Open <a href="#">localhost:8080</a>. Configure KEYDB URL and TMDB key in Settings. Insert disc.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- Install -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>Install</h2>
+  </div>
+  <div class="install-grid">
+    <div class="install-card">
+      <h4>Linux</h4>
+      <code class="mono">curl -sL https://github.com/freemkv/freemkv/releases/latest/download/freemkv-x86_64-unknown-linux-musl.tar.gz | tar xz</code>
+      <a href="https://github.com/freemkv/freemkv/releases/latest" class="btn btn-secondary">Download</a>
+    </div>
+    <div class="install-card">
+      <h4>macOS</h4>
+      <code class="mono">curl -sL https://github.com/freemkv/freemkv/releases/latest/download/freemkv-aarch64-apple-darwin.tar.gz | tar xz</code>
+      <a href="https://github.com/freemkv/freemkv/releases/latest" class="btn btn-secondary">Download</a>
+    </div>
+    <div class="install-card">
+      <h4>From Source</h4>
+      <code class="mono">cargo install freemkv</code>
+      <a href="https://crates.io/crates/freemkv" class="btn btn-secondary">crates.io</a>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--text3);">
+    DVD works out of the box. Blu-ray and UHD require a <a href="https://github.com/freemkv/freemkv#2-set-up-decryption-keys-one-time">KEYDB.cfg</a> for AACS decryption.
+  </div>
+</div>
+</section>
+
+<!-- Streams -->
+<section>
+<div class="container">
+  <div class="sh">
+    <h2>Streams</h2>
+    <p>Any source to any destination</p>
+  </div>
+  <table class="stream-table">
+    <tr><th>Stream</th><th>Input</th><th>Output</th><th>URL</th></tr>
+    <tr><td>Disc</td><td class="yes">Yes</td><td>&mdash;</td><td><code>disc://</code></td></tr>
+    <tr><td>ISO</td><td class="yes">Yes</td><td class="yes">Yes</td><td><code>iso://image.iso</code></td></tr>
+    <tr><td>MKV</td><td class="yes">Yes</td><td class="yes">Yes</td><td><code>mkv://path</code></td></tr>
+    <tr><td>M2TS</td><td class="yes">Yes</td><td class="yes">Yes</td><td><code>m2ts://path</code></td></tr>
+    <tr><td>Network</td><td class="yes">Yes</td><td class="yes">Yes</td><td><code>network://host:port</code></td></tr>
+    <tr><td>Stdio</td><td class="yes">Yes</td><td class="yes">Yes</td><td><code>stdio://</code></td></tr>
+    <tr><td>Null</td><td>&mdash;</td><td class="yes">Yes</td><td><code>null://</code></td></tr>
+  </table>
+
+  <div class="examples">
+    <pre><span class="comment"># Rip disc to MKV</span>
+freemkv disc:// mkv://Movie.mkv
+
+<span class="comment"># ISO to MKV</span>
+freemkv iso://disc.iso mkv://Movie.mkv
+
+<span class="comment"># Remux M2TS to MKV</span>
+freemkv m2ts://Movie.m2ts mkv://Movie.mkv
+
+<span class="comment"># Stream over network</span>
+freemkv disc:// network://10.1.7.11:9000
+
+<span class="comment"># Pipe to ffmpeg</span>
+freemkv disc:// stdio:// | ffmpeg -i pipe:0 -c:v libx265 output.mp4</pre>
+  </div>
+</div>
+</section>
+
+<!-- Footer -->
+<footer>
+<div class="container">
+  <div class="links">
+    <a href="https://github.com/freemkv/freemkv">CLI</a>
+    <a href="https://github.com/freemkv/libfreemkv">Library</a>
+    <a href="https://github.com/freemkv/autorip">Autorip</a>
+    <a href="https://github.com/freemkv/bdemu">Emulator</a>
+    <a href="https://crates.io/crates/libfreemkv">crates.io</a>
+  </div>
+  <div class="copy">AGPL-3.0 &middot; Built with Rust</div>
+</div>
+</footer>
+
+</body>
+</html>
