@@ -141,11 +141,11 @@ const autoripPlatforms = [
         <div class="hero-inner">
           <img class="hero-logo" src="/freemkv-icon.svg" alt="freemkv" width="80" height="80" />
           <h1 class="hero-title">Download freemkv</h1>
-          <a class="hero-version" href="https://github.com/freemkv/freemkv/releases/latest">
+          <div class="hero-version">
             <span class="hero-version-dot" aria-hidden="true"></span>
             <span class="hero-version-label">Latest release</span>
             <span class="hero-version-num">v1.0.0-rc.1</span>
-          </a>
+          </div>
           <p class="hero-foot">Free &amp; open source · Linux, macOS &amp; Windows · Intel &amp; ARM</p>
         </div>
       </section>
@@ -215,6 +215,20 @@ const autoripPlatforms = [
             MKV. Runs on <strong>Linux, macOS, and Windows</strong> as a single binary (below);
             Docker is Linux. Linux is the most-tested target.
           </p>
+
+          <!-- Version picker + detected-platform banner (JS-enhanced) -->
+          <div class="dl-toolbar" data-dl-toolbar>
+            <div class="dl-detected-banner" data-detected-banner hidden>
+              <span class="dl-detected-eyebrow">Detected</span>
+              <span data-detected-label>your platform</span>
+            </div>
+            <label class="dl-version-pick" hidden data-version-pick>
+              <span class="dl-version-label">Version</span>
+              <select data-version-select aria-label="Choose release version">
+                <option value="latest">Latest</option>
+              </select>
+            </label>
+          </div>
 
           <!-- Bare binary (primary) — columns by OS, matching the CLI -->
           <div class="grid">
@@ -288,31 +302,13 @@ const autoripPlatforms = [
 <span class="c"># Binary at target/release/freemkv</span>
 <span class="p">$</span> ./target/release/freemkv --version</code></pre>
           </div>
-        </div>
-      </section>
-
-      <!-- ============ AFTER DOWNLOAD ============ -->
-      <section class="block">
-        <div class="section-inner">
-          <h2 class="section-title">Next steps</h2>
-          <p class="section-lead">
-            On Linux and macOS, make the binary executable and confirm it runs.
-          </p>
-          <div class="terminal">
-            <div class="terminal-bar" aria-hidden="true">
-              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-              <span class="terminal-title">freemkv</span>
-            </div>
-            <pre class="terminal-body"><code><span class="c"># rename to `freemkv`, make executable, run</span>
-<span class="p">$</span> mv freemkv-* freemkv && chmod +x freemkv
-<span class="p">$</span> ./freemkv --version</code></pre>
-          </div>
           <div class="cta-row after-cta">
             <a class="btn btn-secondary" href="/quickstart/">Quickstart →</a>
             <a class="btn btn-ghost" href="/install/">Install docs</a>
           </div>
         </div>
       </section>
+
     </main>
 
     <!-- ============ FOOTER ============ -->
@@ -388,16 +384,20 @@ const autoripPlatforms = [
           document.querySelectorAll('[data-key="' + detectedKey + '"]').forEach(function (b) {
             b.classList.add('is-match');
           });
-          var banner = document.querySelector('[data-detected-banner]');
-          var label = document.querySelector('[data-detected-label]');
           var pretty = {
             'macos-arm64': 'macOS · Apple Silicon', 'macos-x64': 'macOS · Intel',
             'linux-x64': 'Linux · x86_64', 'linux-arm64': 'Linux · aarch64',
             'windows-x64': 'Windows · x86_64',
           };
-          if (banner && label && pretty[detectedKey]) {
-            label.textContent = pretty[detectedKey];
-            banner.hidden = false;
+          if (pretty[detectedKey]) {
+            // Light up every toolbar's banner (CLI + autorip).
+            document.querySelectorAll('[data-detected-banner]').forEach(function (banner) {
+              var label = banner.querySelector('[data-detected-label]');
+              if (label) {
+                label.textContent = pretty[detectedKey];
+                banner.hidden = false;
+              }
+            });
           }
         }
 
@@ -424,16 +424,20 @@ const autoripPlatforms = [
 
         function populate(tags) {
           if (!tags || !tags.length) return;
-          var sel = document.querySelector('[data-version-select]');
-          var pick = document.querySelector('[data-version-pick]');
-          if (!sel || !pick) return;
-          tags.forEach(function (t) {
-            var o = document.createElement('option');
-            o.value = t; o.textContent = t;
-            sel.appendChild(o);
+          // Populate every toolbar's picker (CLI + autorip). Each select
+          // drives the same global applyVersion, so changing either one
+          // rewrites all asset links across both sections.
+          document.querySelectorAll('[data-version-pick]').forEach(function (pick) {
+            var sel = pick.querySelector('[data-version-select]');
+            if (!sel) return;
+            tags.forEach(function (t) {
+              var o = document.createElement('option');
+              o.value = t; o.textContent = t;
+              sel.appendChild(o);
+            });
+            sel.addEventListener('change', function () { applyVersion(sel.value); });
+            pick.hidden = false;
           });
-          sel.addEventListener('change', function () { applyVersion(sel.value); });
-          pick.hidden = false;
         }
 
         function readCache() {
@@ -711,9 +715,6 @@ const autoripPlatforms = [
         color: inherit;
         transition: border-color 0.15s ease;
       }
-      .hero-version:hover {
-        border-color: #2dd4bf;
-      }
       .hero-version-dot {
         width: 0.5rem;
         height: 0.5rem;
@@ -907,7 +908,9 @@ const autoripPlatforms = [
         overflow: hidden;
         box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.55);
         border: 1px solid #1e293b;
+        text-align: left;
       }
+      .terminal-body { text-align: left; }
       .terminal-bar {
         display: flex;
         align-items: center;
