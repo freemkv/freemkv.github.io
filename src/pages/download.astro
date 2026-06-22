@@ -63,12 +63,31 @@ const cliPlatforms = [
 ];
 
 // autorip binaries — Linux, macOS, Windows (Docker is Linux-only).
-const autoripBuilds = [
-  { key: 'linux-x64', arch: 'x86_64', label: 'Linux · Intel / AMD', file: 'autorip-x86_64-linux' },
-  { key: 'linux-arm64', arch: 'ARM64', label: 'Linux · aarch64', file: 'autorip-aarch64-linux' },
-  { key: 'macos-arm64', arch: 'ARM64', label: 'macOS · Apple Silicon', file: 'autorip-aarch64-macos' },
-  { key: 'macos-x64', arch: 'x86_64', label: 'macOS · Intel', file: 'autorip-x86_64-macos' },
-  { key: 'windows-x64', arch: 'x86_64', label: 'Windows · Intel / AMD', file: 'autorip-x86_64-windows.exe' },
+// Grouped by OS into columns, matching the CLI layout above.
+const autoripPlatforms = [
+  {
+    name: 'Linux',
+    os: 'linux',
+    builds: [
+      { key: 'linux-x64', arch: 'x86_64', label: 'Intel / AMD 64-bit', file: 'autorip-x86_64-linux' },
+      { key: 'linux-arm64', arch: 'ARM64', label: 'aarch64', file: 'autorip-aarch64-linux' },
+    ],
+  },
+  {
+    name: 'macOS',
+    os: 'macos',
+    builds: [
+      { key: 'macos-arm64', arch: 'ARM64', label: 'Apple Silicon', file: 'autorip-aarch64-macos' },
+      { key: 'macos-x64', arch: 'x86_64', label: 'Intel', file: 'autorip-x86_64-macos' },
+    ],
+  },
+  {
+    name: 'Windows',
+    os: 'windows',
+    builds: [
+      { key: 'windows-x64', arch: 'x86_64', label: 'Intel / AMD 64-bit', file: 'autorip-x86_64-windows.exe' },
+    ],
+  },
 ];
 ---
 
@@ -197,19 +216,26 @@ const autoripBuilds = [
             Docker is Linux. Linux is the most-tested target.
           </p>
 
-          <!-- Bare binary (primary) -->
-          <div class="dl-list dl-list-row">
-            {autoripBuilds.map((b) => (
-              <a
-                class="btn btn-primary dl-btn"
-                data-key={b.key}
-                data-asset={b.file}
-                href={`${autoripRepo}/releases/latest/download/${b.file}`}
-                download
-              >
-                <span class="dl-main">autorip <span class="dl-arch">{b.arch}</span></span>
-                <span class="dl-sub">{b.label}</span>
-              </a>
+          <!-- Bare binary (primary) — columns by OS, matching the CLI -->
+          <div class="grid">
+            {autoripPlatforms.map((p) => (
+              <article class="card" data-os={p.os}>
+                <h3 class="card-title">{p.name}</h3>
+                <div class="dl-list">
+                  {p.builds.map((b) => (
+                    <a
+                      class="btn btn-primary dl-btn"
+                      data-key={b.key}
+                      data-asset={b.file}
+                      href={`${autoripRepo}/releases/latest/download/${b.file}`}
+                      download
+                    >
+                      <span class="dl-main">Download <span class="dl-arch">{b.arch}</span></span>
+                      <span class="dl-sub">{b.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </article>
             ))}
           </div>
           <p class="block-note">
