@@ -348,6 +348,7 @@ const docs = '/overview/';
         border: 1.5px solid transparent;
         transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
         white-space: nowrap;
+        max-width: 100%;
       }
       .btn:active { transform: translateY(1px); }
       .btn-primary {
@@ -507,6 +508,7 @@ const docs = '/overview/';
         overflow: hidden;
         box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.55);
         border: 1px solid #1e293b;
+        text-align: left;
       }
       .terminal-compact { margin-top: 1.5rem; }
       .terminal-bar {
@@ -621,6 +623,12 @@ const docs = '/overview/';
         .step-arrow { transform: rotate(90deg); }
         .nav-inner { justify-content: center; }
         .footer-inner { justify-content: center; text-align: center; }
+      }
+
+      @media (max-width: 460px) {
+        /* Stack CTA buttons full-width so long labels never overflow. */
+        .cta-row { flex-direction: column; align-items: stretch; }
+        .cta-row .btn { width: 100%; }
       }
 
       @media (prefers-reduced-motion: reduce) {
