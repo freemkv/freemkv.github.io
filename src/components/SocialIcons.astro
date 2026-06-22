@@ -1,0 +1,115 @@
+---
+// Custom override of Starlight's SocialIcons. Renders the configured social
+// links (the GitHub icon) and, alongside them, a live GitHub star count that
+// links to the main freemkv repository and opens in a new tab.
+//
+// The star count is fetched client-side from the GitHub REST API and cached in
+// localStorage with a 1-hour TTL to stay well under the unauthenticated rate
+// limit (~60 req/hr/IP). No token is embedded. On fetch failure (or before the
+// first successful load) the link renders as just the star icon with no number.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+
+// The repo the site already links to (see astro.config.mjs `social` + docs).
+const GH_REPO = 'freemkv/freemkv';
+---
+
+<Default><slot /></Default>
+
+<a
+  class="freemkv-gh-stars sl-flex"
+  href={`https://github.com/${GH_REPO}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="GitHub stars"
+  data-gh-repo={GH_REPO}
+>
+  <span class="freemkv-gh-stars__count"><span data-gh-stars hidden></span>★</span>
+  <span class="freemkv-gh-stars__label">GitHub</span>
+</a>
+
+<script>
+  (() => {
+    const el = document.querySelector<HTMLAnchorElement>('a.freemkv-gh-stars');
+    if (!el) return;
+    const repo = el.dataset.ghRepo;
+    if (!repo) return;
+
+    const countEl = el.querySelector<HTMLElement>('[data-gh-stars]');
+    if (!countEl) return;
+
+    const CACHE_KEY = `freemkv:gh-stars:${repo}`;
+    const TTL_MS = 60 * 60 * 1000; // 1 hour
+
+    // 1234 -> "1.2k", 12345 -> "12k", 999 -> "999".
+    const format = (n: number): string => {
+      if (!Number.isFinite(n) || n < 0) return '';
+      if (n < 1000) return String(n);
+      const k = n / 1000;
+      const s = k < 10 ? k.toFixed(1) : Math.round(k).toString();
+      return s.replace(/\.0$/, '') + 'k';
+    };
+
+    const show = (n: number) => {
+      const text = format(n);
+      if (!text) return;
+      countEl.textContent = text;
+      countEl.hidden = false;
+      el.setAttribute('aria-label', `GitHub stars: ${n.toLocaleString()}`);
+    };
+
+    // Serve cached value immediately if still fresh.
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw) as { count: number; ts: number };
+        if (cached && typeof cached.count === 'number') {
+          show(cached.count);
+          if (Date.now() - cached.ts < TTL_MS) return; // still fresh, skip fetch
+        }
+      }
+    } catch {
+      /* ignore malformed cache */
+    }
+
+    fetch(`https://api.github.com/repos/${repo}`, {
+      headers: { Accept: 'application/vnd.github+json' },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((data: { stargazers_count?: number }) => {
+        const count = data?.stargazers_count;
+        if (typeof count !== 'number') return;
+        show(count);
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
+        } catch {
+          /* localStorage unavailable; non-fatal */
+        }
+      })
+      .catch(() => {
+        /* Leave the link as just the star icon; never render NaN. */
+      });
+  })();
+</script>
+
+<style>
+  a.freemkv-gh-stars {
+    align-items: center;
+    gap: 0.35em;
+    color: var(--sl-color-text-accent);
+    padding: 0.5em;
+    margin: -0.5em;
+    font-size: var(--sl-text-sm);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+  }
+  a.freemkv-gh-stars:hover {
+    color: var(--sl-color-white);
+  }
+  .freemkv-gh-stars__count {
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .freemkv-gh-stars__label {
+    line-height: 1;
+  }
+</style>

@@ -1,0 +1,12 @@
+# freemkv — https://freemkv.org
+# All crawlers welcome.
+User-agent: *
+Allow: /
+
+# XML sitemap for search engines.
+Sitemap: https://freemkv.org/sitemap-index.xml
+
+# LLM-readable documentation (https://llmstxt.org):
+#   /llms.txt        — index
+#   /llms-small.txt  — abridged docs as one file
+#   /llms-full.txt   — complete docs as one file

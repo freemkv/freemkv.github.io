@@ -1,0 +1,929 @@
+---
+// Standalone styled Download page for freemkv.org.
+// Owns the "/download" route directly (NOT part of the Starlight docs
+// collection) so it shares the landing page's visual language with full
+// design freedom.
+//
+// ── How downloads work ─────────────────────────────────────────────
+// Every link here is a plain GitHub release-asset URL. By default they
+// use the version-less `releases/latest/download/<asset>` form, which
+// always resolves to the newest release — works with JS disabled.
+//
+// A client-side script (see the inline <script> below) progressively
+// enhances the page:
+//   1. OS/arch auto-detection (busbar-style) highlights the binary that
+//      matches the visitor's platform and pre-selects it.
+//   2. A version picker queries the GitHub Releases API and lets the
+//      visitor pin downloads to a specific tag. The API response is
+//      cached in localStorage with a TTL to respect the unauthenticated
+//      rate limit (60 req/hr/IP). If the API fails, the picker stays on
+//      "latest" and a link to the GitHub releases page is shown.
+//
+// Asset names below MUST match what the release workflows attach. These
+// are the PLAIN runnable-binary assets (download → chmod +x → run),
+// documented in each repo's INSTALL.md:
+//   CLI (freemkv):  freemkv-<arch>-<os>[.exe]
+//   autorip:        autorip-<arch>-<os>[.exe]
+const title = 'Download freemkv — Linux, macOS & Windows';
+const description =
+  'Download prebuilt freemkv and autorip binaries for Linux, macOS, and Windows (Intel & ARM). Free & open source. Or build from source.';
+
+const docs = '/overview/';
+const github = 'https://github.com/freemkv';
+const cliRepo = 'https://github.com/freemkv/freemkv';
+const autoripRepo = 'https://github.com/freemkv/autorip';
+const allReleases = `${cliRepo}/releases`;
+
+// CLI binaries — all OSes. `key` is "<os>-<arch>" used by the detector.
+// `file` is the plain runnable-binary asset name (matches release.yml).
+const cliPlatforms = [
+  {
+    name: 'Linux',
+    os: 'linux',
+    builds: [
+      { key: 'linux-x64', arch: 'x86_64', label: 'Intel / AMD 64-bit', file: 'freemkv-x86_64-linux' },
+      { key: 'linux-arm64', arch: 'ARM64', label: 'aarch64', file: 'freemkv-aarch64-linux' },
+    ],
+  },
+  {
+    name: 'macOS',
+    os: 'macos',
+    builds: [
+      { key: 'macos-arm64', arch: 'ARM64', label: 'Apple Silicon', file: 'freemkv-aarch64-macos' },
+      { key: 'macos-x64', arch: 'x86_64', label: 'Intel', file: 'freemkv-x86_64-macos' },
+    ],
+  },
+  {
+    name: 'Windows',
+    os: 'windows',
+    builds: [
+      { key: 'windows-x64', arch: 'x86_64', label: 'Intel / AMD 64-bit', file: 'freemkv-x86_64-windows.exe' },
+    ],
+  },
+];
+
+// autorip binaries — Linux, macOS, Windows (Docker is Linux-only).
+const autoripBuilds = [
+  { key: 'linux-x64', arch: 'x86_64', label: 'Linux · Intel / AMD', file: 'autorip-x86_64-linux' },
+  { key: 'linux-arm64', arch: 'ARM64', label: 'Linux · aarch64', file: 'autorip-aarch64-linux' },
+  { key: 'macos-arm64', arch: 'ARM64', label: 'macOS · Apple Silicon', file: 'autorip-aarch64-macos' },
+  { key: 'macos-x64', arch: 'x86_64', label: 'macOS · Intel', file: 'autorip-x86_64-macos' },
+  { key: 'windows-x64', arch: 'x86_64', label: 'Windows · Intel / AMD', file: 'autorip-x86_64-windows.exe' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://freemkv.org/freemkv-icon.svg" />
+    <meta property="og:url" content="https://freemkv.org/download/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://freemkv.org/freemkv-icon.svg" />
+  </head>
+  <body>
+    <!-- ============ STICKY NAV ============ -->
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="/">
+          <img src="/freemkv-icon.svg" alt="" width="32" height="32" />
+          <span>freemkv</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href={docs}>Docs</a>
+          <a href="/download/" aria-current="page">Download</a>
+          <a
+            class="gh-stars"
+            href="https://github.com/freemkv/freemkv"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub stars"
+            data-gh-repo="freemkv/freemkv"
+          >
+            <span class="gh-stars-num"><span data-gh-stars hidden></span>★</span>
+            <span class="gh-stars-label">GitHub</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ HERO ============ -->
+      <section class="hero">
+        <div class="hero-inner">
+          <img class="hero-logo" src="/freemkv-icon.svg" alt="freemkv" width="80" height="80" />
+          <h1 class="hero-title">Download freemkv</h1>
+          <p class="hero-foot">Free &amp; open source · Linux, macOS &amp; Windows · Intel &amp; ARM</p>
+        </div>
+      </section>
+
+      <!-- ============ CLI DOWNLOADS ============ -->
+      <section class="downloads" id="cli">
+        <div class="section-inner">
+          <h2 class="section-title">freemkv CLI</h2>
+          <p class="section-lead">
+            One static binary — no runtime, no container. Linux, macOS &amp; Windows
+            (Intel &amp; ARM). Download, <code>chmod +x</code>, run.
+          </p>
+
+          <!-- Version picker + detected-platform banner (JS-enhanced) -->
+          <div class="dl-toolbar" data-dl-toolbar>
+            <div class="dl-detected-banner" data-detected-banner hidden>
+              <span class="dl-detected-eyebrow">Detected</span>
+              <span data-detected-label>your platform</span>
+            </div>
+            <label class="dl-version-pick" hidden data-version-pick>
+              <span class="dl-version-label">Version</span>
+              <select data-version-select aria-label="Choose release version">
+                <option value="latest">Latest</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="grid">
+            {cliPlatforms.map((p) => (
+              <article class="card" data-os={p.os}>
+                <h3 class="card-title">{p.name}</h3>
+                <div class="dl-list">
+                  {p.builds.map((b) => (
+                    <a
+                      class="btn btn-primary dl-btn"
+                      data-key={b.key}
+                      data-asset={b.file}
+                      href={`${cliRepo}/releases/latest/download/${b.file}`}
+                      download
+                    >
+                      <span class="dl-main">Download <span class="dl-arch">{b.arch}</span></span>
+                      <span class="dl-sub">{b.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+          <p class="dl-note">
+            Each binary has a matching <code>.sha256</code> checksum on the release page.
+            Prefer archives or another version?
+            <a href={allReleases} data-all-releases>All releases on GitHub →</a>
+          </p>
+          <p class="dl-note dl-note-sub">
+            New here? The <a href="/install/">install guide</a> covers PATH, drive
+            permissions, and keys.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ AUTORIP ============ -->
+      <section class="block block-alt" id="autorip">
+        <div class="section-inner">
+          <h2 class="section-title">autorip</h2>
+          <p class="section-lead">
+            A web service for hands-off ripping: insert a disc and it rips automatically to
+            MKV. Runs on <strong>Linux, macOS, and Windows</strong> as a single binary (below);
+            Docker is Linux. Linux is the most-tested target.
+          </p>
+
+          <!-- Bare binary (primary) -->
+          <div class="dl-list dl-list-row">
+            {autoripBuilds.map((b) => (
+              <a
+                class="btn btn-primary dl-btn"
+                data-key={b.key}
+                data-asset={b.file}
+                href={`${autoripRepo}/releases/latest/download/${b.file}`}
+                download
+              >
+                <span class="dl-main">autorip <span class="dl-arch">{b.arch}</span></span>
+                <span class="dl-sub">{b.label}</span>
+              </a>
+            ))}
+          </div>
+          <p class="block-note">
+            Static binary — download, <code>chmod +x</code> (or run the <code>.exe</code>), start
+            the daemon, then open
+            <code>http://&lt;host&gt;:8080</code>. DVDs work out of the box; Blu-ray and
+            4K&nbsp;UHD need <a href="/decryption-keys/">decryption keys</a>. See the
+            <a href="/autorip/">autorip docs</a> for drive permissions and a systemd unit.
+          </p>
+
+          <!-- Docker (secondary) -->
+          <div class="dl-autorip-bin">
+            <h3 class="dl-bin-title">Or run via Docker</h3>
+            <p class="dl-bin-lead">
+              Prefer a container? The image is on GHCR. <code>--privileged</code> is required
+              for optical SCSI access.
+            </p>
+            <div class="terminal">
+              <div class="terminal-bar" aria-hidden="true">
+                <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+                <span class="terminal-title">docker</span>
+              </div>
+              <pre class="terminal-body"><code><span class="c"># Then open http://&lt;host&gt;:8080 in your browser</span>
+<span class="p">$</span> docker run --privileged -v /dev:/dev \
+      -v ./keys:/root/.config/freemkv \
+      -p 8080:8080 \
+      ghcr.io/freemkv/autorip:latest</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ BUILD FROM SOURCE ============ -->
+      <section class="block block-alt">
+        <div class="section-inner">
+          <h2 class="section-title">Build from source</h2>
+          <p class="section-lead">
+            Pure Rust, single binary. Clone the repo and build with Cargo.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="terminal-title">build</span>
+            </div>
+            <pre class="terminal-body"><code><span class="c"># Clone and build the workspace</span>
+<span class="p">$</span> git clone https://github.com/freemkv/freemkv.git
+<span class="p">$</span> cd freemkv
+<span class="p">$</span> cargo build --release
+
+<span class="c"># Binary at target/release/freemkv</span>
+<span class="p">$</span> ./target/release/freemkv --version</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ AFTER DOWNLOAD ============ -->
+      <section class="block">
+        <div class="section-inner">
+          <h2 class="section-title">Next steps</h2>
+          <p class="section-lead">
+            On Linux and macOS, make the binary executable and confirm it runs.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="terminal-title">freemkv</span>
+            </div>
+            <pre class="terminal-body"><code><span class="c"># rename to `freemkv`, make executable, run</span>
+<span class="p">$</span> mv freemkv-* freemkv && chmod +x freemkv
+<span class="p">$</span> ./freemkv --version</code></pre>
+          </div>
+          <div class="cta-row after-cta">
+            <a class="btn btn-secondary" href="/quickstart/">Quickstart →</a>
+            <a class="btn btn-ghost" href="/install/">Install docs</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="section-inner footer-inner">
+        <div class="footer-brand">
+          <img src="/freemkv-icon.svg" alt="" width="28" height="28" />
+          <span>freemkv</span>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href={docs}>Docs</a>
+          <a href={github}>GitHub</a>
+          <a href="https://crates.io/crates/libfreemkv">crates.io</a>
+          <a href="https://github.com/freemkv/autorip/pkgs/container/autorip">GHCR (autorip)</a>
+          <a href="https://github.com/freemkv/freemkv/blob/main/LICENSE">License (AGPL-3.0)</a>
+        </nav>
+      </div>
+      <p class="footer-copy">AGPL-3.0 · Recover 100% of readable data from any optical disc.</p>
+    </footer>
+
+    <script is:inline define:vars={{ cliRepo, autoripRepo, allReleases }}>
+      // Progressive enhancement only. With JS disabled, every link is a
+      // plain `releases/latest/download/<asset>` URL and still works.
+      (function () {
+        // ---- 1. OS / arch detection (busbar-style) -------------------
+        // Returns a key matching the build's data-key, e.g. "macos-arm64".
+        function detect() {
+          var uad = navigator.userAgentData || null;
+          var ua = (navigator.userAgent || '') + ' ' + (navigator.platform || '');
+          var os = '';
+          if (uad && uad.platform) {
+            var p = uad.platform.toLowerCase();
+            if (/win/.test(p)) os = 'windows';
+            else if (/mac/.test(p)) os = 'macos';
+            else if (/linux|android|chrome os/.test(p)) os = 'linux';
+          }
+          if (!os) {
+            os = /Win/i.test(ua) ? 'windows'
+              : /Mac|iPhone|iPad/i.test(ua) ? 'macos'
+              : /Linux|Android/i.test(ua) ? 'linux' : '';
+          }
+          if (!os) return null;
+
+          // Arch. Apple Silicon Macs report "Intel" in UA for compat, so
+          // treat modern macOS as arm64 unless we can prove x64.
+          var arch = '';
+          var archHint = (uad && uad.architecture ? uad.architecture : '').toLowerCase();
+          if (archHint) {
+            arch = /arm|aarch/.test(archHint) ? 'arm64' : 'x64';
+          } else if (/aarch64|arm64/i.test(ua)) {
+            arch = 'arm64';
+          } else if (os === 'macos') {
+            // navigator.platform "MacIntel" is reported by both; default
+            // to Apple Silicon (the common case for new downloads).
+            arch = 'arm64';
+          } else {
+            arch = 'x64';
+          }
+          if (os === 'windows') arch = 'x64'; // only a Windows x64 build exists
+          return os + '-' + arch;
+        }
+
+        var detectedKey = detect();
+        var detectedOs = detectedKey ? detectedKey.split('-')[0] : '';
+
+        // Highlight the matching OS card + the matching arch button.
+        if (detectedOs) {
+          document.querySelectorAll('.card[data-os="' + detectedOs + '"]').forEach(function (c) {
+            c.classList.add('is-detected');
+          });
+        }
+        if (detectedKey) {
+          document.querySelectorAll('[data-key="' + detectedKey + '"]').forEach(function (b) {
+            b.classList.add('is-match');
+          });
+          var banner = document.querySelector('[data-detected-banner]');
+          var label = document.querySelector('[data-detected-label]');
+          var pretty = {
+            'macos-arm64': 'macOS · Apple Silicon', 'macos-x64': 'macOS · Intel',
+            'linux-x64': 'Linux · x86_64', 'linux-arm64': 'Linux · aarch64',
+            'windows-x64': 'Windows · x86_64',
+          };
+          if (banner && label && pretty[detectedKey]) {
+            label.textContent = pretty[detectedKey];
+            banner.hidden = false;
+          }
+        }
+
+        // ---- 2. Version picker (GitHub Releases API + localStorage) --
+        var CACHE_KEY = 'freemkv-releases-v1';
+        var TTL_MS = 6 * 60 * 60 * 1000; // 6h — well under the 60/hr limit
+        var API = 'https://api.github.com/repos/freemkv/freemkv/releases?per_page=30';
+
+        // Rewrite every asset link for the chosen tag. "latest" → the
+        // version-less URL; a concrete tag → .../download/<tag>/<asset>.
+        function applyVersion(tag) {
+          document.querySelectorAll('a[data-asset]').forEach(function (a) {
+            var asset = a.getAttribute('data-asset');
+            var repo = asset.indexOf('autorip') === 0 ? autoripRepo : cliRepo;
+            a.href = tag === 'latest'
+              ? repo + '/releases/latest/download/' + asset
+              : repo + '/releases/download/' + tag + '/' + asset;
+          });
+          var all = document.querySelector('[data-all-releases]');
+          if (all) {
+            all.href = tag === 'latest' ? allReleases : cliRepo + '/releases/tag/' + tag;
+          }
+        }
+
+        function populate(tags) {
+          if (!tags || !tags.length) return;
+          var sel = document.querySelector('[data-version-select]');
+          var pick = document.querySelector('[data-version-pick]');
+          if (!sel || !pick) return;
+          tags.forEach(function (t) {
+            var o = document.createElement('option');
+            o.value = t; o.textContent = t;
+            sel.appendChild(o);
+          });
+          sel.addEventListener('change', function () { applyVersion(sel.value); });
+          pick.hidden = false;
+        }
+
+        function readCache() {
+          try {
+            var raw = localStorage.getItem(CACHE_KEY);
+            if (!raw) return null;
+            var obj = JSON.parse(raw);
+            if (!obj || (Date.now() - obj.t) > TTL_MS) return null;
+            return obj.tags;
+          } catch (e) { return null; }
+        }
+
+        var cached = readCache();
+        if (cached) {
+          populate(cached);
+        } else {
+          fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+            .then(function (rels) {
+              var tags = (rels || [])
+                .filter(function (r) { return !r.draft; })
+                .map(function (r) { return r.tag_name; });
+              try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), tags: tags }));
+              } catch (e) { /* private mode / quota — non-fatal */ }
+              populate(tags);
+            })
+            .catch(function () {
+              // API failed (rate-limit, offline). Stay on "latest" links;
+              // the "All releases on GitHub" link remains the fallback.
+            });
+        }
+      })();
+
+      // Live GitHub star count for the nav "N★ GitHub" link. Cached in
+      // localStorage (1h TTL) to stay under the unauthenticated rate limit.
+      // On failure the link stays as "★ GitHub" with no number — never "NaN".
+      (function () {
+        var el = document.querySelector('a.gh-stars');
+        if (!el) return;
+        var repo = el.dataset.ghRepo;
+        var countEl = el.querySelector('[data-gh-stars]');
+        if (!repo || !countEl) return;
+        var CACHE_KEY = 'freemkv:gh-stars:' + repo;
+        var TTL_MS = 60 * 60 * 1000;
+        function format(n) {
+          if (!isFinite(n) || n < 0) return '';
+          if (n < 1000) return String(n);
+          var k = n / 1000;
+          var s = k < 10 ? k.toFixed(1) : Math.round(k).toString();
+          return s.replace(/\.0$/, '') + 'k';
+        }
+        function show(n) {
+          var text = format(n);
+          if (!text) return;
+          countEl.textContent = text;
+          countEl.hidden = false;
+          el.setAttribute('aria-label', 'GitHub stars: ' + n.toLocaleString());
+        }
+        try {
+          var raw = localStorage.getItem(CACHE_KEY);
+          if (raw) {
+            var cached = JSON.parse(raw);
+            if (cached && typeof cached.count === 'number') {
+              show(cached.count);
+              if (Date.now() - cached.ts < TTL_MS) return;
+            }
+          }
+        } catch (e) {}
+        fetch('https://api.github.com/repos/' + repo, {
+          headers: { Accept: 'application/vnd.github+json' },
+        })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)); })
+          .then(function (data) {
+            var count = data && data.stargazers_count;
+            if (typeof count !== 'number') return;
+            show(count);
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify({ count: count, ts: Date.now() })); } catch (e) {}
+          })
+          .catch(function () {});
+      })();
+    </script>
+
+    <style>
+      :root {
+        --teal: #0d9488;
+        --teal-dark: #0f766e;
+        --teal-darker: #115e59;
+        --teal-tint: #f0fdfa;
+        --ink: #0f172a;
+        --slate: #475569;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --bg: #ffffff;
+        --bg-soft: #f8fafc;
+        --radius: 14px;
+        --maxw: 1080px;
+        --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        font-family: var(--font);
+        color: var(--ink);
+        background: var(--bg);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: var(--teal-dark); text-decoration: none; }
+      a:hover { color: var(--teal-darker); }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--teal-tint);
+        color: var(--teal-darker);
+        padding: 0.1em 0.35em;
+        border-radius: 5px;
+      }
+
+      .section-inner {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem);
+      }
+
+      .section-title {
+        font-size: clamp(1.6rem, 4vw, 2.25rem);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+        text-align: center;
+      }
+      .section-lead {
+        text-align: center;
+        color: var(--muted);
+        max-width: 52ch;
+        margin: 0 auto 2.5rem;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+      }
+
+      /* ---------- NAV ---------- */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: saturate(180%) blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-inner {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0.75rem clamp(1rem, 4vw, 2rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 750;
+        font-size: 1.15rem;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .brand img { display: block; }
+      .nav-links {
+        display: flex;
+        gap: clamp(0.75rem, 3vw, 1.75rem);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .nav-links a {
+        color: var(--slate);
+        font-weight: 550;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover { color: var(--teal-dark); }
+      .nav-links a[aria-current="page"] { color: var(--teal-dark); font-weight: 650; }
+      .nav-links a.gh-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        font-variant-numeric: tabular-nums;
+      }
+      .gh-stars-num { line-height: 1; white-space: nowrap; }
+      .gh-stars-label { line-height: 1; }
+
+      /* ---------- BUTTONS ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 1.3rem;
+        border-radius: 10px;
+        font-weight: 650;
+        font-size: 0.98rem;
+        border: 1.5px solid transparent;
+        transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+        white-space: nowrap;
+      }
+      .btn:active { transform: translateY(1px); }
+      .btn-primary {
+        background: var(--teal);
+        color: #fff;
+        box-shadow: 0 6px 18px -8px rgba(13, 148, 136, 0.7);
+      }
+      .btn-primary:hover { background: var(--teal-dark); color: #fff; }
+      .btn-secondary {
+        background: #fff;
+        color: var(--teal-darker);
+        border-color: var(--teal);
+      }
+      .btn-secondary:hover { background: var(--teal-tint); color: var(--teal-darker); }
+      .btn-ghost {
+        background: transparent;
+        color: var(--slate);
+        border-color: var(--line);
+      }
+      .btn-ghost:hover { border-color: var(--muted); color: var(--ink); }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        background:
+          radial-gradient(60% 120% at 50% -10%, rgba(13, 148, 136, 0.1), transparent 60%),
+          var(--bg-soft);
+        border-bottom: 1px solid var(--line);
+        padding: clamp(2.5rem, 8vw, 4.5rem) 0 clamp(2.25rem, 6vw, 3.5rem);
+      }
+      .hero-inner {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem);
+        text-align: center;
+      }
+      .hero-logo {
+        margin: 0 auto 1rem;
+        filter: drop-shadow(0 10px 24px rgba(13, 148, 136, 0.25));
+      }
+      .hero-title {
+        font-size: clamp(2rem, 7vw, 3rem);
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.5rem;
+      }
+      .hero-foot {
+        margin-top: 0.75rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
+      }
+
+      /* ---------- DOWNLOADS ---------- */
+      .downloads { padding: clamp(2.5rem, 7vw, 4rem) 0; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: clamp(1rem, 3vw, 1.5rem);
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 1.75rem 1.5rem;
+        text-align: center;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 34px -18px rgba(15, 23, 42, 0.25);
+        border-color: #cbd5e1;
+      }
+      .card-icon {
+        font-size: 2.2rem;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+      .card-title {
+        font-size: 1.3rem;
+        margin: 0 0 1.1rem;
+        letter-spacing: -0.01em;
+      }
+      .dl-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .dl-btn {
+        flex-direction: column;
+        gap: 0.1rem;
+        padding: 0.7rem 1rem;
+        width: 100%;
+        line-height: 1.3;
+      }
+      .dl-main { font-size: 1rem; }
+      .dl-arch {
+        font-family: var(--mono);
+        font-size: 0.85em;
+        opacity: 0.95;
+      }
+      .dl-sub {
+        font-size: 0.78rem;
+        font-weight: 500;
+        opacity: 0.85;
+      }
+      .dl-note {
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 2rem auto 0;
+        max-width: 60ch;
+      }
+      .dl-note a { margin-left: 0.4rem; font-weight: 600; }
+      .dl-note-sub { margin-top: 0.5rem; font-size: 0.85rem; }
+
+      /* ---------- DOWNLOAD TOOLBAR (detect + version) ---------- */
+      .dl-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+        margin: 0 auto 2rem;
+        max-width: var(--maxw);
+      }
+      .dl-detected-banner {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--teal-tint);
+        border: 1px solid #99f6e4;
+        color: var(--teal-darker);
+        border-radius: 999px;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+      .dl-detected-eyebrow {
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        background: var(--teal);
+        color: #fff;
+        border-radius: 5px;
+        padding: 0.12rem 0.45rem;
+      }
+      .dl-version-pick {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.88rem;
+        color: var(--slate);
+      }
+      .dl-version-label { font-weight: 600; }
+      .dl-version-pick select {
+        font-family: var(--font);
+        font-size: 0.88rem;
+        color: var(--ink);
+        background: #fff;
+        border: 1.5px solid var(--line);
+        border-radius: 9px;
+        padding: 0.4rem 0.6rem;
+        cursor: pointer;
+      }
+      .dl-version-pick select:hover { border-color: var(--teal); }
+
+      /* Detected-card emphasis + matching-arch button. */
+      .card.is-detected {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+      }
+      .dl-btn.is-match {
+        box-shadow: 0 0 0 2px var(--teal-darker), 0 6px 18px -8px rgba(13, 148, 136, 0.7);
+      }
+
+      /* autorip bare-binary block. */
+      .dl-autorip-bin {
+        max-width: 720px;
+        margin: 2.5rem auto 0;
+        text-align: center;
+      }
+      .dl-bin-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 0.4rem;
+      }
+      .dl-bin-lead {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 0 0 1.25rem;
+      }
+      .dl-list-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .dl-list-row .dl-btn { width: auto; min-width: 220px; }
+
+      /* ---------- CONTENT BLOCKS ---------- */
+      .block { padding: clamp(2.5rem, 7vw, 4rem) 0; }
+      .block-alt {
+        background: var(--bg-soft);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .block-note {
+        max-width: 640px;
+        margin: 1.25rem auto 0;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .after-cta { margin-top: 1.75rem; }
+
+      /* ---------- TERMINAL ---------- */
+      .terminal {
+        max-width: 720px;
+        margin: 0 auto;
+        background: #0b1220;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.55);
+        border: 1px solid #1e293b;
+      }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.6rem 0.9rem;
+        background: #111a2e;
+        border-bottom: 1px solid #1e293b;
+      }
+      .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+      .dot-r { background: #ff5f56; }
+      .dot-y { background: #ffbd2e; }
+      .dot-g { background: #27c93f; }
+      .terminal-title {
+        margin-left: 0.6rem;
+        color: #64748b;
+        font-size: 0.78rem;
+        font-family: var(--mono);
+      }
+      .terminal-body {
+        margin: 0;
+        padding: 1.25rem;
+        overflow-x: auto;
+        color: #e2e8f0;
+        font-family: var(--mono);
+        font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+        line-height: 1.7;
+      }
+      .terminal-body code { background: none; color: inherit; padding: 0; }
+      .terminal-body .c { color: #64748b; }
+      .terminal-body .p { color: #2dd4bf; }
+
+      /* ---------- FOOTER ---------- */
+      .footer {
+        background: var(--ink);
+        color: #cbd5e1;
+        padding: 2.5rem 0 1.75rem;
+      }
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        color: #fff;
+      }
+      .footer-links {
+        display: flex;
+        gap: clamp(0.75rem, 3vw, 1.5rem);
+        flex-wrap: wrap;
+      }
+      .footer-links a { color: #cbd5e1; font-size: 0.92rem; }
+      .footer-links a:hover { color: #5eead4; }
+      .footer-copy {
+        max-width: var(--maxw);
+        margin: 1.75rem auto 0;
+        padding: 1.25rem clamp(1rem, 4vw, 2rem) 0;
+        border-top: 1px solid #1e293b;
+        color: #64748b;
+        font-size: 0.82rem;
+        text-align: center;
+      }
+
+      /* ---------- RESPONSIVE TWEAKS ---------- */
+      @media (max-width: 640px) {
+        .nav-inner { justify-content: center; }
+        .footer-inner { justify-content: center; text-align: center; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { scroll-behavior: auto; transition: none !important; }
+      }
+    </style>
+  </body>
+</html>

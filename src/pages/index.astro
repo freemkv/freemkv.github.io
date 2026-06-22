@@ -1,0 +1,689 @@
+---
+// Standalone product landing page for freemkv.org.
+// This page owns the "/" route directly (NOT part of the Starlight docs
+// collection) so it has full design freedom with none of the docs
+// sidebar / TOC / breadcrumb chrome. The docs live under /overview/ etc.
+const title = 'freemkv — Recover 100% of readable data from any optical disc';
+const description =
+  'AGPL-3.0 Rust toolchain that recovers 100% of readable data from DVD, Blu-ray, and 4K UHD discs and muxes it to MKV, automatically, with multi-pass bad-sector recovery.';
+const download = '/download/';
+const github = 'https://github.com/freemkv';
+const docs = '/overview/';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://freemkv.org/freemkv-icon.svg" />
+    <meta property="og:url" content="https://freemkv.org/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://freemkv.org/freemkv-icon.svg" />
+  </head>
+  <body>
+    <!-- ============ STICKY NAV ============ -->
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="/">
+          <img src="/freemkv-icon.svg" alt="" width="32" height="32" />
+          <span>freemkv</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href={docs}>Docs</a>
+          <a href={download}>Download</a>
+          <a
+            class="gh-stars"
+            href="https://github.com/freemkv/freemkv"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub stars"
+            data-gh-repo="freemkv/freemkv"
+          >
+            <span class="gh-stars-num"><span data-gh-stars hidden></span>★</span>
+            <span class="gh-stars-label">GitHub</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- ============ HERO ============ -->
+      <section class="hero">
+        <div class="hero-inner">
+          <img class="hero-logo" src="/freemkv-icon.svg" alt="freemkv" width="96" height="96" />
+          <h1 class="hero-title">Own your movies, not just the discs.</h1>
+          <p class="hero-tagline">
+            The open-source 4K&nbsp;UHD, Blu-ray &amp; DVD ripper.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href={download}>Download latest release</a>
+            <a class="btn btn-secondary" href={docs}>Read the docs</a>
+            <a class="btn btn-ghost" href={github}>View on GitHub</a>
+          </div>
+          <p class="hero-foot">Free &amp; open source · Linux, macOS &amp; Windows · Intel &amp; ARM</p>
+        </div>
+      </section>
+
+      <!-- ============ FEATURE GRID ============ -->
+      <section class="features">
+        <div class="section-inner">
+          <h2 class="section-title">Turn your discs into a library.</h2>
+          <div class="grid">
+            <article class="card">
+              <h3>Bad-sector recovery</h3>
+              <p>
+                A tolerant <strong>sweep</strong> reads the whole disc and skips past
+                unreadable sectors, then <strong>patch</strong> passes retry only the
+                damage — multi-attempt, with per-sector timeouts and range bisection.
+              </p>
+            </article>
+            <article class="card">
+              <h3>DVD, Blu-ray &amp; 4K&nbsp;UHD → MKV</h3>
+              <p>
+                Mux every readable title to a standards-clean MKV — video, audio,
+                subtitles, chapters. DVDs (CSS) work out of the box; Blu-ray and 4K&nbsp;UHD
+                need <a href="/decryption-keys/">decryption keys</a>.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Insert a disc, get an MKV</h3>
+              <p>
+                autorip is a service that auto-detects optical drives, runs the full
+                sweep → patch → mux pipeline on disc insert, and exposes a resumable web
+                UI for settings, progress, and history. Run it as a single binary or in a
+                container.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Open source, single binary</h3>
+              <p>
+                Pure Rust. Download a prebuilt binary for Linux, macOS, or Windows — or
+                build from source. The whole toolchain is licensed
+                <strong>AGPL-3.0</strong>: run it anywhere, audit it, build on it.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ HOW IT WORKS ============ -->
+      <section class="how">
+        <div class="section-inner">
+          <h2 class="section-title">How it works</h2>
+          <p class="section-lead">
+            Three composable stages — read everything the drive can recover, then chase
+            the rest. <a href="/how-recovery-works/">See how recovery works →</a>
+          </p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <h3>Sweep</h3>
+              <p>Read the whole disc sequentially. Skip ahead past bad sectors, mark them, never abort.</p>
+            </div>
+            <div class="step-arrow" aria-hidden="true">→</div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <h3>Patch</h3>
+              <p>Come back for the bad ranges with targeted, multi-attempt retries and bisection.</p>
+            </div>
+            <div class="step-arrow" aria-hidden="true">→</div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <h3>Mux</h3>
+              <p>Decrypt and mux the recovered image into a clean, fully-featured MKV.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SHOWCASE / TERMINAL ============ -->
+      <section class="showcase">
+        <div class="section-inner">
+          <h2 class="section-title">From disc to MKV.</h2>
+          <p class="section-lead">
+            freemkv composes a <em>source</em> and a <em>destination</em> URL — no rigid
+            subcommands. Read from a disc, ISO, or M2TS; write to MKV, ISO, M2TS, a network
+            stream, or stdout.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="terminal-title">freemkv</span>
+            </div>
+            <pre class="terminal-body"><code><span class="c"># Inspect the disc and its titles</span>
+<span class="p">$</span> freemkv info disc://
+
+<span class="c"># Rip a disc straight to MKV (decrypt + mux)</span>
+<span class="p">$</span> freemkv disc:// mkv://Movie.mkv
+
+<span class="c"># Recover to ISO with multipass bad-sector recovery (re-run to patch)</span>
+<span class="p">$</span> freemkv disc:// iso://Disc.iso --multipass
+
+<span class="c"># Remux an existing ISO to MKV (no disc needed)</span>
+<span class="p">$</span> freemkv iso://Disc.iso mkv://Movie.mkv</code></pre>
+          </div>
+
+          <p class="showcase-sub">Or run the whole thing as a service — insert a disc, get an MKV:</p>
+          <div class="terminal terminal-compact">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="terminal-title">autorip</span>
+            </div>
+            <pre class="terminal-body"><code><span class="c"># Run the autorip binary as a daemon, then open http://&lt;host&gt;:8080</span>
+<span class="p">$</span> ./autorip</code></pre>
+          </div>
+          <p class="showcase-note">
+            autorip runs on Linux, macOS, and Windows as a single binary (or a Linux container).
+            <a href="/download/">Download autorip</a> · see the
+            <a href="/autorip/">autorip docs</a> for setup and
+            <a href="/decryption-keys/">decryption keys</a> for Blu-ray and 4K&nbsp;UHD.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ CTA BAND ============ -->
+      <section class="cta-band">
+        <div class="section-inner cta-band-inner">
+          <h2>Get started</h2>
+          <p>Grab a prebuilt binary, then follow the quickstart.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href={download}>Download latest release</a>
+            <a class="btn btn-secondary" href="/quickstart/">Read the quickstart</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+      <div class="section-inner footer-inner">
+        <div class="footer-brand">
+          <img src="/freemkv-icon.svg" alt="" width="28" height="28" />
+          <span>freemkv</span>
+        </div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href={docs}>Docs</a>
+          <a href={github}>GitHub</a>
+          <a href="https://crates.io/crates/libfreemkv">crates.io</a>
+          <a href="https://github.com/freemkv/autorip/pkgs/container/autorip">GHCR (autorip)</a>
+          <a href="https://github.com/freemkv/freemkv/blob/main/LICENSE">License (AGPL-3.0)</a>
+        </nav>
+      </div>
+      <p class="footer-copy">AGPL-3.0 · Recover 100% of readable data from any optical disc.</p>
+    </footer>
+
+    <style>
+      :root {
+        --teal: #0d9488;
+        --teal-dark: #0f766e;
+        --teal-darker: #115e59;
+        --teal-tint: #f0fdfa;
+        --ink: #0f172a;
+        --slate: #475569;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --bg: #ffffff;
+        --bg-soft: #f8fafc;
+        --radius: 14px;
+        --maxw: 1080px;
+        --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        font-family: var(--font);
+        color: var(--ink);
+        background: var(--bg);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a { color: var(--teal-dark); text-decoration: none; }
+      a:hover { color: var(--teal-darker); }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.9em;
+        background: var(--teal-tint);
+        color: var(--teal-darker);
+        padding: 0.1em 0.35em;
+        border-radius: 5px;
+      }
+
+      .section-inner {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem);
+      }
+
+      .section-title {
+        font-size: clamp(1.6rem, 4vw, 2.25rem);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+        text-align: center;
+      }
+      .section-lead {
+        text-align: center;
+        color: var(--muted);
+        max-width: 46ch;
+        margin: 0 auto 2.5rem;
+        font-size: clamp(1rem, 2.5vw, 1.1rem);
+      }
+
+      /* ---------- NAV ---------- */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: saturate(180%) blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .nav-inner {
+        max-width: var(--maxw);
+        margin: 0 auto;
+        padding: 0.75rem clamp(1rem, 4vw, 2rem);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 750;
+        font-size: 1.15rem;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .brand img { display: block; }
+      .nav-links {
+        display: flex;
+        gap: clamp(0.75rem, 3vw, 1.75rem);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .nav-links a {
+        color: var(--slate);
+        font-weight: 550;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover { color: var(--teal-dark); }
+      .nav-links a.gh-stars {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        font-variant-numeric: tabular-nums;
+      }
+      .gh-stars-num { line-height: 1; white-space: nowrap; }
+      .gh-stars-label { line-height: 1; }
+
+      /* ---------- BUTTONS ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 1.3rem;
+        border-radius: 10px;
+        font-weight: 650;
+        font-size: 0.98rem;
+        border: 1.5px solid transparent;
+        transition: transform 0.05s ease, background 0.15s ease, border-color 0.15s ease;
+        white-space: nowrap;
+      }
+      .btn:active { transform: translateY(1px); }
+      .btn-primary {
+        background: var(--teal);
+        color: #fff;
+        box-shadow: 0 6px 18px -8px rgba(13, 148, 136, 0.7);
+      }
+      .btn-primary:hover { background: var(--teal-dark); color: #fff; }
+      .btn-secondary {
+        background: #fff;
+        color: var(--teal-darker);
+        border-color: var(--teal);
+      }
+      .btn-secondary:hover { background: var(--teal-tint); color: var(--teal-darker); }
+      .btn-ghost {
+        background: transparent;
+        color: var(--slate);
+        border-color: var(--line);
+      }
+      .btn-ghost:hover { border-color: var(--muted); color: var(--ink); }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        background:
+          radial-gradient(60% 120% at 50% -10%, rgba(13, 148, 136, 0.1), transparent 60%),
+          var(--bg-soft);
+        border-bottom: 1px solid var(--line);
+        padding: clamp(3rem, 9vw, 6rem) 0 clamp(3rem, 8vw, 5rem);
+      }
+      .hero-inner {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 clamp(1rem, 4vw, 2rem);
+        text-align: center;
+      }
+      .hero-logo {
+        margin: 0 auto 1.25rem;
+        filter: drop-shadow(0 10px 24px rgba(13, 148, 136, 0.25));
+      }
+      .hero-title {
+        font-size: clamp(2rem, 7vw, 3.4rem);
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0 0 0.75rem;
+      }
+      .hero-tagline {
+        font-size: clamp(1.05rem, 3.2vw, 1.4rem);
+        font-weight: 600;
+        color: var(--teal-darker);
+        margin: 0 auto 1rem;
+        max-width: 32ch;
+      }
+      .hero-sub {
+        color: var(--slate);
+        font-size: clamp(1rem, 2.6vw, 1.12rem);
+        max-width: 54ch;
+        margin: 0 auto 2rem;
+      }
+      .hero-foot {
+        margin-top: 1.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        letter-spacing: 0.01em;
+      }
+
+      /* ---------- FEATURES ---------- */
+      .features { padding: clamp(3rem, 8vw, 5rem) 0; }
+      .features .section-title { margin-bottom: 2.5rem; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: clamp(1rem, 3vw, 1.5rem);
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 34px -18px rgba(15, 23, 42, 0.25);
+        border-color: #cbd5e1;
+      }
+      .card-icon {
+        font-size: 1.9rem;
+        line-height: 1;
+        margin-bottom: 0.75rem;
+      }
+      .card h3 {
+        font-size: 1.12rem;
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.01em;
+      }
+      .card p { margin: 0; color: var(--slate); font-size: 0.96rem; }
+
+      /* ---------- HOW IT WORKS ---------- */
+      .how {
+        background: var(--bg-soft);
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: clamp(3rem, 8vw, 5rem) 0;
+      }
+      .steps {
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .step {
+        flex: 1 1 220px;
+        max-width: 280px;
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        text-align: center;
+      }
+      .step-num {
+        width: 2.4rem;
+        height: 2.4rem;
+        margin: 0 auto 0.75rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--teal);
+        color: #fff;
+        font-weight: 750;
+        font-size: 1.1rem;
+      }
+      .step h3 { margin: 0 0 0.4rem; font-size: 1.15rem; }
+      .step p { margin: 0; color: var(--slate); font-size: 0.95rem; }
+      .step-arrow {
+        align-self: center;
+        font-size: 1.8rem;
+        color: var(--teal);
+        font-weight: 700;
+      }
+
+      /* ---------- SHOWCASE ---------- */
+      .showcase { padding: clamp(3rem, 8vw, 5rem) 0; }
+      .terminal {
+        max-width: 720px;
+        margin: 0 auto;
+        background: #0b1220;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.55);
+        border: 1px solid #1e293b;
+      }
+      .terminal-compact { margin-top: 1.5rem; }
+      .terminal-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.6rem 0.9rem;
+        background: #111a2e;
+        border-bottom: 1px solid #1e293b;
+      }
+      .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+      .dot-r { background: #ff5f56; }
+      .dot-y { background: #ffbd2e; }
+      .dot-g { background: #27c93f; }
+      .terminal-title {
+        margin-left: 0.6rem;
+        color: #64748b;
+        font-size: 0.78rem;
+        font-family: var(--mono);
+      }
+      .terminal-body {
+        margin: 0;
+        padding: 1.25rem;
+        overflow-x: auto;
+        color: #e2e8f0;
+        font-family: var(--mono);
+        font-size: clamp(0.78rem, 2.2vw, 0.92rem);
+        line-height: 1.7;
+      }
+      .terminal-body code { background: none; color: inherit; padding: 0; }
+      .terminal-body .c { color: #64748b; }
+      .terminal-body .p { color: #2dd4bf; }
+      .showcase-sub {
+        text-align: center;
+        color: var(--slate);
+        margin: 2.25rem 0 0;
+        font-weight: 550;
+      }
+      .showcase-note {
+        max-width: 640px;
+        margin: 1.25rem auto 0;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      /* ---------- CTA BAND ---------- */
+      .cta-band {
+        background: linear-gradient(135deg, var(--teal) 0%, var(--teal-darker) 100%);
+        padding: clamp(3rem, 8vw, 4.5rem) 0;
+        color: #fff;
+        text-align: center;
+      }
+      .cta-band h2 {
+        font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.02em;
+      }
+      .cta-band p { margin: 0 0 1.75rem; color: rgba(255, 255, 255, 0.85); }
+      .cta-band .btn-primary {
+        background: #fff;
+        color: var(--teal-darker);
+        box-shadow: none;
+      }
+      .cta-band .btn-primary:hover { background: var(--teal-tint); color: var(--teal-darker); }
+      .cta-band .btn-secondary {
+        background: transparent;
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.7);
+      }
+      .cta-band .btn-secondary:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+
+      /* ---------- FOOTER ---------- */
+      .footer {
+        background: var(--ink);
+        color: #cbd5e1;
+        padding: 2.5rem 0 1.75rem;
+      }
+      .footer-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        color: #fff;
+      }
+      .footer-links {
+        display: flex;
+        gap: clamp(0.75rem, 3vw, 1.5rem);
+        flex-wrap: wrap;
+      }
+      .footer-links a { color: #cbd5e1; font-size: 0.92rem; }
+      .footer-links a:hover { color: #5eead4; }
+      .footer-copy {
+        max-width: var(--maxw);
+        margin: 1.75rem auto 0;
+        padding: 1.25rem clamp(1rem, 4vw, 2rem) 0;
+        border-top: 1px solid #1e293b;
+        color: #64748b;
+        font-size: 0.82rem;
+        text-align: center;
+      }
+
+      /* ---------- RESPONSIVE TWEAKS ---------- */
+      @media (max-width: 640px) {
+        .step-arrow { transform: rotate(90deg); }
+        .nav-inner { justify-content: center; }
+        .footer-inner { justify-content: center; text-align: center; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { scroll-behavior: auto; transition: none !important; }
+      }
+    </style>
+
+    <script>
+      // Live GitHub star count for the nav. Fetched client-side and cached in
+      // localStorage (1h TTL) to stay under the unauthenticated rate limit
+      // (~60 req/hr/IP). No token. On failure, the link stays as just the star
+      // icon with no number — never a broken "NaN".
+      (() => {
+        const el = document.querySelector('a.gh-stars');
+        if (!el) return;
+        const repo = el.dataset.ghRepo;
+        const countEl = el.querySelector('[data-gh-stars]');
+        if (!repo || !countEl) return;
+
+        const CACHE_KEY = 'freemkv:gh-stars:' + repo;
+        const TTL_MS = 60 * 60 * 1000;
+
+        const format = (n) => {
+          if (!Number.isFinite(n) || n < 0) return '';
+          if (n < 1000) return String(n);
+          const k = n / 1000;
+          const s = k < 10 ? k.toFixed(1) : Math.round(k).toString();
+          return s.replace(/\.0$/, '') + 'k';
+        };
+
+        const show = (n) => {
+          const text = format(n);
+          if (!text) return;
+          countEl.textContent = text;
+          countEl.hidden = false;
+          el.setAttribute('aria-label', 'GitHub stars: ' + n.toLocaleString());
+        };
+
+        try {
+          const raw = localStorage.getItem(CACHE_KEY);
+          if (raw) {
+            const cached = JSON.parse(raw);
+            if (cached && typeof cached.count === 'number') {
+              show(cached.count);
+              if (Date.now() - cached.ts < TTL_MS) return;
+            }
+          }
+        } catch {}
+
+        fetch('https://api.github.com/repos/' + repo, {
+          headers: { Accept: 'application/vnd.github+json' },
+        })
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
+          .then((data) => {
+            const count = data && data.stargazers_count;
+            if (typeof count !== 'number') return;
+            show(count);
+            try {
+              localStorage.setItem(CACHE_KEY, JSON.stringify({ count, ts: Date.now() }));
+            } catch {}
+          })
+          .catch(() => {});
+      })();
+    </script>
+  </body>
+</html>

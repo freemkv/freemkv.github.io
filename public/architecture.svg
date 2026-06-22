@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" role="img" aria-label="How freemkv's components fit together: freemkv-keysources supplies keys to libfreemkv (recovery, sector retry, AACS/CSS decrypt, MKV mux), which is composed by the freemkv CLI and the autorip service; bdemu is a test fixture.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <!-- keysources (keys source) -->
+  <rect x="24" y="150" width="150" height="74" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="99" y="182" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">freemkv-keysources</text>
+  <text x="99" y="202" text-anchor="middle" font-size="12" fill="#475569">key sources</text>
+
+  <!-- keys arrow -->
+  <line x1="176" y1="187" x2="262" y2="187" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="219" y="178" text-anchor="middle" font-size="11" fill="#0f766e" font-style="italic">keys</text>
+
+  <!-- libfreemkv (engine) -->
+  <rect x="264" y="128" width="320" height="118" rx="12" fill="#f0fdfa" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="424" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#134e4a">libfreemkv</text>
+  <text x="424" y="182" text-anchor="middle" font-size="12.5" fill="#0f766e">the engine</text>
+  <text x="424" y="206" text-anchor="middle" font-size="12.5" fill="#334155">recovery · sector retry</text>
+  <text x="424" y="226" text-anchor="middle" font-size="12.5" fill="#334155">AACS / CSS decrypt · MKV mux</text>
+
+  <!-- composed-by split -->
+  <line x1="424" y1="246" x2="424" y2="286" stroke="#0f766e" stroke-width="2"/>
+  <text x="436" y="270" font-size="11" fill="#0f766e" font-style="italic">composed by</text>
+  <line x1="244" y1="286" x2="604" y2="286" stroke="#0f766e" stroke-width="2"/>
+  <line x1="244" y1="286" x2="244" y2="318" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="604" y1="286" x2="604" y2="318" stroke="#0f766e" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- freemkv CLI -->
+  <rect x="150" y="320" width="188" height="64" rx="10" fill="#ecfeff" stroke="#0e7490" stroke-width="1.5"/>
+  <text x="244" y="348" text-anchor="middle" font-size="14.5" font-weight="600" fill="#0f172a">freemkv</text>
+  <text x="244" y="368" text-anchor="middle" font-size="12" fill="#475569">command-line tool</text>
+
+  <!-- autorip service -->
+  <rect x="510" y="320" width="188" height="64" rx="10" fill="#ecfeff" stroke="#0e7490" stroke-width="1.5"/>
+  <text x="604" y="348" text-anchor="middle" font-size="14.5" font-weight="600" fill="#0f172a">autorip</text>
+  <text x="604" y="368" text-anchor="middle" font-size="12" fill="#475569">web service</text>
+
+  <!-- bdemu test fixture -->
+  <rect x="624" y="150" width="112" height="74" rx="10" fill="#fafafa" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="680" y="182" text-anchor="middle" font-size="13.5" font-weight="600" fill="#334155">bdemu</text>
+  <text x="680" y="201" text-anchor="middle" font-size="11" fill="#64748b">test fixture</text>
+  <line x1="624" y1="187" x2="586" y2="187" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+</svg>
