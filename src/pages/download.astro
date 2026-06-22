@@ -402,7 +402,7 @@ const autoripPlatforms = [
         }
 
         // ---- 2. Version picker (GitHub Releases API + localStorage) --
-        var CACHE_KEY = 'freemkv-releases-v1';
+        var CACHE_KEY = 'freemkv-releases-v2';
         var TTL_MS = 6 * 60 * 60 * 1000; // 6h — well under the 60/hr limit
         var API = 'https://api.github.com/repos/freemkv/freemkv/releases?per_page=30';
 
@@ -455,26 +455,27 @@ const autoripPlatforms = [
           } catch (e) { return null; }
         }
 
+        // Always fetch fresh so the badge reflects the TRUE latest release; the
+        // cache is only an offline/rate-limit fallback. (A stale cache must never
+        // downgrade the badge below the real latest — that was the rc1-after-rc2 bug.)
         var cached = readCache();
-        if (cached) {
-          populate(cached);
-        } else {
-          fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
-            .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-            .then(function (rels) {
-              var tags = (rels || [])
-                .filter(function (r) { return !r.draft; })
-                .map(function (r) { return r.tag_name; });
-              try {
-                localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), tags: tags }));
-              } catch (e) { /* private mode / quota — non-fatal */ }
-              populate(tags);
-            })
-            .catch(function () {
-              // API failed (rate-limit, offline). Stay on "latest" links;
-              // the "All releases on GitHub" link remains the fallback.
-            });
-        }
+        fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+          .then(function (rels) {
+            var tags = (rels || [])
+              .filter(function (r) { return !r.draft; })
+              .map(function (r) { return r.tag_name; });
+            if (!tags.length) { if (cached) populate(cached); return; }
+            try {
+              localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), tags: tags }));
+            } catch (e) { /* private mode / quota — non-fatal */ }
+            populate(tags);
+          })
+          .catch(function () {
+            // API failed (rate-limit, offline). Fall back to the cached list if
+            // present; otherwise the static badge + latest/download links stand.
+            if (cached) populate(cached);
+          });
       })();
 
       // Live GitHub star count for the nav "N★ GitHub" link. Cached in
