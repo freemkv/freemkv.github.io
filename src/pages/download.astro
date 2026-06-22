@@ -144,7 +144,7 @@ const autoripPlatforms = [
           <div class="hero-version">
             <span class="hero-version-dot" aria-hidden="true"></span>
             <span class="hero-version-label">Latest release</span>
-            <span class="hero-version-num">v1.0.0-rc.1</span>
+            <span class="hero-version-num" data-latest-version>v1.0.0-rc.2</span>
           </div>
           <p class="hero-foot">Free &amp; open source · Linux, macOS &amp; Windows · Intel &amp; ARM</p>
         </div>
@@ -424,6 +424,11 @@ const autoripPlatforms = [
 
         function populate(tags) {
           if (!tags || !tags.length) return;
+          // Auto-update the hero "Latest release" badge to the newest tag, so a
+          // new release shows up without editing this page.
+          document.querySelectorAll('[data-latest-version]').forEach(function (el) {
+            el.textContent = tags[0];
+          });
           // Populate every toolbar's picker (CLI + autorip). Each select
           // drives the same global applyVersion, so changing either one
           // rewrites all asset links across both sections.
