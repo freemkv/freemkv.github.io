@@ -9,6 +9,10 @@ On disc insert, autorip runs the full pipeline automatically: a tolerant sweep, 
 
 autorip runs on Linux, macOS, or Windows, on a host with an optical drive (a home server or NAS works well). Run it as a single binary, or — on Linux — via Docker. Linux is the most-tested target; the configuration and API reference below apply to every platform. The container and udev rip-on-insert trigger are Linux-only; on macOS and Windows the daemon polls for inserted discs.
 
+![autorip ripping a disc, showing the matched title, poster, and live per-pass progress](/autorip-ripper.png)
+
+*The autorip dashboard during an active rip: matched title and metadata up top, with live per-pass progress, ETA, and throughput below.*
+
 ## Deploy
 
 ### Binary
@@ -200,6 +204,10 @@ The dashboard at `http://<host>:8080` shows each drive's current state and live 
 - Edit any [configuration](#configuration-reference) value in **Settings**.
 - Review held rips (when title matching needs confirmation) and pick the correct title, optionally via a TMDB search.
 - Inspect per-device logs and the system debug log.
+
+![autorip idle, showing per-drive controls and the device log](/autorip-controls.png)
+
+*Per-drive controls — Resume, Rip, Verify, Eject — with the live device log expanded below.*
 
 State updates stream to the browser over Server-Sent Events (`/events`).
 
