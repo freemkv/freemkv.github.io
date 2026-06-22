@@ -122,6 +122,11 @@ const autoripBuilds = [
         <div class="hero-inner">
           <img class="hero-logo" src="/freemkv-icon.svg" alt="freemkv" width="80" height="80" />
           <h1 class="hero-title">Download freemkv</h1>
+          <a class="hero-version" href="https://github.com/freemkv/freemkv/releases/latest">
+            <span class="hero-version-dot" aria-hidden="true"></span>
+            <span class="hero-version-label">Latest release</span>
+            <span class="hero-version-num">v1.0.0-rc.1</span>
+          </a>
           <p class="hero-foot">Free &amp; open source · Linux, macOS &amp; Windows · Intel &amp; ARM</p>
         </div>
       </section>
@@ -666,6 +671,36 @@ const autoripBuilds = [
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 0.5rem;
+      }
+      .hero-version {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.4rem 0.95rem;
+        border: 1px solid var(--border, rgba(127, 127, 127, 0.3));
+        border-radius: 999px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.15s ease;
+      }
+      .hero-version:hover {
+        border-color: #2dd4bf;
+      }
+      .hero-version-dot {
+        width: 0.5rem;
+        height: 0.5rem;
+        border-radius: 999px;
+        background: #2dd4bf;
+        box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+      }
+      .hero-version-label {
+        color: var(--muted);
+      }
+      .hero-version-num {
+        font-weight: 800;
+        letter-spacing: 0.01em;
       }
       .hero-foot {
         margin-top: 0.75rem;
