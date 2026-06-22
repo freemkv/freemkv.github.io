@@ -16,9 +16,8 @@ DVDs decrypt automatically. There are no keys to install and nothing to configur
 | Blu-ray | AACS 1.0 |
 | 4K UHD  | AACS 2.0 / 2.1 |
 
-AACS-encrypted discs decrypt only when you supply AACS keys in a `keydb.cfg` file. No AACS
-keys are built in. Provide them one of two ways: an online key service or a local
-`keydb.cfg`. Pick one.
+AACS-encrypted discs decrypt only when you supply AACS keys. No AACS keys are built in.
+Provide them one of two ways: an online key service or a local `keydb.cfg`. Pick one.
 
 ## Online key service
 
