@@ -11,10 +11,12 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deploy; don't cancel an in-progress one.
+# One deploy at a time; cancel a superseded in-progress run so the
+# deploy-pages step never sees stale duplicate "github-pages" artifacts
+# from queued runs (the "Multiple artifacts ... unexpectedly found" failure).
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:

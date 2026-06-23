@@ -15,7 +15,7 @@ freemkv works with unlocked drives built on these hardware platforms:
 This is a best-effort list, not a promise. Drives, firmware versions, and even individual discs all vary — **"likely supported" means most drives in that family work**, but yours might be on a firmware version we haven't profiled yet. The only way to know for sure is to try it.
 :::
 
-### Likely supported today — MediaTek-based drives
+### MediaTek-based drives
 
 The large majority of consumer Blu-ray drives use a **MediaTek** chipset, and freemkv supports them. This covers **~200 drive + firmware combinations**, including:
 
@@ -25,9 +25,9 @@ The large majority of consumer Blu-ray drives use a **MediaTek** chipset, and fr
 
 If you own an LG, ASUS, or HP Blu-ray drive from roughly **2012–2020**, it's very likely supported.
 
-### Work in progress — Pioneer
+### Work in Progress
 
-**Pioneer** drives (the BDR-… series, built on a different chipset) are **not supported yet** — support is actively being worked on. For now a Pioneer drive falls back to the **[stock-drive AACS workflow](/drives-oem/)**.
+**Pioneer** drives (the BDR-… series, built on a different chipset) are **not supported yet** — support is actively being worked on. Any unsupported drive falls back to the **[stock-drive AACS workflow](/drives-oem/)**.
 
 ## How do I tell what I have?
 
