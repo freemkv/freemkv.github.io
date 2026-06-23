@@ -18,6 +18,10 @@ Blu-ray and 4K UHD discs use a newer protection system called **AACS**. freemkv 
 
 DVDs need none of this; Blu-ray and 4K UHD do. See **[Decryption Keys](/decryption-keys/)** to set up your key sources.
 
+:::caution[On a stock drive, AACS is only as good as your key source]
+freemkv doesn't bundle host certificates or disc keys — on a stock drive it can **only** use what your configured key sources actually provide. If the host certificate, or a particular disc's keys, aren't in your key source, that disc won't decrypt on a stock drive. That coverage can be **limited, or for some discs not available at all**. This is one of the things an **[unlocked drive](/drives-unlocked/)** solves — it removes the host-certificate requirement entirely.
+:::
+
 ## "Rip-lock" — why a stock drive can be slow
 
 Many manufacturers **rip-lock** their drives: the firmware deliberately caps the read speed when it notices you're copying a whole disc (it keeps the drive quiet and cool for movie *playback*). Nothing is broken — it's slow *by design*, and a two-hour movie can take a while.
@@ -29,7 +33,7 @@ If you want full speed and fewer restrictions, that's exactly what an **[unlocke
 | Disc | On a stock drive | Host cert + keys needed? |
 |---|---|---|
 | DVD | Works, any drive | No |
-| Blu-ray | Works | Yes — from your key sources |
-| 4K UHD | Works | Yes — from your key sources |
+| Blu-ray | Works *if* your key source has the cert + keys | Yes |
+| 4K UHD | Works *if* your key source has the cert + keys | Yes |
 
 Want it faster, or is a particular drive giving you trouble? See **[Unlocked drives](/drives-unlocked/)**.
