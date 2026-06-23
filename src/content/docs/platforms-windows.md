@@ -3,7 +3,7 @@ title: Windows
 description: A complete step-by-step Windows guide for freemkv and autorip — downloading, getting past SmartScreen, running from PowerShell, where your files go, and fixing common problems.
 ---
 
-freemkv runs natively on Windows — no Docker, no WSL, no install wizard. The `freemkv` CLI is a single `.exe`, and `autorip.exe` is a self-contained service you open in your browser. This page walks through everything start to finish; if you've never run a program from a terminal before, you can still follow along.
+freemkv runs natively on Windows. There are two programs, each a single file: **`freemkv.exe`** (the command-line tool) and **`autorip.exe`** (a self-contained service you open in your browser). This page walks through everything start to finish; if you've never run a program from a terminal before, you can still follow along.
 
 :::tip[The 60-second version]
 1. Download `autorip.exe` (or `freemkv.exe`) from the **[Download](/download/)** page.

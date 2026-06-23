@@ -3,7 +3,7 @@ title: Linux
 description: Running freemkv and autorip on Linux — file locations, /dev/sg* SCSI generic access, and the autorip Docker model.
 ---
 
-Linux is the primary platform for the `autorip` service, which runs as a Docker container. The `freemkv` CLI is a single static binary.
+On Linux both tools run natively as single static binaries. The `autorip` service can *also* run as a Docker container — the common choice for an always-on home server or NAS — but it's the same binary either way.
 
 ## Install / how to run
 
@@ -14,7 +14,7 @@ mv freemkv-* freemkv && chmod +x freemkv
 ./freemkv --version
 ```
 
-For autorip, run the container with Docker (see [autorip Service](/autorip/) for a full compose example).
+For autorip, run that same binary as a service, or run it as a Docker container (see [autorip Service](/autorip/) for a full compose example).
 
 ## File locations
 
