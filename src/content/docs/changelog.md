@@ -3,8 +3,8 @@ title: Changelog
 description: Notable changes across the freemkv toolchain (CLI, library, and autorip service), newest first.
 ---
 
-All notable changes across the freemkv toolchain — the `freemkv` CLI,
-the `libfreemkv` core library, and the `autorip` service — are recorded
+All notable changes across the freemkv toolchain (the `freemkv` CLI,
+the `libfreemkv` core library, and the `autorip` service) are recorded
 here, newest first. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and the project
 follows semantic versioning.
@@ -13,7 +13,7 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
-## Unreleased — rc.4
+## Unreleased (rc.4)
 
 Focused on a clean, predictable operator experience, clearer error
 messages, and a round of audit-driven correctness and durability fixes.
@@ -21,7 +21,7 @@ messages, and a round of audit-driven correctness and durability fixes.
 ### Changed
 
 - **Clean terminal by default.** The CLI terminal now shows only curated
-  progress, status, and a final result block — never raw diagnostic
+  progress, status, and a final result block, never raw diagnostic
   log lines. How you invoke the tools is unchanged.
 - **Diagnostic logging is file-only.** Trace/debug output is written to
   a log file only when you ask for it (`--log-level`, `--log-file`, or
@@ -29,8 +29,8 @@ messages, and a round of audit-driven correctness and durability fixes.
   none of those set, no log file is written and nothing bleeds onto the
   terminal. The default log path is `./log.txt`.
 - **Overhauled error messages.** A fatal error now prints a single
-  readable block — what failed, the plain-English cause, and how to turn
-  on a diagnostic log (and where it's written) — instead of a raw
+  readable block (what failed, the plain-English cause, and how to turn
+  on a diagnostic log, and where it's written) instead of a raw
   internal code. 47 previously unmapped error codes now have clear
   messages, jargon-heavy ones were rewritten, and the `verify` subcommand
   is fully localized.
@@ -65,7 +65,7 @@ messages, and a round of audit-driven correctness and durability fixes.
 - A faster, parallelized release pipeline lands this cycle so future
   releases publish in minutes. No change to released artifacts.
 
-## 1.0.0-rc.3.1 — 2026-06-22
+## 1.0.0-rc.3.1 (2026-06-22)
 
 Patch on rc.3. Closes silent-failure gaps so a rip can never report
 success without actually producing output, and rounds out
@@ -81,14 +81,14 @@ cross-platform behavior.
 ### Fixed
 
 - **Silent-failure guards.** Muxing now requires that real frames and
-  bytes were produced before it reports "done" — an empty or
+  bytes were produced before it reports "done"; an empty or
   zero-output result can no longer be mistaken for success, in both the
   CLI/library and the autorip service.
 - Correct DVD/CSS handling for the no-key and per-title cases, with the
   scrambled-versus-unencrypted distinction made explicitly instead of
   inferred.
 
-## 1.0.0-rc.3 — 2026-06-22
+## 1.0.0-rc.3 (2026-06-22)
 
 Third release candidate. Hardens the recovery path against
 transport-level drive failures, fixes several Windows-specific issues,
@@ -114,7 +114,7 @@ and introduces a pluggable drive-unlock seam.
 - Corrected a Windows storage-reset request code.
 - Corrected AACS extent alignment in the patch path.
 
-## 1.0.0-rc.2 — 2026-06-22
+## 1.0.0-rc.2 (2026-06-22)
 
 Second release candidate. Adds keyless DVD/CSS ripping and correct DVD
 video output, on top of security and recovery hardening.
@@ -122,7 +122,7 @@ video output, on top of security and recovery hardening.
 ### Added
 
 - **Keyless DVD/CSS ripping.** A CSS-protected DVD decrypts with no key
-  database — the title key is recovered directly from the scrambled disc
+  database: the title key is recovered directly from the scrambled disc
   data and validated by descrambling a sector and confirming the known
   plaintext reappears, so a wrong key fails cleanly instead of producing
   silent garbage. A raw, still-scrambled CSS image (`iso://`) can be
@@ -133,8 +133,8 @@ video output, on top of security and recovery hardening.
   previously corrupted DVD video. The reassembler is bounded so a
   malformed stream cannot exhaust memory.
 - **Bare-run mode for autorip.** `autorip serve` runs the daemon
-  directly with no container, storing config under `~/.config/autorip`
-  — useful for the static binary on a bare Linux host.
+  directly with no container, storing config under `~/.config/autorip`,
+  useful for the static binary on a bare Linux host.
 - **Static-binary releases.** Each tagged release attaches a single
   static binary per platform (Linux x86_64/aarch64, macOS Intel/Silicon,
   Windows for the CLI) with a `.sha256` checksum.
@@ -185,9 +185,9 @@ video output, on top of security and recovery hardening.
   shell, removing a command-injection vector on the device path.
 - `settings.json` is written with owner-only (0600) permissions.
 
-## 1.0.0-rc.1 — 2026-06-21
+## 1.0.0-rc.1 (2026-06-21)
 
-First release candidate for 1.0 — the first tagged 1.0 milestone across
+First release candidate for 1.0, the first tagged 1.0 milestone across
 the toolchain. Establishes the full feature set: the stream-URL CLI
 surface, the core library (multipass recovery, content decryption, disc
 parsing, and the threaded mux pipeline), and the autorip service.
@@ -206,7 +206,7 @@ parsing, and the threaded mux pipeline), and the autorip service.
   can resume.
 - **Drive and SCSI layer.** Single-shot, synchronous transport on Linux
   (IOKit on macOS, SPTI on Windows), full sense decoding, and drive
-  enumeration/presence probes. Single-shot reads by design — recovery
+  enumeration/presence probes. Single-shot reads by design: recovery
   lives in the multipass orchestration, not inline in the read path.
 - **Content decryption.** CSS for DVDs and AACS 1.0/2.0 for Blu-ray and
   UHD, with AACS keys read from a key database. A single decrypting
@@ -216,13 +216,13 @@ parsing, and the threaded mux pipeline), and the autorip service.
 - **Disc parsing.** UDF, MPLS/CLPI (Blu-ray), and IFO (DVD) parsing for
   title and extent assembly, with bounds checks on values derived from
   untrusted disc input, and canonical main-title selection.
-- **Mux pipeline (the "highway").** A three-stage threaded pipeline —
-  read+decrypt, demux, codec parse — with a recycled buffer pool, taking
+- **Mux pipeline (the "highway").** A three-stage threaded pipeline
+  (read+decrypt, demux, codec parse) with a recycled buffer pool, taking
   file-backed mux from tens of MB/s to several hundred MB/s warm-cache.
   Codec parsers for HEVC, H.264, VC-1, MPEG-2, TrueHD, DTS(-HD), and PGS
   feed a Matroska writer.
 - **autorip service.** Detect a disc on insert, identify it, rip it, mux
-  to MKV, and move the finished file to the library — hands-off. Web
+  to MKV, and move the finished file to the library, hands-off. Web
   dashboard with live progress, per-device drive cards, settings,
   history, and webhooks. Single-pass and multi-pass rip modes with an
   abort-on-loss threshold and three-bucket Good/Maybe/Lost progress.
@@ -231,11 +231,11 @@ parsing, and the threaded mux pipeline), and the autorip service.
 
 ### Notes
 
-- The library carries no user-facing English — all errors are numeric
+- The library carries no user-facing English; all errors are numeric
   codes handled by the application layer. Release builds use thin LTO;
   the workspace is Rust 2024 edition.
 
-## 0.x — pre-1.0 development (condensed)
+## 0.x: pre-1.0 development (condensed)
 
 The 0.x series was the iterative development run leading up to 1.0,
 spanning roughly four dozen tagged releases. The feature set listed
@@ -244,8 +244,8 @@ under 1.0.0-rc.1 was built up and hardened across that series:
 - The multipass recovery engine (adaptive sweep + targeted patch with
   bisection and resume) matured here, along with the single-shot
   drive/SCSI transport and full sense decoding.
-- The mux "highway" — the three-stage threaded pipeline with a recycled
-  buffer pool — was developed and tuned over this series, taking
+- The mux "highway" (the three-stage threaded pipeline with a recycled
+  buffer pool) was developed and tuned over this series, taking
   file-backed mux throughput up by an order of magnitude warm-cache.
 - The bounded-cache writeback path (`sync_file_range` +
   `posix_fadvise`) and time-batched mapfile persistence were added to

@@ -1,12 +1,12 @@
 ---
 title: MKV Output
-description: freemkv writes a finished, library-ready MKV — named and tagged tracks, language flags, default/forced markers, named chapters, and a title. Not a raw demux.
+description: freemkv writes a finished, library-ready MKV with named and tagged tracks, language flags, default/forced markers, named chapters, and a title. Not a raw demux.
 ---
 
 This page describes what's inside the MKV freemkv produces, so you know what to
 expect when the rip finishes.
 
-freemkv writes a **finished, library-ready MKV** — named tracks, language tags,
+freemkv writes a **finished, library-ready MKV** with named tracks, language tags,
 default and forced flags, named chapters, and a title. Drop it into Plex,
 Jellyfin, Kodi, or Infuse and it reads right, with no pass through a tag editor.
 
@@ -33,13 +33,13 @@ through.
 
 freemkv also **sanity-checks** the disc's label against the actual bitstream. If
 authoring data claims a codec that contradicts the real stream, freemkv ignores
-the bad label and derives the descriptor from the stream itself — so the track
+the bad label and derives the descriptor from the stream itself, so the track
 name is always true to what's inside. When a disc carries no label at all,
 freemkv still generates a correct codec-and-channels name, so you never get a
 blank, anonymous track.
 
 **Video tracks** get codec, resolution (`4K`, `1080p`, `720p`...), and HDR format
-when present — for example `HEVC 4K HDR10` or `HEVC 4K Dolby Vision`.
+when present, for example `HEVC 4K HDR10` or `HEVC 4K Dolby Vision`.
 
 When a disc carries a **Dolby Vision** enhancement layer (a second video stream
 alongside the base picture), freemkv finds it in the playlist data and carries
@@ -64,7 +64,7 @@ freemkv sets the track flags your player relies on:
 
 ## Chapters
 
-Chapters are preserved with their **names**, not just timestamps — so scrubbing
+Chapters are preserved with their **names**, not just timestamps, so scrubbing
 and chapter navigation show the real chapter titles from the disc.
 
 ## Title metadata

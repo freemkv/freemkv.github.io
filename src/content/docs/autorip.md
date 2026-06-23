@@ -1,13 +1,13 @@
 ---
 title: autorip Service
-description: Deploy and configure the autorip service — web UI, HTTP API, recovery tuning, and resume.
+description: Deploy and configure the autorip service. Web UI, HTTP API, recovery tuning, and resume.
 ---
 
-autorip is a rip service: insert a disc, and it rips automatically to MKV. A browser-based UI shows live progress, settings, and history — nothing to type. This page covers deploying autorip and tuning it; for the manual command-line workflow, see the [CLI reference](/cli/).
+autorip is a rip service: insert a disc, and it rips automatically to MKV. A browser-based UI shows live progress, settings, and history, with nothing to type. This page covers deploying autorip and tuning it; for the manual command-line workflow, see the [CLI reference](/cli/).
 
 On disc insert, autorip runs the full pipeline automatically: a tolerant sweep, targeted patch retries on bad ranges, decrypt, and mux to MKV. Multiple drives rip in parallel, each with independent state.
 
-autorip runs on Linux, macOS, or Windows, on a host with an optical drive (a home server or NAS works well). Run it as a single binary, or — on Linux — via Docker. Linux is the most-tested target; the configuration and API reference below apply to every platform. The container and udev rip-on-insert trigger are Linux-only; on macOS and Windows the daemon polls for inserted discs.
+autorip runs on Linux, macOS, or Windows, on a host with an optical drive (a home server or NAS works well). Run it as a single binary, or (on Linux) via Docker. Linux is the most-tested target; the configuration and API reference below apply to every platform. The container and udev rip-on-insert trigger are Linux-only; on macOS and Windows the daemon polls for inserted discs.
 
 ![autorip ripping a disc, showing the matched title, poster, and live per-pass progress](/autorip-ripper.png)
 
@@ -25,7 +25,7 @@ mv autorip-* autorip && chmod +x autorip
 ./autorip serve          # then open http://localhost:8080
 ```
 
-One static binary — no container, no runtime. Drive access uses the `cdrom` group or a udev rule (no `--privileged`); point `AUTORIP_DIR`, `OUTPUT_DIR`, and `STAGING_DIR` at local paths.
+One static binary, no container, no runtime. Drive access uses the `cdrom` group or a udev rule (no `--privileged`); point `AUTORIP_DIR`, `OUTPUT_DIR`, and `STAGING_DIR` at local paths.
 
 ### Docker
 
@@ -75,7 +75,7 @@ setup mistake. See [Troubleshooting](/troubleshooting/).
 
 | Mount | Purpose |
 |---|---|
-| `/dev:/dev` | Live host device tree — lets autorip enumerate optical drives and survive USB re-enumeration. |
+| `/dev:/dev` | Live host device tree; lets autorip enumerate optical drives and survive USB re-enumeration. |
 | `/config` | Persistent home for `settings.json`, per-device logs, and (by default) the keys directory. |
 | `/output` | Where finished MKV/M2TS files land. |
 | `/staging` | Intermediate ISO + mapfile during a multipass rip. |
@@ -83,7 +83,7 @@ setup mistake. See [Troubleshooting](/troubleshooting/).
 
 ### Decryption keys
 
-DVDs need none; Blu-ray and 4K UHD need keys — see **[Decryption Keys](/decryption-keys/)** for the options (a local file or an online service). autorip's key settings live in [Configuration → Keys](#keys) below.
+DVDs need none; Blu-ray and 4K UHD need keys. See **[Decryption Keys](/decryption-keys/)** for the options (a local file or an online service). autorip's key settings live in [Configuration → Keys](#keys) below.
 
 For Docker, bind-mount a host directory to `/root/.config/freemkv` so keys persist across restarts:
 
@@ -104,7 +104,7 @@ These are read at container start and cannot be changed at runtime:
 | `RIP_USER` | `autorip` | Unix user the container creates and runs the daemon as. |
 | `NFS_HOST` | _(unset)_ | If set with the two below, autorip mounts an NFS share inside the container at startup. |
 | `NFS_EXPORT` | _(unset)_ | Export path on the NFS server (e.g. `/mnt/pool/media`). |
-| `NFS_MOUNTPOINT` | _(unset)_ | Where to mount the share inside the container — point `output_dir` here. |
+| `NFS_MOUNTPOINT` | _(unset)_ | Where to mount the share inside the container; point `output_dir` here. |
 | `NFS_OPTS` | _(sensible default)_ | Optional override for NFS mount options. |
 
 Everything else is configured through the web UI and persisted to `settings.json`. The NFS mount is best-effort: if the server is unreachable the container still starts and logs the failure.
@@ -138,7 +138,7 @@ All settings are editable in the **Settings** page of the web UI and stored in `
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `max_retries` | `1` | `0` = single-pass (no retries); `1`–`10` = multipass with that many patch passes. |
+| `max_retries` | `1` | `0` = single-pass (no retries); `1`-`10` = multipass with that many patch passes. |
 | `on_read_error` | `stop` | On a read error during the sweep: `stop` or `skip` (skip-ahead). |
 | `abort_on_lost_secs` | `0` | Tolerated main-movie loss in seconds after retries; `0` = require a perfect rip. |
 | `capture_without_keys` | `false` | Capture to ISO even when AACS keys are missing, deferring the mux. |
@@ -183,8 +183,8 @@ Multipass exits the retry loop early as soon as there are no unreadable bytes le
 
 After retries are exhausted, autorip evaluates `abort_on_lost_secs` against **main-movie** loss only (menus and trailers are excluded):
 
-- `abort_on_lost_secs = 0` — perfect rip required; abort if any main-movie data is still unreadable.
-- `abort_on_lost_secs = N` — finish the MKV as long as no more than `N` seconds of main-movie video are missing.
+- `abort_on_lost_secs = 0`: perfect rip required; abort if any main-movie data is still unreadable.
+- `abort_on_lost_secs = N`: finish the MKV as long as no more than `N` seconds of main-movie video are missing.
 
 :::note
 `abort_on_lost_secs = 0` means **require a perfect rip**, not "never abort". In multipass mode the rip exits early the moment there are zero unreadable bytes, and aborts after retries are exhausted if any main-movie loss remains. Set e.g. `30` to tolerate up to 30 seconds of loss before giving up.
@@ -207,7 +207,7 @@ The dashboard at `http://<host>:8080` shows each drive's current state and live 
 
 ![autorip idle, showing per-drive controls and the device log](/autorip-controls.png)
 
-*Per-drive controls — Resume, Rip, Verify, Eject — with the live device log expanded below.*
+*Per-drive controls (Resume, Rip, Verify, Eject) with the live device log expanded below.*
 
 State updates stream to the browser over Server-Sent Events (`/events`).
 
@@ -221,25 +221,25 @@ autorip exposes an HTTP API on the same port as the UI. JSON errors use `{"ok": 
 |---|---|---|
 | `GET` | `/api/state` | Snapshot of every drive's rip state, plus move/verify state. |
 | `GET` | `/api/version` | Running version, e.g. `{"version":"1.0.0-rc.4"}`. |
-| `GET` | `/api/system` | System info — mux/move queues and the output file list. |
+| `GET` | `/api/system` | System info: mux/move queues and the output file list. |
 | `GET` | `/events` | Server-Sent Events stream of live state pushes. |
 
 ### Settings
 
 | Method | Path | Body | Description |
 |---|---|---|---|
-| `GET` | `/api/settings` | — | Full configuration (secrets redacted). |
+| `GET` | `/api/settings` | - | Full configuration (secrets redacted). |
 | `POST` | `/api/settings` | JSON config fields | Overlay and persist settings to `settings.json`. |
 
 ### Rip control
 
 | Method | Path | Query / Body | Description |
 |---|---|---|---|
-| `POST` | `/api/scan/{device}` | — | Scan the disc (no rip). |
+| `POST` | `/api/scan/{device}` | - | Scan the disc (no rip). |
 | `POST` | `/api/rip/{device}` | `?resume=yes\|no` (optional) | Start a rip. See [Resume](#resume) below. |
-| `POST` | `/api/verify/{device}` | — | Read-only disc health check (non-destructive). |
-| `POST` | `/api/stop/{device}` | — | Stop the active rip; **preserves** staging for resume (404 if device unknown). |
-| `POST` | `/api/eject/{device}` | — | Eject the disc (409 if a rip/scan is in progress). |
+| `POST` | `/api/verify/{device}` | - | Read-only disc health check (non-destructive). |
+| `POST` | `/api/stop/{device}` | - | Stop the active rip; **preserves** staging for resume (404 if device unknown). |
+| `POST` | `/api/eject/{device}` | - | Eject the disc (409 if a rip/scan is in progress). |
 
 ### Keys
 
@@ -251,7 +251,7 @@ autorip exposes an HTTP API on the same port as the UI. JSON errors use `{"ok": 
 
 | Method | Path | Body | Description |
 |---|---|---|---|
-| `GET` | `/api/review` | — | List rips on hold awaiting operator review. |
+| `GET` | `/api/review` | - | List rips on hold awaiting operator review. |
 | `POST` | `/api/review/resolve` | `{dir, action, title, year}` | Resolve a held rip: `proceed`, `retitle`, or `cancel`. |
 | `GET` | `/api/tmdb/search` | `?q=query` | Search TMDB for title candidates. |
 | `POST` | `/api/title/{device}` | `{title, year, poster_url, overview, media_type}` | Override the matched title for the active disc (one-shot). |
@@ -260,7 +260,7 @@ autorip exposes an HTTP API on the same port as the UI. JSON errors use `{"ok": 
 
 | Method | Path | Query / Body | Description |
 |---|---|---|---|
-| `GET` | `/api/logs/{device}` | — | Per-device log, most recent lines first (plain text). |
+| `GET` | `/api/logs/{device}` | - | Per-device log, most recent lines first (plain text). |
 | `GET` | `/api/debug` | `?n=&level=&device=&q=` (optional) | Recent debug events (JSON, filterable). |
 | `POST` | `/api/debug` | `{"enabled":true\|false}` | Toggle debug logging at runtime. |
 
@@ -278,11 +278,11 @@ docker logs autorip --tail=500 -f | grep '\[mux\]'
 
 autorip's recovery work survives interruptions.
 
-- **Default** (`POST /api/rip/{device}`, no param) — starts fresh, but if a resumable staging directory exists, continues from where the previous run left off using mapfile-based resume.
-- **`?resume=yes`** — require an existing resumable staging directory and re-mux the captured ISO without re-reading the disc; returns 404 if none exists.
-- **`?resume=no`** — wipe staging and start completely fresh.
+- **Default** (`POST /api/rip/{device}`, no param): starts fresh, but if a resumable staging directory exists, continues from where the previous run left off using mapfile-based resume.
+- **`?resume=yes`**: require an existing resumable staging directory and re-mux the captured ISO without re-reading the disc; returns 404 if none exists.
+- **`?resume=no`**: wipe staging and start completely fresh.
 
-Stopping a rip with `/api/stop/{device}` **preserves** staging, so a stopped rip resumes on the next disc insert or container restart — no time lost on a long UHD rip.
+Stopping a rip with `/api/stop/{device}` **preserves** staging, so a stopped rip resumes on the next disc insert or container restart, with no time lost on a long UHD rip.
 
 ## Output and notifications
 

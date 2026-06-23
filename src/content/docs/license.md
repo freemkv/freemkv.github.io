@@ -8,8 +8,8 @@ to find the source.
 
 ## License
 
-The entire freemkv toolchain — the freemkv CLI, libfreemkv, autorip, bdemu, and
-freemkv-keysources — is licensed under the
+The entire freemkv toolchain (the freemkv CLI, libfreemkv, autorip, bdemu, and
+freemkv-keysources) is licensed under the
 [GNU Affero General Public License, version 3.0 (AGPL-3.0)](https://github.com/freemkv/freemkv/blob/main/LICENSE).
 
 You are free to use, study, modify, and redistribute freemkv. The AGPL adds one

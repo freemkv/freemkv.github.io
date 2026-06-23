@@ -1,6 +1,6 @@
 ---
 title: macOS
-description: Running freemkv on macOS — file locations, IOKit exclusive drive access, and /dev/diskN devices.
+description: Running freemkv on macOS. File locations, IOKit exclusive drive access, and /dev/diskN devices.
 ---
 
 freemkv runs natively on macOS as a single static binary.
@@ -19,7 +19,7 @@ mv freemkv-* freemkv && chmod +x freemkv
 | What | Path |
 |---|---|
 | AACS keys | see **[Decryption Keys](/decryption-keys/)** |
-| Diagnostic log | off by default — see below |
+| Diagnostic log | off by default (see below) |
 
 The CLI keeps the terminal clean and never writes a log unless asked. Run with `--log-level 3` to write `./log.txt` in the current directory, or `--log-file PATH` to choose the destination.
 
@@ -29,5 +29,5 @@ freemkv obtains **exclusive** access to the optical drive through IOKit. To do s
 
 ## Known quirks / troubleshooting
 
-- If the disc is mounted by the Finder, freemkv unmounts it to take exclusive access — that's expected.
+- If the disc is mounted by the Finder, freemkv unmounts it to take exclusive access; that's expected.
 - For capturing logs and other common fixes, see [Troubleshooting](/troubleshooting/).

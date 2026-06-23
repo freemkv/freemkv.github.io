@@ -1,13 +1,13 @@
 ---
 title: CLI Reference
-description: Every freemkv subcommand, flag, and stream URL — the complete command-line reference.
+description: Every freemkv subcommand, flag, and stream URL. The complete command-line reference.
 ---
 
 The freemkv command-line tool drives a rip, remux, or disc inspection from a single
 invocation. It is a thin front end over [libfreemkv](/components/) and takes two shapes:
 
 ```bash
-# copy / rip / remux — source URL to dest URL
+# copy / rip / remux: source URL to dest URL
 freemkv <source> <dest> [flags]
 
 # info, verify, update-keys, version, help
@@ -25,7 +25,7 @@ understands:
 | URL | Meaning |
 |---|---|
 | `disc://` | Optical drive, auto-detected |
-| `disc:///dev/sg4` | A specific optical drive (Linux — use `/dev/sg*`) |
+| `disc:///dev/sg4` | A specific optical drive (Linux: use `/dev/sg*`) |
 | `disc://D:` | A specific optical drive (Windows) |
 | `iso://image.iso` | Disc image file (read or write) |
 | `mkv://path.mkv` | Matroska file |
@@ -35,7 +35,7 @@ understands:
 | `null://` | Discard output (read-speed benchmarking) |
 
 File paths follow the scheme directly: `mkv://./Movie.mkv`, `m2ts://./Movie.m2ts`,
-`iso://Disc.iso`. A destination without a scheme is rejected — add one.
+`iso://Disc.iso`. A destination without a scheme is rejected; add one.
 
 ## Ripping and remuxing
 
@@ -93,7 +93,7 @@ freemkv disc:// mkv://Movies/ -t 1 -t 3
 ```
 
 Selecting more than one title writes **one separate file per title** (never a merged file),
-so the destination must be a **directory** — freemkv names each `<name>_t<N>.<ext>`. A
+so the destination must be a **directory**; freemkv names each `<name>_t<N>.<ext>`. A
 single-title selection writes one file as named.
 
 ### Rip flags
@@ -104,10 +104,10 @@ These flags apply to the `<source> <dest>` form:
 |---|---|
 | `-t, --title N` | Select title N (1-based, repeatable). Default: all titles. |
 | `-k, --keydb PATH` | Path to a local key database file (overrides the default location). |
-| `--log-level N` | Write a diagnostic log file at this verbosity: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Without it (and without `--log-file` / `RUST_LOG`) **no log file is written and the terminal stays clean** — diagnostics never print to the terminal. Default log path is `./log.txt`. |
+| `--log-level N` | Write a diagnostic log file at this verbosity: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Without it (and without `--log-file` / `RUST_LOG`) **no log file is written and the terminal stays clean**; diagnostics never print to the terminal. Default log path is `./log.txt`. |
 | `--log-file PATH` | Write the diagnostic log to PATH (defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress progress and informational output. |
-| `--raw` | Skip decryption — raw encrypted bytes (`iso://` output only). |
+| `--raw` | Skip decryption: raw encrypted bytes (`iso://` output only). |
 | `--multipass` | Write/update a mapfile for multipass recovery (disc → ISO). |
 
 ### Multipass recovery with mapfiles
@@ -121,12 +121,12 @@ mapfile (see **[How recovery works](/how-recovery-works/)**):
 freemkv disc:// iso://Disc.iso --multipass
 ```
 
-It's a single command you re-run — it auto-detects the pass from the mapfile: the first run
+It's a single command you re-run, and it auto-detects the pass from the mapfile: the first run
 sweeps the whole disc; each later run re-reads only the ranges still marked bad. A plain
 `disc:// iso://Disc.iso` (without `--multipass`) also **auto-resumes** if interrupted.
 
 By default the ISO is decrypted. Add `--raw` to write the disc's sectors **as-is**, without
-decrypting — an exact encrypted image. It combines with the sweep:
+decrypting: an exact encrypted image. It combines with the sweep:
 
 ```bash
 freemkv disc:// iso://Disc.iso --raw --multipass
@@ -139,14 +139,14 @@ single-pass; passing `--multipass` there prints a notice and is otherwise ignore
 
 A single Ctrl-C halts cleanly: the sweep stops, the drive tray is unlocked, and a partial
 ISO's mapfile is preserved so a later run can resume. A mux interrupted mid-write is
-**not** finalized — freemkv exits non-zero rather than presenting a truncated MKV as
+**not** finalized; freemkv exits non-zero rather than presenting a truncated MKV as
 complete. A second Ctrl-C forces an immediate exit.
 
 ## Inspecting a disc, image, or file
 
 `freemkv info <url>` shows what's on a source: titles, durations, sizes, and stream
 details (video / audio / subtitle). Listing titles from a disc or ISO needs **no AACS
-key** — only the clear UDF navigation is read.
+key**: only the clear UDF navigation is read.
 
 ```bash
 # disc in the auto-detected drive
@@ -174,7 +174,7 @@ Running `freemkv <url>` with a single URL and no destination is equivalent to
 |---|---|
 | `-d, --device PATH` | Target a specific device (alternative to embedding it in the URL). |
 | `-f, --full` | Show every title (otherwise the first five, with a "+N more" footer). |
-| `-b, --basic` | Title rows only — omit per-stream detail. |
+| `-b, --basic` | Title rows only; omit per-stream detail. |
 | `--log-level N` | Write a diagnostic log file (1 = warnings … 4 = trace); without it nothing is logged. Level ≥ 2 also widens on-screen AACS / drive detail. |
 | `-q, --quiet` | Suppress output. |
 
@@ -182,7 +182,7 @@ Running `freemkv <url>` with a single URL and no destination is equivalent to
 
 `freemkv info disc:// --share` captures the drive's profile to a zip file on disk and
 prints a ready-to-paste GitHub issue so you can contribute it to the community
-drive-compatibility database. Submission is manual — it never sends anything over the
+drive-compatibility database. Submission is manual; it never sends anything over the
 network. `--mask` (`-m`) masks serial numbers in the captured profile.
 
 ```bash
@@ -214,7 +214,7 @@ making it scriptable as a pass/fail gate.
 ## Refreshing your key database
 
 `freemkv update-keys` downloads an AACS key database, verifies it, and saves it to the
-default location. The URL is **required** — there is no
+default location. The URL is **required**; there is no
 built-in default:
 
 ```bash
@@ -243,19 +243,19 @@ Both also accept `--version` / `-V` and `--help` / `-h`.
 | Flag | Description |
 |---|---|
 | `--language CODE` | UI language (e.g. `--language de`; alias `--lang`). Parsed first; never consumes a following URL or flag. |
-| `--log-level N` | Write a diagnostic **log file** at verbosity 1 = warnings, 2 = info, 3 = debug, 4 = trace (applies to freemkv and libfreemkv). The terminal is always clean — diagnostics go to the file only, never to the terminal. Default file is `./log.txt`. |
+| `--log-level N` | Write a diagnostic **log file** at verbosity 1 = warnings, 2 = info, 3 = debug, 4 = trace (applies to freemkv and libfreemkv). The terminal is always clean: diagnostics go to the file only, never to the terminal. Default file is `./log.txt`. |
 | `--log-file PATH` | Write the diagnostic log to PATH (non-blocking; flushed on exit; defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress normal stdout output. |
 | `RUST_LOG` | Power-user override: if set, enables file logging and wins over `--log-level`. |
 
 ### Clean terminal, file-only diagnostics
 
-The terminal shows only curated progress, status, and the final result block — **never** raw
+The terminal shows only curated progress, status, and the final result block, **never** raw
 trace/debug log lines. Diagnostic logging is a separate channel that only exists when you ask
 for it, and it goes to a **file**, never to the terminal. With none of `--log-level`,
 `--log-file`, or `RUST_LOG` set, no log file is written at all.
 
-When an operation fails, freemkv prints a single readable block — what failed, the cause, and
+When an operation fails, freemkv prints a single readable block: what failed, the cause, and
 how to turn on a diagnostic log:
 
 ```text
@@ -273,14 +273,14 @@ freemkv <source> <dest> --log-level 3              # writes ./log.txt
 freemkv <source> <dest> --log-level 3 --log-file freemkv-debug.log
 ```
 
-Level 3 (debug) is recommended for bug reports — comprehensive diagnostics at a
+Level 3 (debug) is recommended for bug reports: comprehensive diagnostics at a
 manageable size. The extra detail covers the failure path (CSS auth, retries, read
-errors, mux-stage decisions, stalls) — exactly when you need it. If a maintainer asks for
+errors, mux-stage decisions, stalls), exactly when you need it. If a maintainer asks for
 maximum detail, use `--log-level 4` (trace), but note it's a per-sector firehose that can
 be gigabytes on a long rip. Log files are written with timestamps on and terminal colour
 codes off, so they paste cleanly into a bug report.
 
-**Keys are never written to logs** — log output contains paths and disc metadata; CSS/AACS
+**Keys are never written to logs.** Log output contains paths and disc metadata; CSS/AACS
 key material is always redacted.
 
 ## Exit codes

@@ -10,12 +10,12 @@ recovered sectors into a playable container. The recovery engine lives in
 
 ## The principle
 
-freemkv's goal is to **recover 100% of readable data** from a disc — where "readable" means
+freemkv's goal is to **recover 100% of readable data** from a disc, where "readable" means
 anything the drive can physically return.
 
 That's not "best effort". The engine tolerates transient drive trouble, adapts its read
 size down to a single sector when needed, and gives the drive firmware its full recovery
-window for marginal sectors — so it never gives up on a sector the hardware could still
+window for marginal sectors, so it never gives up on a sector the hardware could still
 return.
 
 ## Sweep, then patch
@@ -29,7 +29,7 @@ A forward, sequential read of the whole disc to an ISO, tolerant of bad sectors:
 
 - Reads each ECC block in order. Good blocks are written and marked **Finished**.
 - When a block won't read, freemkv **zero-fills** it, marks the range for recovery,
-  and **keeps going** — one bad spot near the start never costs you the rest of the disc.
+  and **keeps going**; one bad spot near the start never costs you the rest of the disc.
 - A sliding window tracks the last 16 ECC-block results. When failures cross a threshold
   (calibrated from real drive data), the sweep concludes it has hit a damaged region and
   **jumps ahead**, leaving the skipped gap for the patch pass. The jump distance
@@ -62,8 +62,8 @@ unreadable bytes left.
 :::caution[Be gentle with the drive]
 Hammering the same bad sectors in tight, repeated retries can push a drive into a
 fast-fail state where it stops attempting recovery at all. freemkv's patch pass is
-deliberately paced — single-sector reads, recovery-timeout windows, cache priming, and skip
-escalation — to coax data out of marginal media without driving the hardware into that
+deliberately paced (single-sector reads, recovery-timeout windows, cache priming, and skip
+escalation) to coax data out of marginal media without driving the hardware into that
 state.
 :::
 
@@ -90,16 +90,16 @@ and the CLI's auto-resuming `disc:// iso://` copy.
 
 ## Mux
 
-Once the map is clean — or an [accepted-loss threshold](/autorip/#accepted-loss) is reached
-— freemkv **muxes**: it decrypts the captured data (see [Decryption Keys](/decryption-keys/))
+Once the map is clean (or an [accepted-loss threshold](/autorip/#accepted-loss) is reached),
+freemkv **muxes**: it decrypts the captured data (see [Decryption Keys](/decryption-keys/))
 and writes the titles to the output container.
 
 Muxing runs through a three-stage threaded pipeline so reading/decrypting, demultiplexing,
 and codec parsing all overlap:
 
-1. **Prefetch + decrypt** — a producer reads sectors ahead of demand and decrypts them.
-2. **Demux** — a dedicated thread splits the transport/program stream into PES frames.
-3. **Parse** — codec parsers turn PES frames into the elementary streams the container needs.
+1. **Prefetch + decrypt**: a producer reads sectors ahead of demand and decrypts them.
+2. **Demux**: a dedicated thread splits the transport/program stream into PES frames.
+3. **Parse**: codec parsers turn PES frames into the elementary streams the container needs.
 
 This keeps the drive (or ISO read) saturated instead of stalling between stages. The
 library entry point is `build_iso_pipeline`; see the [library overview](/libfreemkv/) for
@@ -108,7 +108,7 @@ the API.
 ## Running it from the CLI
 
 Multipass recovery is three commands: sweep, patch, then mux. The patch pass re-runs the
-**same** sweep command — freemkv reads the mapfile, detects which pass it's on, and re-reads
+**same** sweep command: freemkv reads the mapfile, detects which pass it's on, and re-reads
 the bad ranges from the disc. Repeat the patch as many times as you like; each run narrows
 the remaining damage and stops early once nothing is left to recover.
 
@@ -129,4 +129,4 @@ reports health (good, slow, recovered, bad).
 ## Running it from autorip
 
 [autorip](/autorip/) performs the entire flow automatically on disc insert, with a
-configurable retry count and accepted-loss threshold — no commands to type.
+configurable retry count and accepted-loss threshold, with no commands to type.

@@ -1,25 +1,25 @@
 ---
 title: Install
-description: Get the freemkv CLI or the autorip service — a prebuilt binary or build from source.
+description: Get the freemkv CLI or the autorip service. A prebuilt binary or build from source.
 ---
 
-There are two programs — the **freemkv CLI** (manual, one disc at a time) and the **autorip service** (a hands-off web app). Both are a single download with no runtime or dependencies. Grab a prebuilt binary, or build from source.
+There are two programs: the **freemkv CLI** (manual, one disc at a time) and the **autorip service** (a hands-off web app). Both are a single download with no runtime or dependencies. Grab a prebuilt binary, or build from source.
 
-For per-OS setup — where files live, how to reach the optical drive, and platform quirks — see your **[platform page](/platforms-windows/)** (Windows, macOS, Linux).
+For per-OS setup (where files live, how to reach the optical drive, and platform quirks), see your **[platform page](/platforms-windows/)** (Windows, macOS, Linux).
 
 ## Prebuilt binaries
 
-Go to the **[Download](/download/)** page — it detects your OS and hands you the right build (Linux, macOS, or Windows; Intel or ARM). It's one self-contained file per program; download and run it. The exact run command differs slightly per OS, so follow your platform page:
+Go to the **[Download](/download/)** page; it detects your OS and hands you the right build (Linux, macOS, or Windows; Intel or ARM). It's one self-contained file per program; download and run it. The exact run command differs slightly per OS, so follow your platform page:
 
-- **[Windows](/platforms-windows/)** — download the `.zip`, extract, run from a terminal.
-- **[macOS](/platforms-macos/)** — `chmod +x` and run; the disc is unmounted for exclusive access.
-- **[Linux](/platforms-linux/)** — `chmod +x` and run; drive access via the `cdrom` group.
+- **[Windows](/platforms-windows/)**: download the `.zip`, extract, run from a terminal.
+- **[macOS](/platforms-macos/)**: `chmod +x` and run; the disc is unmounted for exclusive access.
+- **[Linux](/platforms-linux/)**: `chmod +x` and run; drive access via the `cdrom` group.
 
 Every build has a matching `.sha256` checksum on the [releases page](https://github.com/freemkv/freemkv/releases).
 
 ## autorip
 
-[autorip](/autorip/) is a web app: insert a disc and it rips automatically to MKV, with progress, settings, and history in the browser. It runs on Linux, macOS, or Windows as a single binary, or — on Linux — as a Docker container.
+[autorip](/autorip/) is a web app: insert a disc and it rips automatically to MKV, with progress, settings, and history in the browser. It runs on Linux, macOS, or Windows as a single binary, or (on Linux) as a Docker container.
 
 ```bash
 # binary: download, make it executable, start the service
@@ -30,7 +30,7 @@ For the Docker image, a full `docker-compose.yml`, a systemd unit, drive permiss
 
 ## Build from source
 
-Pure Rust — clone and build with Cargo. Builds both the CLI and autorip:
+Pure Rust: clone and build with Cargo. Builds both the CLI and autorip:
 
 ```bash
 git clone https://github.com/freemkv/freemkv
@@ -41,6 +41,6 @@ cargo build --release
 
 ## Next steps
 
-- **[Platforms](/platforms-windows/)** — per-OS setup, file locations, and drive access.
-- **[CLI reference](/cli/)** — every subcommand, flag, and stream URL.
-- **[Decryption Keys](/decryption-keys/)** — what Blu-ray and UHD need before they decrypt.
+- **[Platforms](/platforms-windows/)**: per-OS setup, file locations, and drive access.
+- **[CLI reference](/cli/)**: every subcommand, flag, and stream URL.
+- **[Decryption Keys](/decryption-keys/)**: what Blu-ray and UHD need before they decrypt.

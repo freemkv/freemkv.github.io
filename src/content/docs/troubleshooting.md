@@ -1,13 +1,13 @@
 ---
 title: Troubleshooting
-description: Fixes for the most common freemkv and autorip problems — no drives detected, missing keydb, bad sectors, interrupted rips, and capturing a debug log.
+description: Fixes for the most common freemkv and autorip problems. No drives detected, missing keydb, bad sectors, interrupted rips, and capturing a debug log.
 ---
 
 Fixes for the problems reported most often with freemkv and autorip. Find your symptom below; if none match, capture a debug log (next) and open an issue.
 
 ## Capturing a debug log
 
-For any failure or hang, capture a debug log first — it's the fastest path to a diagnosis and the one thing to attach to a bug report.
+For any failure or hang, capture a debug log first; it's the fastest path to a diagnosis and the one thing to attach to a bug report.
 
 The CLI keeps the terminal clean by default and never prints raw diagnostics there. When something fails it prints a short block naming the cause and telling you exactly this: re-run with `--log-level 3` to get a log. That writes a diagnostic log to `./log.txt` (override the path with `--log-file`):
 
@@ -40,7 +40,7 @@ Confirm both `privileged: true` and the `/dev:/dev` bind mount are present, then
 
 If `freemkv info disc://` reports no drive:
 
-- On Linux, target the SCSI generic device explicitly — use `/dev/sg*`, not `/dev/sr*`:
+- On Linux, target the SCSI generic device explicitly: use `/dev/sg*`, not `/dev/sr*`:
 
   ```bash
   freemkv info disc:///dev/sg4
@@ -57,11 +57,11 @@ Blu-ray and 4K UHD need decryption keys you provide. **[Decryption Keys](/decryp
 
 ## Drive rejected the disc's security credentials
 
-If you have keys but the rip still fails at the drive handshake — the error says the drive *did not accept the disc's security credentials* or *rejected the security credentials for this disc* — the drive refused to start the secure session needed to read the disc:
+If you have keys but the rip still fails at the drive handshake (the error says the drive *did not accept the disc's security credentials* or *rejected the security credentials for this disc*), the drive refused to start the secure session needed to read the disc:
 
 - **Update your key database** first (`freemkv update-keys --url <keydb-url>`). A stale or incomplete keydb is the most common cause.
 - If the keys are current and it still fails, the disc may need a **firmware-unlockable drive**. Some drives can be unlocked to read protected discs and others cannot; on a drive that can't be unlocked another way, this handshake is the only path and there's nothing more to try on that drive. Use a drive that supports unlocking.
-- Make sure nothing else is using the disc — a busy drive can refuse to start a secure session.
+- Make sure nothing else is using the disc; a busy drive can refuse to start a secure session.
 
 Re-run with `--log-level 3` (writes `./log.txt`) and attach the log if you open an issue.
 
@@ -69,8 +69,8 @@ Re-run with `--log-level 3` (writes `./log.txt`) and attach the log if you open 
 
 freemkv is built to recover damaged discs, but behavior depends on the mode:
 
-- **Single-pass** (CLI direct disc → MKV, or autorip `max_retries = 0`) — no retries; a read error fails the rip.
-- **Multipass** (CLI `--multipass`, or autorip `max_retries ≥ 1`) — the sweep records bad ranges and skips ahead; patch passes then re-read only those ranges from the disc. Use this mode for any disc you suspect is scratched. See [How recovery works](/how-recovery-works/).
+- **Single-pass** (CLI direct disc → MKV, or autorip `max_retries = 0`): no retries; a read error fails the rip.
+- **Multipass** (CLI `--multipass`, or autorip `max_retries ≥ 1`): the sweep records bad ranges and skips ahead; patch passes then re-read only those ranges from the disc. Use this mode for any disc you suspect is scratched. See [How recovery works](/how-recovery-works/).
 
 Tips:
 
@@ -78,13 +78,13 @@ Tips:
 - In autorip, set `abort_on_lost_secs` above `0` to tolerate a bounded amount of main-movie loss rather than failing on a disc that can't be read perfectly.
 
 :::caution[Don't keep retrying a dying disc]
-Repeatedly hammering the same bad sectors can push a drive into a fast-fail state where it stops attempting recovery entirely. If recovery stalls, let the drive cool down or eject and reload before trying again — don't launch pass after pass back-to-back.
+Repeatedly hammering the same bad sectors can push a drive into a fast-fail state where it stops attempting recovery entirely. If recovery stalls, let the drive cool down or eject and reload before trying again; don't launch pass after pass back-to-back.
 :::
 
 ## An interrupted rip
 
-- **CLI** — Ctrl-C halts cleanly and preserves the mapfile. Re-running the same `disc:// iso://` command resumes. A mux interrupted mid-write is not finalized (freemkv exits non-zero), so you never get a truncated MKV that looks complete.
-- **autorip** — `/api/stop/{device}` preserves staging; the rip resumes on the next disc insert or container restart. See [Resume](/autorip/#resume).
+- **CLI:** Ctrl-C halts cleanly and preserves the mapfile. Re-running the same `disc:// iso://` command resumes. A mux interrupted mid-write is not finalized (freemkv exits non-zero), so you never get a truncated MKV that looks complete.
+- **autorip:** `/api/stop/{device}` preserves staging; the rip resumes on the next disc insert or container restart. See [Resume](/autorip/#resume).
 
 ## Raw flag rejected for MKV or M2TS output
 
@@ -92,7 +92,7 @@ Repeatedly hammering the same bad sectors can push a drive into a fast-fail stat
 
 ## Multiple titles to one file
 
-Selecting more than one title (e.g. `-t 1 -t 3`) requires a directory destination — freemkv writes one file per title. Point the destination at a directory instead of a single file:
+Selecting more than one title (e.g. `-t 1 -t 3`) requires a directory destination; freemkv writes one file per title. Point the destination at a directory instead of a single file:
 
 ```bash
 # directory destination, one file per title

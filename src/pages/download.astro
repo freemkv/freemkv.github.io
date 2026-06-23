@@ -7,7 +7,7 @@
 // ── How downloads work ─────────────────────────────────────────────
 // Every link here is a plain GitHub release-asset URL. By default they
 // use the version-less `releases/latest/download/<asset>` form, which
-// always resolves to the newest release — works with JS disabled.
+// always resolves to the newest release, works with JS disabled.
 //
 // A client-side script (see the inline <script> below) progressively
 // enhances the page:
@@ -24,7 +24,7 @@
 // documented in each repo's INSTALL.md:
 //   CLI (freemkv):  freemkv-<arch>-<os>[.exe]
 //   autorip:        autorip-<arch>-<os>[.exe]
-const title = 'Download freemkv — Linux, macOS & Windows';
+const title = 'Download freemkv: Linux, macOS & Windows';
 const description =
   'Download prebuilt freemkv and autorip binaries for Linux, macOS, and Windows (Intel & ARM). Free & open source. Or build from source.';
 
@@ -34,7 +34,7 @@ const cliRepo = 'https://github.com/freemkv/freemkv';
 const autoripRepo = 'https://github.com/freemkv/autorip';
 const allReleases = `${cliRepo}/releases`;
 
-// CLI binaries — all OSes. `key` is "<os>-<arch>" used by the detector.
+// CLI binaries, all OSes. `key` is "<os>-<arch>" used by the detector.
 // `file` is the plain runnable-binary asset name (matches release.yml).
 const cliPlatforms = [
   {
@@ -62,7 +62,7 @@ const cliPlatforms = [
   },
 ];
 
-// autorip binaries — Linux, macOS, Windows (Docker is Linux-only).
+// autorip binaries: Linux, macOS, Windows (Docker is Linux-only).
 // Grouped by OS into columns, matching the CLI layout above.
 const autoripPlatforms = [
   {
@@ -155,7 +155,7 @@ const autoripPlatforms = [
         <div class="section-inner">
           <h2 class="section-title">freemkv CLI</h2>
           <p class="section-lead">
-            One static binary — no runtime, no container. Linux, macOS &amp; Windows
+            One static binary, no runtime, no container. Linux, macOS &amp; Windows
             (Intel &amp; ARM). Download, <code>chmod +x</code>, run.
           </p>
 
@@ -230,7 +230,7 @@ const autoripPlatforms = [
             </label>
           </div>
 
-          <!-- Bare binary (primary) — columns by OS, matching the CLI -->
+          <!-- Bare binary (primary): columns by OS, matching the CLI -->
           <div class="grid">
             {autoripPlatforms.map((p) => (
               <article class="card" data-os={p.os}>
@@ -253,7 +253,7 @@ const autoripPlatforms = [
             ))}
           </div>
           <p class="block-note">
-            Static binary — download, <code>chmod +x</code> (or run the <code>.exe</code>), start
+            Static binary: download, <code>chmod +x</code> (or run the <code>.exe</code>), start
             the daemon, then open
             <code>http://&lt;host&gt;:8080</code>. DVDs work out of the box; Blu-ray and
             4K&nbsp;UHD need <a href="/decryption-keys/">decryption keys</a>. See the
@@ -403,7 +403,7 @@ const autoripPlatforms = [
 
         // ---- 2. Version picker (GitHub Releases API + localStorage) --
         var CACHE_KEY = 'freemkv-releases-v2';
-        var TTL_MS = 6 * 60 * 60 * 1000; // 6h — well under the 60/hr limit
+        var TTL_MS = 6 * 60 * 60 * 1000; // 6h, well under the 60/hr limit
         var API = 'https://api.github.com/repos/freemkv/freemkv/releases?per_page=30';
 
         // Rewrite every asset link for the chosen tag. "latest" → the
@@ -457,7 +457,7 @@ const autoripPlatforms = [
 
         // Always fetch fresh so the badge reflects the TRUE latest release; the
         // cache is only an offline/rate-limit fallback. (A stale cache must never
-        // downgrade the badge below the real latest — that was the rc1-after-rc2 bug.)
+        // downgrade the badge below the real latest, that was the rc1-after-rc2 bug.)
         var cached = readCache();
         fetch(API, { headers: { Accept: 'application/vnd.github+json' } })
           .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
@@ -468,7 +468,7 @@ const autoripPlatforms = [
             if (!tags.length) { if (cached) populate(cached); return; }
             try {
               localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), tags: tags }));
-            } catch (e) { /* private mode / quota — non-fatal */ }
+            } catch (e) { /* private mode / quota, non-fatal */ }
             populate(tags);
           })
           .catch(function () {
@@ -480,7 +480,7 @@ const autoripPlatforms = [
 
       // Live GitHub star count for the nav "N★ GitHub" link. Cached in
       // localStorage (1h TTL) to stay under the unauthenticated rate limit.
-      // On failure the link stays as "★ GitHub" with no number — never "NaN".
+      // On failure the link stays as "★ GitHub" with no number, never "NaN".
       (function () {
         var el = document.querySelector('a.gh-stars');
         if (!el) return;
@@ -785,7 +785,7 @@ const autoripPlatforms = [
         width: 100%;
         line-height: 1.3;
         /* The arch/label text lines may need to wrap on very narrow
-           viewports — override the .btn-level nowrap so they never
+           viewports: override the .btn-level nowrap so they never
            overflow the card or force horizontal scroll. */
         white-space: normal;
       }

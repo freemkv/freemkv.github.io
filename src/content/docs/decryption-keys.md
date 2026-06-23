@@ -60,12 +60,12 @@ first one that exists.
 | **Windows** | `%APPDATA%\freemkv\keydb.cfg` (e.g. `C:\Users\<you>\AppData\Roaming\freemkv\keydb.cfg`), then the legacy `%USERPROFILE%\.config\freemkv\keydb.cfg` |
 | **Linux / macOS** | `$XDG_CONFIG_HOME/freemkv/keydb.cfg` (if `XDG_CONFIG_HOME` is set), then `~/.config/freemkv/keydb.cfg` |
 
-On Windows, put the file at `%APPDATA%\freemkv\keydb.cfg` — type `%APPDATA%` into the
+On Windows, put the file at `%APPDATA%\freemkv\keydb.cfg`: type `%APPDATA%` into the
 Explorer address bar to open the `Roaming` folder, then create a `freemkv` subfolder. The
 older `.config` dotfolder under your user profile is still read for back-compat, but
 `%APPDATA%` is the recommended location.
 
-Download or refresh it from a URL with `update-keys` (the URL is required — there's no
+Download or refresh it from a URL with `update-keys` (the URL is required; there's no
 built-in default). It writes to the first location above for your OS (`%APPDATA%\freemkv\`
 on Windows, `~/.config/freemkv/` on Linux/macOS):
 

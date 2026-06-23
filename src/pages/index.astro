@@ -3,7 +3,7 @@
 // This page owns the "/" route directly (NOT part of the Starlight docs
 // collection) so it has full design freedom with none of the docs
 // sidebar / TOC / breadcrumb chrome. The docs live under /overview/ etc.
-const title = 'freemkv — Recover 100% of readable data from any optical disc';
+const title = 'freemkv: Recover 100% of readable data from any optical disc';
 const description =
   'AGPL-3.0 Rust toolchain that recovers 100% of readable data from DVD, Blu-ray, and 4K UHD discs and muxes it to MKV, automatically, with multi-pass bad-sector recovery.';
 const download = '/download/';
@@ -83,13 +83,13 @@ const docs = '/overview/';
               <p>
                 A tolerant <strong>sweep</strong> reads the whole disc and skips past
                 unreadable sectors, then <strong>patch</strong> passes retry only the
-                damage — multi-attempt, with per-sector timeouts and range bisection.
+                damage, multi-attempt, with per-sector timeouts and range bisection.
               </p>
             </article>
             <article class="card">
               <h3>DVD, Blu-ray &amp; 4K&nbsp;UHD → MKV</h3>
               <p>
-                Mux every readable title to a standards-clean MKV — video, audio,
+                Mux every readable title to a standards-clean MKV: video, audio,
                 subtitles, chapters. DVDs (CSS) work out of the box; Blu-ray and 4K&nbsp;UHD
                 need <a href="/decryption-keys/">decryption keys</a>.
               </p>
@@ -106,7 +106,7 @@ const docs = '/overview/';
             <article class="card">
               <h3>Open source, single binary</h3>
               <p>
-                Pure Rust. Download a prebuilt binary for Linux, macOS, or Windows — or
+                Pure Rust. Download a prebuilt binary for Linux, macOS, or Windows, or
                 build from source. The whole toolchain is licensed
                 <strong>AGPL-3.0</strong>: run it anywhere, audit it, build on it.
               </p>
@@ -120,7 +120,7 @@ const docs = '/overview/';
         <div class="section-inner">
           <h2 class="section-title">How it works</h2>
           <p class="section-lead">
-            Three composable stages — read everything the drive can recover, then chase
+            Three composable stages: read everything the drive can recover, then chase
             the rest. <a href="/how-recovery-works/">See how recovery works →</a>
           </p>
           <div class="steps">
@@ -150,7 +150,7 @@ const docs = '/overview/';
         <div class="section-inner">
           <h2 class="section-title">From disc to MKV.</h2>
           <p class="section-lead">
-            freemkv composes a <em>source</em> and a <em>destination</em> URL — no rigid
+            freemkv composes a <em>source</em> and a <em>destination</em> URL, with no rigid
             subcommands. Read from a disc, ISO, or M2TS; write to MKV, ISO, M2TS, a network
             stream, or stdout.
           </p>
@@ -172,7 +172,7 @@ const docs = '/overview/';
 <span class="p">$</span> freemkv iso://Disc.iso mkv://Movie.mkv</code></pre>
           </div>
 
-          <p class="showcase-sub">Or run the whole thing as a service — insert a disc, get an MKV:</p>
+          <p class="showcase-sub">Or run the whole thing as a service: insert a disc, get an MKV:</p>
           <div class="terminal terminal-compact">
             <div class="terminal-bar" aria-hidden="true">
               <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
@@ -640,7 +640,7 @@ const docs = '/overview/';
       // Live GitHub star count for the nav. Fetched client-side and cached in
       // localStorage (1h TTL) to stay under the unauthenticated rate limit
       // (~60 req/hr/IP). No token. On failure, the link stays as just the star
-      // icon with no number — never a broken "NaN".
+      // icon with no number, never a broken "NaN".
       (() => {
         const el = document.querySelector('a.gh-stars');
         if (!el) return;
