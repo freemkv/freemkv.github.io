@@ -75,9 +75,10 @@ To use a `keydb.cfg` elsewhere, point the CLI at it with `--keydb`:
 freemkv disc:// mkv://Movie.mkv --keydb /path/to/keydb.cfg
 ```
 
-For autorip, bind-mount a host keys directory to `/root/.config/freemkv` (see the
-[autorip Docker setup](/install/#docker)) so the file persists across restarts; autorip can
-also download and refresh it for you.
+**autorip** looks in the same per-OS default location as the CLI (above), and can also
+download and refresh the file for you from **Settings**. For the Docker image, bind-mount a
+host keys directory to `/root/.config/freemkv` (see [autorip → Deploy](/autorip/#deploy)) so
+it persists across restarts.
 
 ## When keys are missing
 

@@ -94,7 +94,7 @@ So if your `autorip.exe` is at `<install dir>\autorip.exe`, then:
 |---|---|
 | Settings | `<install dir>\config\settings.json` |
 | Logs (one file per drive) | `<install dir>\config\logs\` |
-| AACS keys | `<install dir>\config\keys\` — see **[Decryption Keys](/decryption-keys/)** |
+| AACS keys | see **[Decryption Keys](/decryption-keys/)** |
 | Work-in-progress (staging) | `<install dir>\config\staging\` |
 | **Finished movies** | `<install dir>\config\output\` |
 

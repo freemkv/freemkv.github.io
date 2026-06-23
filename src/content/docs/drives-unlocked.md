@@ -12,7 +12,7 @@ You don't *need* an unlocked drive — **[stock drives work](/drives-oem/)** —
 freemkv works with unlocked drives built on these hardware platforms:
 
 :::caution[Nothing here is guaranteed]
-This is a best-effort list, not a promise. Drives, firmware versions, and even individual discs all vary — **"likely supported" means most drives in that family work**, but yours might be on a firmware version we haven't profiled yet. The only way to know for sure is to try it.
+This is a best-effort list, not a promise. Drives, firmware versions, and even individual discs all vary, so yours might be on a firmware version we haven't profiled yet. The only way to know for sure is to try it.
 :::
 
 ### MediaTek-based drives
