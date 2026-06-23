@@ -18,6 +18,8 @@ freemkv --log-level 3 --log-file freemkv-debug.log <source> <dest>
 
 In autorip, enable the Debug toggle in the web UI (or `POST /api/debug`), reproduce the problem, then collect the container logs.
 
+On Windows, macOS, or Linux, see your [Platforms](/platforms/) page for where files (config, keys, logs, staging, output) live.
+
 ## No drives detected in autorip
 
 The container is missing `privileged: true`. Without it the container starts normally but enumerates zero drives, and the UI shows "No drives detected" with no other error.

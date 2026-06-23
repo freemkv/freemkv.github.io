@@ -61,6 +61,15 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Platforms',
+          items: [
+            { label: 'Overview', slug: 'platforms' },
+            { label: 'Windows', slug: 'platforms-windows' },
+            { label: 'macOS', slug: 'platforms-macos' },
+            { label: 'Linux', slug: 'platforms-linux' },
+          ],
+        },
+        {
           label: 'Reference',
           items: [
             { label: 'Components', slug: 'components' },
