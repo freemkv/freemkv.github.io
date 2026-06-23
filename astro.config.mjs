@@ -68,6 +68,13 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Drive Support',
+          items: [
+            { label: 'OEM (stock) drives', slug: 'drives-oem' },
+            { label: 'Unlocked drives', slug: 'drives-unlocked' },
+          ],
+        },
+        {
           label: 'Reference',
           items: [
             { label: 'Components', slug: 'components' },
