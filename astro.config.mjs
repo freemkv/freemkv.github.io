@@ -65,6 +65,7 @@ export default defineConfig({
           items: [
             { label: 'Components', slug: 'components' },
             { label: 'libfreemkv (library)', slug: 'libfreemkv' },
+            { label: 'Changelog', slug: 'changelog' },
             { label: 'License', slug: 'license' },
           ],
         },
