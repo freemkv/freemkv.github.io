@@ -13,6 +13,27 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
+## 1.0.0-rc.4.2 (2026-06-23)
+
+Patch on rc.4.1. Windows durability fixes — Windows users on rc.4 or
+rc.4.1 should update.
+
+### Fixed
+
+- **Windows: autorip no longer re-muxes the same disc forever.** When a
+  rip finished, autorip flushed the completed MKV to disk before marking
+  it done — but on Windows that flush was rejected with "Access is
+  denied", so the "done" marker was never written and the service
+  re-muxed the same disc on an endless loop. The flush now opens the file
+  with write access, so it succeeds and the rip completes normally.
+- **Windows: the staging free-space check works.** The "is there room to
+  rip?" pre-flight did nothing on Windows, so a too-small staging drive
+  could fill up partway through a rip with no warning. autorip now reads
+  the real free space on Windows before it starts.
+- **Windows: log noise removed.** An internal directory-sync step that
+  has no Windows equivalent logged a warning on every write (thousands
+  per rip, including from the CLI). It is now skipped on Windows.
+
 ## 1.0.0-rc.4.1 (2026-06-23)
 
 Patch on rc.4. A single, high-impact Windows fix.

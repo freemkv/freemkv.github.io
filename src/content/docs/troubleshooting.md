@@ -5,6 +5,8 @@ description: Fixes for the most common freemkv and autorip problems. No drives d
 
 Fixes for the problems reported most often with freemkv and autorip. Find your symptom below; if none match, capture a debug log (next) and open an issue.
 
+**First, make sure you're on the latest version.** Many reported problems are already fixed in a newer release — check the [changelog](/changelog/) and update before digging further. You can confirm your running version from the [Checking versions](#checking-versions) section below.
+
 ## Capturing a debug log
 
 For any failure or hang, capture a debug log first; it's the fastest path to a diagnosis and the one thing to attach to a bug report.
