@@ -13,7 +13,7 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
-## Unreleased (rc.4)
+## 1.0.0-rc.4 (2026-06-23)
 
 Focused on a clean, predictable operator experience, clearer error
 messages, and a round of audit-driven correctness and durability fixes.
@@ -59,11 +59,6 @@ messages, and a round of audit-driven correctness and durability fixes.
 - Windows drive access fixes: correct SCSI pass-through struct packing
   and bus-type field width, surfaced storage-reset failures, and bounded
   read-batch sizing on non-sysfs (Windows) optical drives.
-
-### Notes
-
-- A faster, parallelized release pipeline lands this cycle so future
-  releases publish in minutes. No change to released artifacts.
 
 ## 1.0.0-rc.3.1 (2026-06-22)
 
