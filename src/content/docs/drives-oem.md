@@ -14,7 +14,7 @@ DVDs use older copy protection that freemkv handles entirely on its own. **Any d
 Blu-ray and 4K UHD discs use a newer protection system called **AACS**. freemkv reads them the official, by-the-book way — the same handshake the AACS system was designed for. Two things have to be in place:
 
 1. **A security handshake with the drive.** Before it hands over the disc, the drive checks that the software is allowed to ask, using a *host certificate*. freemkv performs this standard AACS handshake — nothing is bypassed or faked.
-2. **Keys and credentials, from your key sources.** freemkv reads its host certificate **and** the disc's decryption keys from the **[key sources](/decryption-keys/)** you set up — a local key database, or an online key service (which will also supply the host certificate in a future release). That's the piece that does the real work, and it's why a disc that "just works" in some other software needs this one setup step here: freemkv keeps these credentials in *your* key sources instead of baking them in.
+2. **Credentials, from your key sources.** freemkv reads its host certificate and the disc's keys from the **[key sources](/decryption-keys/)** you set up — a local key database, or an online key service (the future direction, which will also supply the host certificate). That's why a disc that "just works" in some other software needs this one setup step here: freemkv keeps these credentials in *your* key sources instead of baking them in.
 
 DVDs need none of this; Blu-ray and 4K UHD do. See **[Decryption Keys](/decryption-keys/)** to set up your key sources.
 

@@ -151,9 +151,9 @@ All settings are editable in the **Settings** page of the web UI and stored in `
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `key_source` | `local` | `local` (use `keydb.cfg`) or `online` (use a key service). |
-| `keydb_path` | _(unset)_ | Explicit path to a `keydb.cfg`. |
-| `keydb_url` | _(empty)_ | URL to download a `keydb.cfg` from (used by the update action and daily refresh). |
+| `key_source` | `local` | `local` (use a local key database) or `online` (use a key service). |
+| `keydb_path` | _(unset)_ | Explicit path to a local key database file. |
+| `keydb_url` | _(empty)_ | URL to download a key database from (used by the update action and daily refresh). |
 | `keyserver_url` | _(empty)_ | Base URL of an external key service (when `key_source = online`). |
 | `keyserver_secret` | _(empty)_ | Optional bearer token for the key service. |
 
@@ -245,7 +245,7 @@ autorip exposes an HTTP API on the same port as the UI. JSON errors use `{"ok": 
 
 | Method | Path | Description |
 |---|---|---|
-| `POST` | `/api/update-keydb` | Download `keydb.cfg` from the configured `keydb_url` (SSRF-guarded fetch). |
+| `POST` | `/api/update-keydb` | Download the key database from the configured `keydb_url` (SSRF-guarded fetch). |
 
 ### Review and metadata
 

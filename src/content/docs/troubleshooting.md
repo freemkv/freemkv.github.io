@@ -49,7 +49,7 @@ If `freemkv info disc://` reports no drive:
 - List candidate devices with `-d` / `--device` and pick the correct one.
 - Confirm your user has permission to access the device node.
 
-## Missing keydb
+## Missing key database
 
 You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) without keys available. The CLI reports "no KEYDB.cfg found"; DVDs are never affected.
 

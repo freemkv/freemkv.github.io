@@ -18,7 +18,7 @@ mv freemkv-* freemkv && chmod +x freemkv
 
 | What | Path |
 |---|---|
-| AACS keys (`keydb.cfg`) | `~/.config/freemkv/keydb.cfg` |
+| AACS keys | see **[Decryption Keys](/decryption-keys/)** |
 | Diagnostic log | off by default — see below |
 
 The CLI keeps the terminal clean and never writes a log unless asked. Run with `--log-level 3` to write `./log.txt` in the current directory, or `--log-file PATH` to choose the destination.

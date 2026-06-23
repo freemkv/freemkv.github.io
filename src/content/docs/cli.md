@@ -103,7 +103,7 @@ These flags apply to the `<source> <dest>` form:
 | Flag | Description |
 |---|---|
 | `-t, --title N` | Select title N (1-based, repeatable). Default: all titles. |
-| `-k, --keydb PATH` | Path to a keydb.cfg (overrides the default location). |
+| `-k, --keydb PATH` | Path to a local key database file (overrides the default location). |
 | `--log-level N` | Write a diagnostic log file at this verbosity: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Without it (and without `--log-file` / `RUST_LOG`) **no log file is written and the terminal stays clean** — diagnostics never print to the terminal. Default log path is `./log.txt`. |
 | `--log-file PATH` | Write the diagnostic log to PATH (defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress progress and informational output. |
@@ -211,10 +211,10 @@ It prints a per-cluster breakdown (with the chapter and timestamp where damage f
 a final verdict. **Exit code is non-zero if any sector is unrecoverable (`bad > 0`)**,
 making it scriptable as a pass/fail gate.
 
-## Refreshing keydb.cfg
+## Refreshing your key database
 
 `freemkv update-keys` downloads an AACS key database, verifies it, and saves it to the
-default location (`~/.config/freemkv/keydb.cfg`). The URL is **required** — there is no
+default location. The URL is **required** — there is no
 built-in default:
 
 ```bash

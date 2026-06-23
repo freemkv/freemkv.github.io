@@ -22,7 +22,7 @@ For autorip, run that same binary as a service, or run it as a Docker container 
 
 | What | Path |
 |---|---|
-| AACS keys (`keydb.cfg`) | `~/.config/freemkv/keydb.cfg` |
+| AACS keys | see **[Decryption Keys](/decryption-keys/)** |
 | Diagnostic log | off by default — see below |
 
 The CLI keeps the terminal clean and never writes a log unless asked. Run with `--log-level 3` to write `./log.txt` in the current directory, or `--log-file PATH` to choose the destination.
@@ -36,7 +36,7 @@ autorip stores its state inside the container at well-known mount points, which 
 | Config (settings, keys, logs) | `/config` |
 | Staging | `/staging` |
 
-Bind these to host directories so settings and the AACS `keydb.cfg` persist across container restarts.
+Bind these to host directories so settings and the AACS key database persist across container restarts.
 
 ## Device / drive access
 
