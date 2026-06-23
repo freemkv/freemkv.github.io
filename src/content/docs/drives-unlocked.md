@@ -9,8 +9,6 @@ You don't *need* an unlocked drive (**[stock drives work](/drives-oem/)**), but 
 
 ## Which drives does freemkv support?
 
-freemkv works with unlocked drives built on these hardware platforms:
-
 :::caution[Nothing here is guaranteed]
 This is a best-effort list, not a promise. Drives, firmware versions, and even individual discs all vary, so yours might be on a firmware version we haven't profiled yet. The only way to know for sure is to try it.
 :::
@@ -42,7 +40,7 @@ If a drive rips fine in some other tool but not here, it's almost always a **fir
 
 ## Help us add your drive
 
-Don't see your drive, or want to help confirm it works? You can send us its firmware profile; it takes one command:
+**Even if your drive already works, please share it.** Every profile we collect helps us add features, handle edge cases, and support more drives. Whether yours works, doesn't, or you just want to help, send us its firmware profile; it takes one command:
 
 ```bash
 freemkv info disc:// --share --mask
