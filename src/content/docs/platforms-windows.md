@@ -85,7 +85,7 @@ If you typed `autorip.exe` and got *"The term 'autorip.exe' is not recognized...
 
 ## Step 5 — Where are my files? (the important part)
 
-`autorip.exe` is **self-contained**. It keeps *everything* in a single `config\` folder that sits **right next to the executable** — it does **not** scatter files across your system, and it will **never** create a `C:\config` folder at the root of your drive.
+`autorip.exe` is **self-contained**. It keeps *everything* in a single `config\` folder that sits **right next to the executable** — it does **not** scatter files across your system.
 
 So if your `autorip.exe` is at `<install dir>\autorip.exe`, then:
 
