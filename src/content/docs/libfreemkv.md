@@ -19,7 +19,7 @@ This page is a high-level map. For exact, version-specific signatures, consult
 
 ```toml
 [dependencies]
-libfreemkv = "1.0.0-rc.4.2"
+libfreemkv = "1.0.0-rc.4.3"
 ```
 
 ## Design principles

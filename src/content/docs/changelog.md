@@ -13,6 +13,28 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
+## 1.0.0-rc.4.3 (2026-06-23)
+
+Patch on rc.4.2. DVD playback-correctness fixes (PAL aspect, resolution,
+and colour) plus broader optical-drive unlock support.
+
+### Fixed
+
+- **DVD: 16:9 widescreen no longer shows as 4:3.** Anamorphic DVDs now
+  carry the correct display aspect ratio in the MKV, so a widescreen film
+  fills the frame instead of appearing squeezed into 4:3.
+- **DVD: PAL discs are detected as PAL.** A PAL disc (576-line, 25 fps)
+  was being mis-read as NTSC (480-line, 29.97 fps) because the video
+  standard was read from the wrong bits of the disc's video attributes.
+  PAL discs now report the correct resolution and frame rate.
+- **DVD: standard-definition colour is tagged correctly.** SD DVDs were
+  stamped with HD (BT.709) colour. They now carry the correct SD
+  colorimetry — BT.470BG for PAL, SMPTE-170M for NTSC — so colours render
+  as intended.
+- **More optical drives unlock correctly.** Per-drive unlock data is now
+  applied accurately across the full range of supported drives, fixing
+  drives that previously failed to unlock.
+
 ## 1.0.0-rc.4.2 (2026-06-23)
 
 Patch on rc.4.1. Windows durability fixes — Windows users on rc.4 or
