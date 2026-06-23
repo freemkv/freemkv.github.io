@@ -15,32 +15,54 @@ change in that cycle.
 
 ## Unreleased — rc.4
 
-In progress. Focused on a clean, predictable operator experience.
+Focused on a clean, predictable operator experience, clearer error
+messages, and a round of audit-driven correctness and durability fixes.
 
 ### Changed
 
-- **Clean terminal by default.** The terminal now shows only curated
+- **Clean terminal by default.** The CLI terminal now shows only curated
   progress, status, and a final result block — never raw diagnostic
   log lines. How you invoke the tools is unchanged.
 - **Diagnostic logging is file-only.** Trace/debug output is written to
-  a log file only when you ask for it (`--log-level` / `--log-file`),
-  with timestamps on and terminal colour codes off. It never bleeds
-  onto the terminal.
+  a log file only when you ask for it (`--log-level`, `--log-file`, or
+  `RUST_LOG`), with timestamps on and terminal colour codes off. With
+  none of those set, no log file is written and nothing bleeds onto the
+  terminal. The default log path is `./log.txt`.
 - **Overhauled error messages.** A fatal error now prints a single
-  readable block — what failed, how to fix it, how to turn on a
-  diagnostic log, and where that log is written — instead of a raw
-  internal error. The first real cause is reported rather than a
-  confusing downstream symptom.
+  readable block — what failed, the plain-English cause, and how to turn
+  on a diagnostic log (and where it's written) — instead of a raw
+  internal code. 47 previously unmapped error codes now have clear
+  messages, jargon-heavy ones were rewritten, and the `verify` subcommand
+  is fully localized.
 
 ### Fixed
 
 - The reported failure is now the root cause (for example, an early
-  key/authorization rejection), not the cascaded read error it used to
-  surface further down the pipeline.
+  key/authorization rejection at the drive handshake), not the cascaded
+  read error it used to surface further down the pipeline.
+- **autorip: no more re-mux loop.** A DVD that hit a post-mux loss abort
+  could be re-muxed indefinitely; the failed marker is now terminal in
+  the mux worker, so an aborted disc stays aborted.
+- A disc → ISO rip that recovered zero readable bytes now fails instead
+  of producing an empty image, and a CLI pipe that hits an early EOF no
+  longer exits successfully with a structurally invalid MKV.
+- Decrypt-time loss is now accounted for, so a partial AACS/CSS decryption
+  failure can no longer pass as a perfect rip; partial per-title key
+  coverage is rejected rather than producing partly-garbage output.
+- Durability and correctness hardening across the library: the key
+  database is written atomically (temp + fsync + rename) and the resume
+  checkpoint fsyncs its directory; dropped connections and transport
+  failures are preserved as their true cause instead of being relabeled;
+  a failed capacity read warns instead of silently treating the disc as
+  empty; and a leaked pipeline consumer can no longer finalize an
+  abandoned output.
+- Windows drive access fixes: correct SCSI pass-through struct packing
+  and bus-type field width, surfaced storage-reset failures, and bounded
+  read-batch sizing on non-sysfs (Windows) optical drives.
 
 ### Notes
 
-- A faster, parallelized release pipeline is being folded in so future
+- A faster, parallelized release pipeline lands this cycle so future
   releases publish in minutes. No change to released artifacts.
 
 ## 1.0.0-rc.3.1 — 2026-06-22

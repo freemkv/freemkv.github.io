@@ -104,8 +104,8 @@ These flags apply to the `<source> <dest>` form:
 |---|---|
 | `-t, --title N` | Select title N (1-based, repeatable). Default: all titles. |
 | `-k, --keydb PATH` | Path to a keydb.cfg (overrides the default location). |
-| `--log-level N` | Log verbosity: 1 = warnings (default), 2 = info, 3 = debug, 4 = trace. Level ≥ 2 also widens stdout detail. |
-| `--log-file PATH` | Also write the full log to PATH (for bug reports). |
+| `--log-level N` | Write a diagnostic log file at this verbosity: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Without it (and without `--log-file` / `RUST_LOG`) **no log file is written and the terminal stays clean** — diagnostics never print to the terminal. Default log path is `./log.txt`. |
+| `--log-file PATH` | Write the diagnostic log to PATH (defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress progress and informational output. |
 | `--raw` | Skip decryption — raw encrypted bytes (`iso://` output only). |
 | `--multipass` | Write/update a mapfile for multipass recovery (disc → ISO). |
@@ -175,7 +175,7 @@ Running `freemkv <url>` with a single URL and no destination is equivalent to
 | `-d, --device PATH` | Target a specific device (alternative to embedding it in the URL). |
 | `-f, --full` | Show every title (otherwise the first five, with a "+N more" footer). |
 | `-b, --basic` | Title rows only — omit per-stream detail. |
-| `--log-level N` | Log verbosity: 1 = warnings (default), 2 = info (also widens AACS / drive detail), 3 = debug, 4 = trace. |
+| `--log-level N` | Write a diagnostic log file (1 = warnings … 4 = trace); without it nothing is logged. Level ≥ 2 also widens on-screen AACS / drive detail. |
 | `-q, --quiet` | Suppress output. |
 
 ### Sharing a drive profile
@@ -243,24 +243,42 @@ Both also accept `--version` / `-V` and `--help` / `-h`.
 | Flag | Description |
 |---|---|
 | `--language CODE` | UI language (e.g. `--language de`; alias `--lang`). Parsed first; never consumes a following URL or flag. |
-| `--log-level N` | Log verbosity: 1 = warnings (default), 2 = info, 3 = debug, 4 = trace. Applies to freemkv and libfreemkv. Logs go to stderr so stdout stays clean for piping. |
-| `--log-file PATH` | Also write the full log to PATH (non-blocking; flushed on exit). For bug reports. |
+| `--log-level N` | Write a diagnostic **log file** at verbosity 1 = warnings, 2 = info, 3 = debug, 4 = trace (applies to freemkv and libfreemkv). The terminal is always clean — diagnostics go to the file only, never to the terminal. Default file is `./log.txt`. |
+| `--log-file PATH` | Write the diagnostic log to PATH (non-blocking; flushed on exit; defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress normal stdout output. |
-| `RUST_LOG` | Power-user override: if set, wins over `--log-level`. |
+| `RUST_LOG` | Power-user override: if set, enables file logging and wins over `--log-level`. |
+
+### Clean terminal, file-only diagnostics
+
+The terminal shows only curated progress, status, and the final result block — **never** raw
+trace/debug log lines. Diagnostic logging is a separate channel that only exists when you ask
+for it, and it goes to a **file**, never to the terminal. With none of `--log-level`,
+`--log-file`, or `RUST_LOG` set, no log file is written at all.
+
+When an operation fails, freemkv prints a single readable block — what failed, the cause, and
+how to turn on a diagnostic log:
+
+```text
+✗ rip failed: <plain-English cause>.
+  For a diagnostic log, re-run with --log-level 3 (writes ./log.txt).
+```
 
 ### Getting a debug log for bug reports
 
-If something fails or hangs, re-run with `--log-level 3` and capture the log:
+If something fails or hangs, re-run with `--log-level 3`. That writes a diagnostic log to
+`./log.txt` (override the path with `--log-file`):
 
 ```bash
+freemkv --log-level 3 <source> <dest>              # writes ./log.txt
 freemkv --log-level 3 --log-file freemkv-debug.log <source> <dest>
 ```
 
 Level 3 (debug) is recommended for bug reports — comprehensive diagnostics at a
-manageable size. The extra detail appears on the failure path (CSS auth, retries, read
+manageable size. The extra detail covers the failure path (CSS auth, retries, read
 errors, mux-stage decisions, stalls) — exactly when you need it. If a maintainer asks for
 maximum detail, use `--log-level 4` (trace), but note it's a per-sector firehose that can
-be gigabytes on a long rip.
+be gigabytes on a long rip. Log files are written with timestamps on and terminal colour
+codes off, so they paste cleanly into a bug report.
 
 **Keys are never written to logs** — log output contains paths and disc metadata; CSS/AACS
 key material is always redacted.

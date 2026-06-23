@@ -9,9 +9,10 @@ Fixes for the problems reported most often with freemkv and autorip. Find your s
 
 For any failure or hang, capture a debug log first — it's the fastest path to a diagnosis and the one thing to attach to a bug report.
 
-On the CLI, re-run with debug logging to a file:
+The CLI keeps the terminal clean by default and never prints raw diagnostics there. When something fails it prints a short block naming the cause and telling you exactly this: re-run with `--log-level 3` to get a log. That writes a diagnostic log to `./log.txt` (override the path with `--log-file`):
 
 ```bash
+freemkv --log-level 3 <source> <dest>              # writes ./log.txt
 freemkv --log-level 3 --log-file freemkv-debug.log <source> <dest>
 ```
 
@@ -51,6 +52,16 @@ If `freemkv info disc://` reports no drive:
 You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) without keys available. The CLI reports "no KEYDB.cfg found"; DVDs are never affected.
 
 Blu-ray and 4K UHD need decryption keys you provide. **[Decryption Keys](/decryption-keys/)** covers the ways to supply them (for the CLI and for autorip).
+
+## Drive rejected the disc's security credentials
+
+If you have keys but the rip still fails at the drive handshake — the error says the drive *did not accept the disc's security credentials* or *rejected the security credentials for this disc* — the drive refused to start the secure session needed to read the disc:
+
+- **Update your key database** first (`freemkv update-keys --url <keydb-url>`). A stale or incomplete keydb is the most common cause.
+- If the keys are current and it still fails, the disc may need a **firmware-unlockable drive**. Some drives can be unlocked to read protected discs and others cannot; on a drive that can't be unlocked another way, this handshake is the only path and there's nothing more to try on that drive. Use a drive that supports unlocking.
+- Make sure nothing else is using the disc — a busy drive can refuse to start a secure session.
+
+Re-run with `--log-level 3` (writes `./log.txt`) and attach the log if you open an issue.
 
 ## Bad sectors on a disc
 
