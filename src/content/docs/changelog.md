@@ -13,6 +13,20 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
+## 1.0.0-rc.4.1 (2026-06-23)
+
+Patch on rc.4. A single, high-impact Windows fix.
+
+### Fixed
+
+- **Windows: drives are detected again.** rc.4 shipped a regression that
+  made 64-bit Windows report "no drives detected" — drive enumeration
+  came back empty because the SCSI pass-through request structure used a
+  32-bit memory layout on a 64-bit host, so every low-level drive query
+  failed. The structure now uses the correct 64-bit layout (matching the
+  Windows SDK), and drive detection works as it did before rc.4. Windows
+  users on rc.4 should update.
+
 ## 1.0.0-rc.4 (2026-06-23)
 
 Focused on a clean, predictable operator experience, clearer error
