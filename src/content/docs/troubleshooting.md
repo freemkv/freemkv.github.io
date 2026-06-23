@@ -12,8 +12,8 @@ For any failure or hang, capture a debug log first — it's the fastest path to 
 The CLI keeps the terminal clean by default and never prints raw diagnostics there. When something fails it prints a short block naming the cause and telling you exactly this: re-run with `--log-level 3` to get a log. That writes a diagnostic log to `./log.txt` (override the path with `--log-file`):
 
 ```bash
-freemkv --log-level 3 <source> <dest>              # writes ./log.txt
-freemkv --log-level 3 --log-file freemkv-debug.log <source> <dest>
+freemkv <source> <dest> --log-level 3              # writes ./log.txt
+freemkv <source> <dest> --log-level 3 --log-file freemkv-debug.log
 ```
 
 In autorip, enable the Debug toggle in the web UI (or `POST /api/debug`), reproduce the problem, then collect the container logs.

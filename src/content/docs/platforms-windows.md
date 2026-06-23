@@ -7,21 +7,22 @@ freemkv runs natively on Windows. There are two programs, each a single file: **
 
 ## Step 1 — Download and unzip
 
-Go to the **[Download](/download/)** page. On Windows you get a **`.zip`** file containing both programs:
+Go to the **[Download](/download/)** page. There are two programs, downloaded separately — each as its own **`.zip`**:
 
-- **`freemkv.exe`** — the command-line tool (manual, one disc at a time).
-- **`autorip.exe`** — the automatic service with a web page (insert a disc, it rips by itself). Most people want this one.
+- **autorip** — the automatic service with a web page (insert a disc, it rips by itself). **Most people want this one.**
+- **freemkv** — the command-line tool (manual, one disc at a time).
 
-**Unzip it:** find the downloaded `.zip` in your `Downloads` folder, then **right-click it → Extract All… → Extract**. You'll get a `freemkv` folder with both `.exe` files inside. Leaving it right there in Downloads is perfectly fine — you'll end up with:
+Pick the one you want (you can grab both). **Unzip it:** find the downloaded `.zip` in your `Downloads` folder, then **right-click it → Extract All… → Extract**. Inside is the single program — `autorip.exe` (or `freemkv.exe`).
+
+Windows names the extracted folder after the zip; rename it to something tidy like `freemkv` and keep it wherever you like — leaving it in Downloads is fine:
 
 ```
-C:\Users\you\Downloads\freemkv\freemkv.exe
 C:\Users\you\Downloads\freemkv\autorip.exe
 ```
 
-There's **no installer** — the extracted files *are* the programs.
+There's **no installer** — the extracted `.exe` *is* the program.
 
-Throughout the rest of this page, **`<install dir>`** means that `freemkv` folder — wherever you extracted it (in the example above that's `C:\Users\you\Downloads\freemkv`). Substitute your own path wherever you see it.
+Throughout the rest of this page, **`<install dir>`** means the folder that holds the `.exe` — wherever you put it (the example above is `C:\Users\you\Downloads\freemkv`). Substitute your own path wherever you see it.
 
 ## Step 2 — Get past the blue "Windows protected your PC" screen
 
@@ -116,23 +117,14 @@ $env:AUTORIP_DIR = "D:\autorip-data"
 
 ### The `freemkv` CLI's files
 
-The CLI is lighter and stores only its keys under your user profile:
-
-| What | Path |
+| What | Where |
 |---|---|
-| AACS keys (`keydb.cfg`) | `%APPDATA%\freemkv\keydb.cfg` |
+| AACS keys (`keydb.cfg`) | see **[Decryption Keys](/decryption-keys/)** |
 | Diagnostic log | off by default (see [Logs](#step-7--turning-on-logs-for-bug-reports)) |
-
-`%APPDATA%` expands to `C:\Users\you\AppData\Roaming`, so the full path is `C:\Users\you\AppData\Roaming\freemkv\keydb.cfg`.
 
 ## Step 6 — Decryption keys for Blu-ray and UHD
 
-**DVDs work out of the box** — no key file needed. **Blu-ray and 4K UHD discs are AACS-encrypted** and need a `keydb.cfg` key database:
-
-- **autorip** can fetch and refresh it automatically — set the **KEYDB Update URL** in **Settings** and it downloads to `config\keys\keydb.cfg` and keeps it current.
-- Or drop a `keydb.cfg` you already have into `config\keys\` yourself.
-
-If a Blu-ray/UHD rip stops with *"no KEYDB.cfg found,"* that's this — see **[Decryption Keys](/decryption-keys/)** for the full explanation.
+**DVDs work out of the box.** **Blu-ray and 4K UHD discs are AACS-encrypted** and need keys — autorip can download and refresh them automatically, you can point it at an online key service, or you can supply your own `keydb.cfg`. It works the same on every platform, so it's all on one page: **[Decryption Keys](/decryption-keys/)**.
 
 ## Step 7 — Turning on logs (for bug reports)
 
@@ -140,7 +132,7 @@ By design freemkv keeps the terminal **clean** and writes **no log file** unless
 
 ```powershell
 # CLI: write a detailed log next to where you're running it
-.\freemkv.exe --log-level 3 disc-info
+.\freemkv.exe info disc:// --log-level 3
 # creates .\log.txt in the current folder
 ```
 

@@ -269,8 +269,8 @@ If something fails or hangs, re-run with `--log-level 3`. That writes a diagnost
 `./log.txt` (override the path with `--log-file`):
 
 ```bash
-freemkv --log-level 3 <source> <dest>              # writes ./log.txt
-freemkv --log-level 3 --log-file freemkv-debug.log <source> <dest>
+freemkv <source> <dest> --log-level 3              # writes ./log.txt
+freemkv <source> <dest> --log-level 3 --log-file freemkv-debug.log
 ```
 
 Level 3 (debug) is recommended for bug reports — comprehensive diagnostics at a
