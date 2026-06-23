@@ -20,6 +20,12 @@ AACS-encrypted discs decrypt only when you supply AACS keys. No AACS keys are bu
 Provide them one of two ways: an online key service or a local `keydb.cfg`. Both autorip and
 the `freemkv` CLI support either source.
 
+:::note[You supply the keys]
+freemkv ships with no AACS keys built in, and this website does not link to, host, or
+recommend any specific online key service or key database. The options below describe the
+mechanisms only; obtaining keys is up to you.
+:::
+
 ## Online key service
 
 A third-party web service looks up keys for an inserted disc on demand, so you don't
