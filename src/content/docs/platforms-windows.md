@@ -5,24 +5,23 @@ description: A complete step-by-step Windows guide for freemkv and autorip — d
 
 freemkv runs natively on Windows. There are two programs, each a single file: **`freemkv.exe`** (the command-line tool) and **`autorip.exe`** (a self-contained service you open in your browser). This page walks through everything start to finish; if you've never run a program from a terminal before, you can still follow along.
 
-## Step 1 — Download the right file
+## Step 1 — Download and unzip
 
-Go to the **[Download](/download/)** page. It detects Windows and gives you the correct file:
+Go to the **[Download](/download/)** page. On Windows you get a **`.zip`** file containing both programs:
 
 - **`freemkv.exe`** — the command-line tool (manual, one disc at a time).
 - **`autorip.exe`** — the automatic service with a web page (insert a disc, it rips by itself). Most people want this one.
 
-These are plain `.exe` files. There is **no installer** — the download *is* the program.
-
-:::caution[Pick a real folder, not Downloads]
-Don't run it straight out of your `Downloads` folder. Make a dedicated folder so autorip's files stay tidy in one place:
+**Unzip it:** find the downloaded `.zip` in your `Downloads` folder, then **right-click it → Extract All… → Extract**. You'll get a `freemkv` folder with both `.exe` files inside. Leaving it right there in Downloads is perfectly fine — you'll end up with:
 
 ```
-C:\Users\you\freemkv\
+C:\Users\you\Downloads\freemkv\freemkv.exe
+C:\Users\you\Downloads\freemkv\autorip.exe
 ```
 
-Move the downloaded `.exe` into that folder. (Replace `you` with your actual Windows username.)
-:::
+There's **no installer** — the extracted files *are* the programs.
+
+Throughout the rest of this page, **`<install dir>`** means that `freemkv` folder — wherever you extracted it (in the example above that's `C:\Users\you\Downloads\freemkv`). Substitute your own path wherever you see it.
 
 ## Step 2 — Get past the blue "Windows protected your PC" screen
 
@@ -36,7 +35,7 @@ To run it anyway:
 You only have to do this once per download.
 
 :::note[Antivirus flagged it?]
-Some antivirus tools quarantine unknown `.exe` files on sight (a "false positive" — it's reacting to the file being new and unsigned, not to anything it found). If the file vanishes after download or won't start, check your antivirus quarantine and allow/restore it, then add an exclusion for your `C:\Users\you\freemkv\` folder.
+Some antivirus tools quarantine unknown `.exe` files on sight (a "false positive" — it's reacting to the file being new and unsigned, not to anything it found). If the file vanishes after download or won't start, check your antivirus quarantine and allow/restore it, then add an exclusion for your `<install dir>\` folder.
 :::
 
 ## Step 3 — Open a terminal *in the folder*
@@ -45,14 +44,14 @@ freemkv is a command-line program, so **double-clicking the `.exe` does nothing 
 
 The easy way:
 
-1. Open **File Explorer** and go to your `C:\Users\you\freemkv\` folder.
+1. Open **File Explorer** and go to your `<install dir>\` folder.
 2. **Right-click an empty area** inside the folder.
 3. Choose **Open in Terminal** (Windows 11) or **Open PowerShell window here** (Windows 10).
 
 A terminal opens, already "inside" your folder. You'll know it worked because the prompt shows your folder path, e.g.:
 
 ```
-PS C:\Users\you\freemkv>
+PS <install dir>>
 ```
 
 ## Step 4 — Run it
@@ -88,15 +87,15 @@ If you typed `autorip.exe` and got *"The term 'autorip.exe' is not recognized...
 
 `autorip.exe` is **self-contained**. It keeps *everything* in a single `config\` folder that sits **right next to the executable** — it does **not** scatter files across your system, and it will **never** create a `C:\config` folder at the root of your drive.
 
-So if your `autorip.exe` is at `C:\Users\you\freemkv\autorip.exe`, then:
+So if your `autorip.exe` is at `<install dir>\autorip.exe`, then:
 
 | What | Where it lives |
 |---|---|
-| Settings | `C:\Users\you\freemkv\config\settings.json` |
-| Logs (one file per drive) | `C:\Users\you\freemkv\config\logs\` |
-| AACS keys (`keydb.cfg`) | `C:\Users\you\freemkv\config\keys\keydb.cfg` |
-| Work-in-progress (staging) | `C:\Users\you\freemkv\config\staging\` |
-| **Finished movies** | `C:\Users\you\freemkv\config\output\` |
+| Settings | `<install dir>\config\settings.json` |
+| Logs (one file per drive) | `<install dir>\config\logs\` |
+| AACS keys (`keydb.cfg`) | `<install dir>\config\keys\keydb.cfg` |
+| Work-in-progress (staging) | `<install dir>\config\staging\` |
+| **Finished movies** | `<install dir>\config\output\` |
 
 **Your finished `.mkv` files are in `config\output\`** unless you change the output folder in **Settings** in the web UI.
 
