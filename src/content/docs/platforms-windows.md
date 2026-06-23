@@ -5,14 +5,6 @@ description: A complete step-by-step Windows guide for freemkv and autorip — d
 
 freemkv runs natively on Windows. There are two programs, each a single file: **`freemkv.exe`** (the command-line tool) and **`autorip.exe`** (a self-contained service you open in your browser). This page walks through everything start to finish; if you've never run a program from a terminal before, you can still follow along.
 
-:::tip[The 60-second version]
-1. Download `autorip.exe` (or `freemkv.exe`) from the **[Download](/download/)** page.
-2. Put it in its own folder, e.g. `C:\Users\you\freemkv\`.
-3. Double-clicking won't help — you run it from a terminal. Right-click the folder → **Open in Terminal**.
-4. Type `.\autorip.exe serve` and press Enter, then open **http://localhost:8080** in your browser.
-5. Everything autorip creates (settings, logs, your finished movies) lands in a `config\` folder **right next to the .exe**.
-:::
-
 ## Step 1 — Download the right file
 
 Go to the **[Download](/download/)** page. It detects Windows and gives you the correct file:
