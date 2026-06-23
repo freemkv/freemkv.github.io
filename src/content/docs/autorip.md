@@ -3,7 +3,7 @@ title: autorip Service
 description: Deploy and configure the autorip service — web UI, HTTP API, recovery tuning, and resume.
 ---
 
-autorip is a rip service: insert a disc, and it rips automatically to MKV. A browser-based UI shows live progress, settings, and history — nothing to type. This page covers deploying autorip and tuning it; for a guided first run, start with the [Quickstart](/quickstart/).
+autorip is a rip service: insert a disc, and it rips automatically to MKV. A browser-based UI shows live progress, settings, and history — nothing to type. This page covers deploying autorip and tuning it; for the manual command-line workflow, see the [CLI reference](/cli/).
 
 On disc insert, autorip runs the full pipeline automatically: a tolerant sweep, targeted patch retries on bad ranges, decrypt, and mux to MKV. Multiple drives rip in parallel, each with independent state.
 

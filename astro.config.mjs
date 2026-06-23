@@ -46,7 +46,14 @@ export default defineConfig({
           items: [
             { label: 'Overview', slug: 'overview' },
             { label: 'Install', slug: 'install' },
-            { label: 'Quickstart', slug: 'quickstart' },
+          ],
+        },
+        {
+          label: 'Platforms',
+          items: [
+            { label: 'Windows', slug: 'platforms-windows' },
+            { label: 'macOS', slug: 'platforms-macos' },
+            { label: 'Linux', slug: 'platforms-linux' },
           ],
         },
         {
@@ -58,15 +65,6 @@ export default defineConfig({
             { label: 'Decryption Keys', slug: 'decryption-keys' },
             { label: 'How recovery works', slug: 'how-recovery-works' },
             { label: 'Troubleshooting', slug: 'troubleshooting' },
-          ],
-        },
-        {
-          label: 'Platforms',
-          items: [
-            { label: 'Overview', slug: 'platforms' },
-            { label: 'Windows', slug: 'platforms-windows' },
-            { label: 'macOS', slug: 'platforms-macos' },
-            { label: 'Linux', slug: 'platforms-linux' },
           ],
         },
         {

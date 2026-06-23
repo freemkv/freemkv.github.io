@@ -18,7 +18,7 @@ freemkv <source> <dest> --log-level 3 --log-file freemkv-debug.log
 
 In autorip, enable the Debug toggle in the web UI (or `POST /api/debug`), reproduce the problem, then collect the container logs.
 
-On Windows, macOS, or Linux, see your [Platforms](/platforms/) page for where files (config, keys, logs, staging, output) live.
+For where files (config, keys, logs, staging, output) live, see your platform page: [Windows](/platforms-windows/), [macOS](/platforms-macos/), or [Linux](/platforms-linux/).
 
 ## No drives detected in autorip
 

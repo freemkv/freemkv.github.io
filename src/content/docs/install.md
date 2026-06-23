@@ -1,87 +1,32 @@
 ---
 title: Install
-description: Install the freemkv CLI, run the autorip service, or build from source.
+description: Get the freemkv CLI or the autorip service — a prebuilt binary or build from source.
 ---
 
-How to get freemkv: install the CLI (a prebuilt binary, or build from source), or run the
-autorip service.
+There are two programs — the **freemkv CLI** (manual, one disc at a time) and the **autorip service** (a hands-off web app). Both are a single download with no runtime or dependencies. Grab a prebuilt binary, or build from source.
 
-## CLI
+For per-OS setup — where files live, how to reach the optical drive, and platform quirks — see your **[platform page](/platforms-windows/)** (Windows, macOS, Linux).
 
-Go to the **[Download](/download/)** page — it detects your OS and hands you the right
-binary (Linux, macOS, or Windows; Intel or ARM). Make it executable and run it:
+## Prebuilt binaries
 
-```bash
-# rename the downloaded binary to `freemkv`, make it executable, and run it
-mv freemkv-* freemkv && chmod +x freemkv
-./freemkv --version
-```
+Go to the **[Download](/download/)** page — it detects your OS and hands you the right build (Linux, macOS, or Windows; Intel or ARM). It's one self-contained file per program; download and run it. The exact run command differs slightly per OS, so follow your platform page:
 
-One static binary, no runtime or dependencies. Then head to the
-**[Quickstart](/quickstart/)** for your first rip.
+- **[Windows](/platforms-windows/)** — download the `.zip`, extract, run from a terminal.
+- **[macOS](/platforms-macos/)** — `chmod +x` and run; the disc is unmounted for exclusive access.
+- **[Linux](/platforms-linux/)** — `chmod +x` and run; drive access via the `cdrom` group.
 
-Need a specific platform, an older version, or a `.sha256` checksum? Every build is on the
-[releases page](https://github.com/freemkv/freemkv/releases).
+Every build has a matching `.sha256` checksum on the [releases page](https://github.com/freemkv/freemkv/releases).
 
 ## autorip
 
-[autorip](/autorip/) is a web app: insert a disc and it rips automatically to MKV, with
-progress, settings, and history all in the browser. It runs on Linux, macOS, or Windows, on a
-machine with an optical drive (a home server or NAS works well). Run it as a single binary, or
-— on Linux — via Docker.
-
-### Binary
-
-Get the autorip binary from the **[Download](/download/)** page, then run the service:
+[autorip](/autorip/) is a web app: insert a disc and it rips automatically to MKV, with progress, settings, and history in the browser. It runs on Linux, macOS, or Windows as a single binary, or — on Linux — as a Docker container.
 
 ```bash
-# rename to `autorip`, make it executable, and start the service
-mv autorip-* autorip && chmod +x autorip
+# binary: download, make it executable, start the service
 ./autorip serve          # then open http://localhost:8080
 ```
 
-One static binary, no container, no runtime. Drive access uses the `cdrom` group or a udev
-rule; see **[autorip → Deploy](/autorip/#deploy)** for a systemd unit and configuration.
-
-### Docker
-
-Also published to GHCR at `ghcr.io/freemkv/autorip:latest`:
-
-```yaml
-# docker-compose.yml
-services:
-  autorip:
-    image: ghcr.io/freemkv/autorip:latest
-    # REQUIRED — without privileged, drive enumeration returns zero drives
-    privileged: true
-    volumes:
-      # optical drive access
-      - /dev:/dev
-      # finished MKVs land here
-      - ./output:/output
-      # keydb.cfg for Blu-ray / UHD decryption
-      - ./config/keys:/root/.config/freemkv
-    ports:
-      # web UI
-      - "8080:8080"
-```
-
-```bash
-docker compose up -d
-```
-
-Three things matter for that one-time setup:
-
-- **`privileged: true` is required.** Without it the container starts but drive
-  enumeration silently returns zero drives and the UI shows "No drives detected."
-- **Bind-mount `/dev:/dev`** so autorip can see the optical drives.
-- **Bind-mount a keys directory to `/root/.config/freemkv`** so your `keydb.cfg` persists
-  across restarts. Required for AACS-encrypted discs (Blu-ray + UHD); DVDs (CSS) work
-  without it. See **[Decryption Keys](/decryption-keys/)**.
-
-Open `http://<host>:8080`, configure settings, and insert a disc — autorip takes it from
-there. For the full compose file (staging volume, health check, log-level env var) and
-every setting, see **[autorip → Deploy](/autorip/#deploy)**.
+For the Docker image, a full `docker-compose.yml`, a systemd unit, drive permissions, and every setting, see **[autorip → Deploy](/autorip/#deploy)**. Blu-ray and 4K UHD also need **[decryption keys](/decryption-keys/)**; DVDs work out of the box.
 
 ## Build from source
 
@@ -96,5 +41,6 @@ cargo build --release
 
 ## Next steps
 
+- **[Platforms](/platforms-windows/)** — per-OS setup, file locations, and drive access.
 - **[CLI reference](/cli/)** — every subcommand, flag, and stream URL.
 - **[Decryption Keys](/decryption-keys/)** — what Blu-ray and UHD need before they decrypt.

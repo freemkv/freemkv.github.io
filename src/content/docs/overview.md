@@ -7,7 +7,7 @@ freemkv is a Rust toolchain for optical-disc backup. Its goal is to **recover 10
 
 "Readable" is the bound: **if a sector can be read off the disc, freemkv reads it.** Not best-effort — everything the drive can physically recover, pursued through transient errors and marginal media.
 
-If you just want to rip a disc, jump to the **[Quickstart](/quickstart/)**.
+If you just want to rip a disc, the **[CLI reference](/cli/)** has every command, or run the **[autorip service](/autorip/)** and let it do it on disc insert.
 
 ## The recovery model
 
@@ -54,6 +54,6 @@ Both compose libfreemkv, the core library that handles recovery, sector-level re
 ## Next steps
 
 - **[Install](/install/)** — prebuilt binaries or build from source.
-- **[Quickstart](/quickstart/)** — inspect, rip, and remux in a few commands.
+- **[Platforms](/platforms-windows/)** — per-OS setup, file locations, and drive access (Windows, macOS, Linux).
 - **[CLI reference](/cli/)** — every subcommand, flag, and stream URL.
 - **[Decryption Keys](/decryption-keys/)** — what Blu-ray and UHD need.

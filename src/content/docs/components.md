@@ -17,7 +17,7 @@ See the [library overview](/libfreemkv/).
 
 The command-line front end, for Linux, macOS, and Windows. Every operation is a `scheme://` stream URL: rip a disc to MKV, copy a disc to an ISO, remux an existing image, inspect a disc, or refresh the key database.
 
-See the [CLI reference](/cli/) and the [Quickstart](/quickstart/). Get a binary from the [Download](/download/) page.
+See the [CLI reference](/cli/). Get a binary from the [Download](/download/) page.
 
 ## autorip
 
