@@ -13,6 +13,97 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
+## 1.0.0-rc.5.2 (upcoming, unreleased)
+
+A recovery and decryption-correctness round. Single-pass rips now recover
+marginal sectors the way multipass already did, large AACS Blu-ray titles
+that failed to decrypt now mux cleanly, and a 4K decode glitch on discs
+with non-seamless clip joins is fixed. **Not yet released.**
+
+### Fixed
+
+- **Single-pass rips now recover marginal and transient sectors.** A
+  single-pass (direct disc → MKV) rip now retries marginal and transient
+  read errors before reporting a sector as unreadable, matching the
+  behavior of multipass mode. Discs with a few recoverable read errors
+  that previously failed (or lost data) in single-pass now complete.
+- **"Decryption failed" on large AACS Blu-ray titles.** The biggest
+  titles on some AACS Blu-rays failed to decrypt and aborted the mux.
+  The decryption unit alignment is now anchored to each clip, so these
+  titles decrypt and mux correctly.
+- **4K playback glitches on discs with non-seamless clip joins.** Some
+  UHD discs (for example the *Top Gun* class of titles) join clips
+  non-seamlessly, which produced "Could not find ref" decode errors and
+  visible glitches at the joins during playback. These joins are now
+  handled correctly and play back cleanly.
+
+### Changed
+
+- **Expanded DVD test coverage.** Additional DVD test fixtures broaden
+  automated coverage of CSS decryption and DVD muxing.
+
+## 1.0.0-rc.5.1 (2026-06-24)
+
+Patch on rc.5. DVD decryption reliability improvements, audio and video
+metadata fixes, cleaner CLI validation, broader UI localization, and a
+minor autorip housekeeping fix.
+
+### Fixed
+
+- **DVDs now decrypt correctly on CSS-enforcing drives.** Some drives
+  require a bus-level authentication handshake before they allow
+  scrambled sectors to be read. Without it, freemkv produced an empty
+  MKV (exit 0 — silently wrong) or hung indefinitely. The handshake is
+  now performed automatically; if a title key still cannot be recovered,
+  you get a clear error instead of an empty file.
+- **DVD first-play menu is no longer prepended to the movie.** On discs
+  that author a per-title menu (for example a studio "the parental level
+  has been set, press yes" prompt), that menu was being included ahead of
+  the feature, shifting the whole rip. The rip now opens on the movie's
+  first frame.
+- **DVD audio channel count is now read from the audio stream.** Some
+  discs incorrectly label a stereo (2.0) audio track as 5.1 in their
+  disc table of contents. freemkv now reads the channel count directly
+  from the AC-3 audio data, so the MKV track reflects what the stream
+  actually contains.
+- **Interlaced DVDs now report the correct frame rate on Windows.**
+  Interlaced (576i/480i) content now includes the metadata field Windows
+  uses to determine the display frame rate. Previously, Windows Media
+  Player and Explorer could show an incorrect or blank frame rate for
+  interlaced discs.
+- **Interlaced field order corrected.** Interlaced tracks now carry
+  top-field-first (TFF) order in the MKV, matching the order in the
+  source stream, so deinterlacers in players use the correct field
+  parity.
+- **Video and audio bitrates now appear in file properties.** Each track
+  in the output MKV now carries a per-track bitrate tag, so players and
+  Windows Explorer can display the per-stream bitrate without scanning
+  the whole file.
+- **autorip: no more spurious "stranded staging directory" warnings.**
+  autorip's mover logged a false warning every 10 seconds for any staging
+  directory that was actively being written to. The warning now appears
+  only when a directory is genuinely left behind with no active rip (for
+  example after a crash or restart).
+
+### Changed
+
+- **AACS handshake skipped on DVDs.** The AACS authentication sequence is
+  no longer attempted on DVDs, where it never applied — it was a no-op at
+  best and produced spurious errors at worst.
+
+### Added
+
+- **Disc diagnostics at log level 3.** Running with `--log-level 3` now
+  emits a structured snapshot of the disc's layout before muxing — PGC
+  and cell structure for DVDs; playlist, clip, and AACS metadata for
+  Blu-ray and UHD. Useful when diagnosing a mux or authentication
+  problem without needing a developer build.
+- **CLI input validation.** `--log-level`, `--key-url`, and `--language`
+  now validate their inputs up front and print a specific, actionable
+  error if the value is invalid.
+- **UI localization in seven languages.** The interface is now localized
+  across seven locales.
+
 ## 1.0.0-rc.4.3 (2026-06-23)
 
 Patch on rc.4.2. DVD playback-correctness fixes (PAL aspect, resolution,
