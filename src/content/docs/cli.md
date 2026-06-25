@@ -101,18 +101,6 @@ Reads and discards everything — a read-speed benchmark or dry run, with no out
 
 Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the folder. Not yet available.
 
-## Examples
-
-```bash
-freemkv disc:// mkv://Movie.mkv             # disc → MKV (main title)
-freemkv disc:// -t 1 -t 3 mkv://Movies/     # specific titles → directory
-freemkv iso://Disc.iso mkv://Movie.mkv      # ISO → MKV
-freemkv disc:// iso://Disc.iso              # disc → decrypted ISO
-freemkv disc:// iso://Disc.iso --multipass  # recover a damaged disc (re-run until clean)
-freemkv disc:// network://10.0.0.5:9000     # stream to a receiver
-freemkv disc:// null://                     # benchmark read speed
-```
-
 ## Subcommands
 
 ### info — inspect a disc, image, or file
