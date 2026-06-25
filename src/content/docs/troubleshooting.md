@@ -52,13 +52,18 @@ If `freemkv info disc://` reports no drive:
 
 ## No decryption keys available
 
-You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) with no key source configured. The CLI reports "no KEYDB.cfg found"; DVDs are never affected.
+You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) and no key source had its key. The CLI says something like *"This disc needs AACS decryption keys, but no key source provided them"* or *"No key source has a decryption key for this disc"* (often with the disc's id). DVDs are never affected.
 
-Blu-ray and 4K UHD need decryption keys you provide — either a local `keydb.cfg` or an online key service. **[Decryption Keys](/decryption-keys/)** covers both options (for the CLI and for autorip).
+**Next steps** — Blu-ray and 4K UHD need decryption keys you provide, from either of two key sources:
+
+- **A local key database** (`keydb.cfg`): download or refresh it with `freemkv update-keys --url <keydb-url>`, or point `--keydb PATH` at one you already have.
+- **An online key service:** configure it with `--key-url URL`.
+
+**[Decryption Keys](/decryption-keys/)** covers both options for the CLI and for autorip.
 
 ## Drive rejected the disc's security credentials
 
-If you have keys but the rip still fails at the drive handshake (the error says the drive *did not accept the disc's security credentials* or *rejected the security credentials for this disc*), the drive refused to start the secure session needed to read the disc:
+If you have keys but the rip still fails at the drive handshake (the error says the drive *rejected this disc's security certificate* or *rejected the AACS host certificate*), the drive refused to start the secure session needed to read the disc:
 
 - **Update your key database** first (`freemkv update-keys --url <keydb-url>`). A stale or incomplete keydb is the most common cause.
 - If the keys are current and it still fails, the disc may need a **firmware-unlockable drive**. Some drives can be unlocked to read protected discs and others cannot; on a drive that can't be unlocked another way, this handshake is the only path and there's nothing more to try on that drive. Use a drive that supports unlocking.

@@ -20,7 +20,7 @@ published crate and its generated docs can lag the latest source.
 
 ```toml
 [dependencies]
-libfreemkv = "1.0.0-rc.4.3"
+libfreemkv = "1.0.0-rc.5.3"
 ```
 
 ## Design principles
@@ -49,6 +49,7 @@ pub enum StreamUrl {
     Network { addr: String },          // network://host:port
     Stdio,                             // stdio://
     Null,                              // null://
+    Dir { path: PathBuf },             // dir://path/ (decrypted file tree)
     Unknown { raw: String },           // unrecognized
 }
 ```

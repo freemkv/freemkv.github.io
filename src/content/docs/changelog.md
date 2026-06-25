@@ -13,6 +13,44 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
+## 1.0.0-rc.5.3 (2026-06-24)
+
+A decryption-UX and output round. Decryption errors are now generic about
+where keys come from instead of assuming a single local key database, a new
+`dir://` output writes a decrypted file tree, and the CLI's key and device
+handling is simpler and fails loudly on bad input rather than silently
+producing an undecrypted file.
+
+### Added
+
+- **`dir://` output — a decrypted file tree.** Write a decrypted `VIDEO_TS` /
+  `BDMV` tree straight from a disc or ISO instead of a single muxed file. It
+  reads and decrypts only the disc's allocated file extents.
+
+### Changed
+
+- **Error messages are source-agnostic.** Decryption errors no longer assume a
+  local key database is *the* key source. They state the problem (for example,
+  "No key source has a decryption key for this disc") and leave the next steps
+  to the new [Troubleshooting](/troubleshooting/) page. Reworded across all
+  seven languages.
+- **The default `keydb.cfg` location is next to the executable.** The portable
+  CLI looks beside its own binary rather than in an OS configuration directory;
+  `--keydb` still overrides. (The `autorip` service keeps its container
+  location.)
+- **Simpler CLI flags.** Dropped the `-k` short flag (use `--keydb`) and removed
+  `--device` entirely — the drive is named in the source URL, e.g.
+  `disc:///dev/sgN`.
+- **Plain-English diagnostic logs.** The AACS scan and key-resolution trace now
+  reads in plain language and refers to a generic "key source".
+
+### Fixed
+
+- **No more silent encrypted output.** When an AACS disc needs keys and none are
+  available, the rip fails early and clearly instead of writing an undecrypted
+  file. Invalid input parameters (a bad drive, a missing ISO) are rejected up
+  front rather than partway through.
+
 ## 1.0.0-rc.5.2 (2026-06-24)
 
 A recovery and decryption-correctness round. Single-pass rips now recover

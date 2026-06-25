@@ -54,39 +54,31 @@ loopback, private, or cloud-metadata address.
 
 ## Local keydb.cfg
 
-A `keydb.cfg` file on disk. The CLI looks for it in a per-OS list of locations and uses the
-first one that exists.
-
-| OS | Searched in order |
-| --- | --- |
-| **Windows** | `%APPDATA%\freemkv\keydb.cfg` (e.g. `C:\Users\<you>\AppData\Roaming\freemkv\keydb.cfg`), then the legacy `%USERPROFILE%\.config\freemkv\keydb.cfg` |
-| **Linux / macOS** | `$XDG_CONFIG_HOME/freemkv/keydb.cfg` (if `XDG_CONFIG_HOME` is set), then `~/.config/freemkv/keydb.cfg` |
-
-On Windows, put the file at `%APPDATA%\freemkv\keydb.cfg`: type `%APPDATA%` into the
-Explorer address bar to open the `Roaming` folder, then create a `freemkv` subfolder. The
-older `.config` dotfolder under your user profile is still read for back-compat, but
-`%APPDATA%` is the recommended location.
+A `keydb.cfg` file on disk. By default the **CLI looks for it next to the `freemkv`
+executable** — a `keydb.cfg` in the same folder as the program. freemkv is a portable,
+self-contained binary, so its key database lives beside it rather than in an OS
+configuration directory.
 
 Download or refresh it from a URL with `update-keys` (the URL is required; there's no
-built-in default). It writes to the first location above for your OS (`%APPDATA%\freemkv\`
-on Windows, `~/.config/freemkv/` on Linux/macOS):
+built-in default). It writes `keydb.cfg` next to the executable:
 
 ```bash
-# download keydb.cfg to the default location
+# download keydb.cfg next to the freemkv executable
 freemkv update-keys --url <KEYDB_URL>
 ```
 
-To use a `keydb.cfg` elsewhere, point the CLI at it with `--keydb`:
+To use a `keydb.cfg` somewhere else, point the CLI at it with `--keydb`:
 
 ```bash
 # use a keydb.cfg from a custom path
 freemkv disc:// -t 1 mkv://Movie.mkv --keydb /path/to/keydb.cfg
 ```
 
-**autorip** looks in the same per-OS default location as the CLI (above), and can also
-download and refresh the file for you from **Settings**. For the Docker image, bind-mount a
-host keys directory to `/root/.config/freemkv` (see [autorip → Deploy](/autorip/#deploy)) so
-it persists across restarts.
+**autorip** is a long-running service rather than a portable binary, so it uses the standard
+config location `~/.config/freemkv/keydb.cfg` and can also download and refresh the file for
+you from **Settings**. For the Docker image, bind-mount a host keys directory to
+`/root/.config/freemkv` (see [autorip → Deploy](/autorip/#deploy)) so it persists across
+restarts.
 
 ## When keys are missing
 

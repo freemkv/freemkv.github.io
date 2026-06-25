@@ -29,7 +29,7 @@ Every source and destination is a `scheme://` URL.
 | `network://host:port` | ✓ | ✓ | TCP (listen or connect) |
 | `stdio://` | ✓ | ✓ | Stdin / stdout |
 | `null://` | — | ✓ | Discard (read-speed benchmark) |
-| `dir://path/` | — | ✓ | **Planned** — decrypted file tree (VIDEO\_TS / BDMV) |
+| `dir://path/` | — | ✓ | Decrypted file tree (VIDEO\_TS / BDMV) |
 
 `disk://` is an alias for `disc://`. Everything is **decrypted by default**; `--raw` (`iso://` only) is the sole encrypted output. BD/UHD discs need an AACS key — see [Decryption Keys](/decryption-keys/); DVDs need none.
 
@@ -97,9 +97,14 @@ Streams a rip over TCP instead of to a file: one end listens (`network://0.0.0.0
 
 Reads and discards everything — a read-speed benchmark or dry run, with no output written.
 
-### dir:// *(planned)*
+### dir://
 
-Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the folder. Not yet available.
+Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the folder, reading and decrypting only the disc's allocated files.
+
+```bash
+freemkv disc:// dir://Movie/
+freemkv iso://Disc.iso dir://Movie/
+```
 
 ## Subcommands
 
