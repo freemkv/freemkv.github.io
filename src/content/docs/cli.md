@@ -133,18 +133,17 @@ freemkv help       # also --help / -h (exit 0)
 
 ## Flags
 
-Rip / remux flags (the `<source> <destination>` form):
+Key sources (for a rip that needs decryption keys):
 
 | Flag | Description |
 |---|---|
-| `-t, --title N` | Select title N (1-based, repeatable). Default: main for `disc://`, all for `iso://`. |
 | `-k, --keydb PATH` | **Optional** override for the keydb location. Without it, freemkv searches the default locations — see [Decryption Keys](/decryption-keys/). Only Blu-ray/UHD need a keydb; DVDs use none. |
-| `--key-url URL` | Online key service (`https://…`); local keydb tried first if both given. |
+| `--key-url URL` | Online key service (`https://…`); the local keydb is tried first if both are given. |
 | `--key-auth TOKEN` | Bearer token for `--key-url`. |
-| `--raw` | `iso://` only — write encrypted sectors. |
-| `--multipass` | `iso://` only — multi-pass recovery with a resumable mapfile. |
 
-Global (any invocation):
+Title selection (`-t`) and the `iso://`-only `--raw` / `--multipass` flags are covered under [Scheme details](#scheme-details).
+
+Global (any command):
 
 | Flag | Description |
 |---|---|
