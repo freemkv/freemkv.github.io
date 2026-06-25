@@ -39,11 +39,29 @@ What each scheme does, and when to reach for it.
 
 ### disc://
 
-Rips the **main title** by default (`-t 1`). Pick others with `-t N`, or several at once: `-t 1 -t 3 -t 5`.
+Rips the **main title** by default. Pick others with `-t N`, or several at once:
+
+```bash
+freemkv disc:// mkv://Movie.mkv          # main title → one file
+freemkv disc:// -t 1 -t 3 mkv://out/     # titles 1 and 3 → out/ (a directory)
+```
 
 ### iso://
 
-As a **source**, rips **all titles** by default — the destination must be a directory. As a **destination**, writes a decrypted sector image, plus two flags that work **only with `iso://`**:
+**As a source** (`iso://Movie.iso`), it rips **all titles** by default — so the *output* has to be a directory, because multiple titles means multiple files:
+
+```bash
+freemkv iso://Movie.iso mkv://out/             # every title → out/Movie_t1.mkv, out/Movie_t2.mkv, …
+freemkv iso://Movie.iso -t 1 mkv://Movie.mkv   # just title 1 → a single file
+```
+
+**As a destination** (`iso://Movie.iso`), it writes a decrypted sector image of the disc:
+
+```bash
+freemkv disc:// iso://Movie.iso          # rip the disc to a decrypted image
+```
+
+…plus two flags that work **only with `iso://`**:
 
 - **`--multipass`** — sweep, then retry the bad sectors, with a resumable **mapfile** sidecar (sector state only — never keys). Re-run until clean. Damaged-disc workflow: `disc:// iso:// --multipass`, then `iso:// mkv://`.
 - **`--raw`** — write the sectors **encrypted**, a faithful image. You can't mux or benchmark ciphertext, so both flags error on any other destination.
@@ -52,7 +70,12 @@ A plain `disc:// iso://` auto-resumes if interrupted.
 
 ### mkv://
 
-Writes one decrypted movie. With a **single title**, the destination is the file you name (`mkv://Movie.mkv`). With **multiple titles** (`-t 1 -t 3`), point the destination at a **directory** — freemkv writes one file per title named `<disc>_t<N>.mkv`, e.g. `Greenland_t1.mkv`, `Greenland_t3.mkv`.
+Writes one decrypted movie. A **single title** goes to the file you name; **multiple titles** go to a **directory**, one file each, named `<disc>_t<N>.mkv`:
+
+```bash
+freemkv disc:// mkv://Movie.mkv          # single title → Movie.mkv
+freemkv disc:// -t 1 -t 3 mkv://out/     # → out/Greenland_t1.mkv, out/Greenland_t3.mkv
+```
 
 ### m2ts://
 
