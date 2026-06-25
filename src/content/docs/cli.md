@@ -90,8 +90,6 @@ freemkv disc:// network://10.0.0.5:9000     # stream to a receiver
 freemkv disc:// null://                     # benchmark read speed
 ```
 
-Run `freemkv info disc://` first to list titles with durations.
-
 ## Subcommands
 
 ### info — inspect a disc, image, or file
@@ -105,11 +103,10 @@ freemkv info iso://Disc.iso
 
 | Flag | Description |
 |---|---|
-| `-d, --device PATH` | Target a specific device. |
-| `-f, --full` | All titles (default: first five + "+N more"). |
-| `-b, --basic` | Title rows only, no per-stream detail. |
-| `-v, --verbose` | Wider AACS / drive detail. |
-| `--share` | Capture the drive profile to a zip and print a ready-to-paste compatibility issue (`--mask` hides serials). Nothing is sent automatically. |
+| `-f, --full` | List every title (default: the first five, with a "+N more" footer). |
+| `-b, --basic` | Title rows only — omit the per-stream (video/audio/subtitle) detail. |
+| `-v, --verbose` | Add technical detail — AACS version + MKB version, and per-stream PIDs and audio sample rates. A handful of extra fields, not a flood; off by default to keep the listing scannable (turn it on when debugging a mux or AACS issue). |
+| `--share` | Capture the drive's profile to a zip and print a ready-to-paste GitHub issue for the community drive-compatibility database. On a **release build + interactive terminal**, freemkv then offers to submit it for you — a `[Y/n]` prompt (default **yes**) that posts the issue to GitHub if you accept. `--mask` redacts drive serials first. Nothing is sent unless you confirm at that prompt. |
 
 ### verify — check disc health
 
