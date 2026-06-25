@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Fixes for the most common freemkv and autorip problems. No drives detected, missing keydb, bad sectors, interrupted rips, and capturing a debug log.
+description: Fixes for the most common freemkv and autorip problems. No drives detected, missing decryption keys, bad sectors, interrupted rips, and capturing a debug log.
 ---
 
 Fixes for the problems reported most often with freemkv and autorip. Find your symptom below; if none match, capture a debug log (next) and open an issue.
@@ -50,11 +50,11 @@ If `freemkv info disc://` reports no drive:
 
 - Confirm your user has permission to access the device node.
 
-## Missing key database
+## No decryption keys available
 
-You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) without keys available. The CLI reports "no KEYDB.cfg found"; DVDs are never affected.
+You tried to read an AACS-encrypted disc (Blu-ray or 4K UHD) with no key source configured. The CLI reports "no KEYDB.cfg found"; DVDs are never affected.
 
-Blu-ray and 4K UHD need decryption keys you provide. **[Decryption Keys](/decryption-keys/)** covers the ways to supply them (for the CLI and for autorip).
+Blu-ray and 4K UHD need decryption keys you provide — either a local `keydb.cfg` or an online key service. **[Decryption Keys](/decryption-keys/)** covers both options (for the CLI and for autorip).
 
 ## Drive rejected the disc's security credentials
 

@@ -90,10 +90,11 @@ it persists across restarts.
 
 ## When keys are missing
 
-If you rip an AACS-encrypted disc with no keys available, freemkv **fails loudly and
-early** — a clear error message, non-zero exit, and no output file written. It never writes
-a silently-encrypted or partially-decrypted file. autorip shows "no KEYDB.cfg found." DVDs
-are never affected.
+If you rip an AACS-encrypted disc with no key source configured, freemkv **fails loudly
+and early** — a clear error message, non-zero exit, and no output file written. It never
+writes a silently-encrypted or partially-decrypted file. autorip shows "no KEYDB.cfg
+found" when no key source is available (whether because no local file exists or no online
+service is configured). DVDs are never affected.
 
 :::note[Mapfiles hold no keys]
 A multipass **mapfile** (the `.map` sidecar written by `freemkv disc:// iso:// --multipass`)

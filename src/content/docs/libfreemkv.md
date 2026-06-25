@@ -137,8 +137,9 @@ through this pipeline.
   reads; no player keys are compiled in and none are used. Title keys are recovered
   keylessly by the Stevenson known-plaintext attack (`css::crack_key`).
 - **AACS (Blu-ray / 4K UHD)**: no key material is compiled in; keys come through a
-  `KeySource` (default location under `~/.config/freemkv/`, `%USERPROFILE%` on Windows;
-  see [Decryption Keys](/decryption-keys/); overridable via `ScanOptions`).
+  `KeySource` — either a local `keydb.cfg` (searched in default OS paths; see
+  [Decryption Keys](/decryption-keys/)) or an online key service; overridable via
+  `ScanOptions`.
 - A missing key database for an AACS disc surfaces as `Error::KeydbLoad` with the sentinel
   path `<no keydb in search paths>`, which front ends render as "no KEYDB.cfg found."
 
