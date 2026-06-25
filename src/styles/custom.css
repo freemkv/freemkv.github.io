@@ -9,3 +9,14 @@
   --sl-color-accent: #0f766e;
   --sl-color-accent-high: #134e4a;
 }
+
+/* Tables default to a larger font than body text in this theme — pin them to
+   the body size so reference tables (e.g. the CLI output/flag matrix) read
+   consistently and fit the content column instead of looking oversized. */
+.sl-markdown-content table {
+  font-size: var(--sl-text-base);
+}
+.sl-markdown-content :is(th, td) {
+  padding: 0.4rem 0.65rem;
+  line-height: 1.5;
+}
