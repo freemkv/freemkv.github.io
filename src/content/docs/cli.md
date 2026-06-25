@@ -3,11 +3,15 @@ title: CLI Reference
 description: Every freemkv subcommand, flag, and stream URL. The complete command-line reference.
 ---
 
-The `freemkv` binary takes two forms:
+The `freemkv` binary has two forms:
 
 ```bash
-freemkv <source> <dest> [flags]   # rip / remux
-freemkv <subcommand> [args]       # info / verify / update-keys / version / help
+# Rip / remux: give a source and a destination. There is no command word —
+# the action is implied by passing two URLs.
+freemkv <source> <destination> [flags]
+
+# Subcommand: the first argument is the command.
+freemkv <subcommand> [args]              # info, verify, update-keys, version, help
 ```
 
 A bare invocation prints usage and exits `2`. `freemkv help` exits `0`.
