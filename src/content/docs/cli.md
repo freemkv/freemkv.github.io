@@ -144,11 +144,13 @@ freemkv help       # also --help / -h (exit 0)
 
 ## Flags
 
+All flags are optional.
+
 Key sources (for a rip that needs decryption keys):
 
 | Flag | Description |
 |---|---|
-| `--keydb PATH` | **Optional** override for the keydb location. Without it, freemkv searches the default locations — see [Decryption Keys](/decryption-keys/). Only Blu-ray/UHD need a keydb; DVDs use none. |
+| `--keydb PATH` | Override the keydb location. Without it, freemkv searches the default locations — see [Decryption Keys](/decryption-keys/). Only Blu-ray/UHD need a keydb; DVDs use none. |
 | `--key-url URL` | Online key service (`https://…`); the local keydb is tried first if both are given. |
 | `--key-auth TOKEN` | Bearer token for `--key-url`. |
 
