@@ -8,7 +8,7 @@ Some optical drives can run **modified ("unlocked") firmware** in place of the m
 You don't *need* an unlocked drive (**[stock drives work](/drives-oem/)**), but a supported unlocked drive is the smoothest path, especially for 4K UHD.
 
 :::note[Unlocking is not decryption]
-An unlocked drive reads discs faster and more reliably, but it does **not** decrypt them. AACS-protected Blu-ray and 4K UHD discs still need a `keydb.cfg` — see **[Decryption Keys](/decryption-keys/)**. (DVDs need no keys either way.)
+An unlocked drive reads discs faster and more reliably, but it does **not** decrypt them. AACS-protected Blu-ray and 4K UHD discs still need **decryption keys** — see **[Decryption Keys](/decryption-keys/)**. (DVDs need no keys either way.)
 :::
 
 ## Which drives does freemkv support?
