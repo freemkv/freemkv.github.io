@@ -38,12 +38,16 @@ In the **CLI**, point at the service with `--key-url` (and `--key-auth` if it re
 bearer token):
 
 ```bash
-# resolve keys from an online key service
-freemkv disc:// mkv://Movie.mkv --key-url https://keys.example/keys
+# resolve keys from an online key service — main title only
+freemkv disc:// -t 1 mkv://Movie.mkv --key-url https://keys.example/keys
 
 # with an authentication token
-freemkv disc:// mkv://Movie.mkv --key-url https://keys.example/keys --key-auth <TOKEN>
+freemkv disc:// -t 1 mkv://Movie.mkv --key-url https://keys.example/keys --key-auth <TOKEN>
 ```
+
+On a `disc://` drive, freemkv rips the **main title** by default (one file). An `iso://`
+image instead rips **every** title — one file each, to a directory. Add `-t N` to choose a
+specific title; run `freemkv info disc://` to list them with durations.
 
 If you supply **both** `--key-url` and `--keydb`, the local keydb is consulted first
 (local-first) and the service is only queried when the keydb has no key for the disc.
@@ -78,7 +82,7 @@ To use a `keydb.cfg` elsewhere, point the CLI at it with `--keydb`:
 
 ```bash
 # use a keydb.cfg from a custom path
-freemkv disc:// mkv://Movie.mkv --keydb /path/to/keydb.cfg
+freemkv disc:// -t 1 mkv://Movie.mkv --keydb /path/to/keydb.cfg
 ```
 
 **autorip** looks in the same per-OS default location as the CLI (above), and can also
@@ -88,6 +92,13 @@ it persists across restarts.
 
 ## When keys are missing
 
-If you rip an AACS-encrypted disc with no keys available, freemkv reports a key-load error
-rather than writing corrupt output. autorip shows "no KEYDB.cfg found." DVDs are never
-affected.
+If you rip an AACS-encrypted disc with no keys available, freemkv **fails loudly and
+early** — a clear error message, non-zero exit, and no output file written. It never writes
+a silently-encrypted or partially-decrypted file. autorip shows "no KEYDB.cfg found." DVDs
+are never affected.
+
+:::note[Mapfiles hold no keys]
+A multipass **mapfile** (the `.map` sidecar written by `freemkv disc:// iso:// --multipass`)
+tracks sector-recovery state only. It contains no decryption keys. Keys are looked up from
+your key sources (keydb / online service) fresh on each run.
+:::

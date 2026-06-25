@@ -37,6 +37,34 @@ understands:
 File paths follow the scheme directly: `mkv://./Movie.mkv`, `m2ts://./Movie.m2ts`,
 `iso://Disc.iso`. A destination without a scheme is rejected; add one.
 
+## Output formats
+
+When a URL is the **destination**, the scheme determines what freemkv writes:
+
+| Destination | What it writes | Decrypted? | `--multipass` | `--raw` |
+|---|---|---|---|---|
+| `iso://PATH` | Raw sector image of the disc | **Yes** (default) | Supported | Supported — writes encrypted sectors instead |
+| `mkv://PATH` | Single muxed movie file | **Yes** | **Error** ¹ | **Error** ² |
+| `null://` | Nothing (discard sink) | N/A | **Error** ¹ | **Error** ² |
+| `dir://PATH/` | Decrypted file tree (VIDEO\_TS / BDMV) | **Yes** | **Error** ¹ | **Error** ² |
+
+> ¹ **`--multipass` requires `iso://` output.** Multi-pass recovery writes a mapfile sidecar to
+> track sector state across runs. There is no equivalent for streaming outputs — muxing or
+> benchmarking ciphertext makes no sense. If you want multi-pass recovery, rip to an ISO
+> first (`disc:// iso:// --multipass`), then mux the ISO (`iso:// mkv://`).
+>
+> ² **`--raw` requires `iso://` output.** `--raw` keeps disc sectors encrypted — you
+> cannot mux or benchmark ciphertext. Pass `--raw` only when you want a faithful
+> encrypted disc image.
+
+:::note[dir:// is planned]
+`dir://` (a decrypted VIDEO\_TS / BDMV file tree) is not yet available. It is listed here
+as a roadmap item so you know `mkv://` and `iso://` are the current rip targets.
+:::
+
+**Everything is decrypted by default.** The only way to get an encrypted output is `iso://`
+with `--raw`. See [Decryption and keys](#decryption-and-keys) below.
+
 ## Ripping and remuxing
 
 When the first argument isn't a known subcommand, freemkv treats the positional URLs as a
@@ -44,19 +72,25 @@ source and a destination and runs the appropriate pipeline. The combination of s
 determines what happens:
 
 ```bash
-# rip disc → MKV (decrypt + mux)
-freemkv disc:// mkv://Movie.mkv
+# rip disc → MKV (decrypt + mux) — main title only
+freemkv disc:// -t 1 mkv://Movie.mkv
 
-# rip disc → m2ts
-freemkv disc:// m2ts://Movie.m2ts
+# rip disc → m2ts — main title only
+freemkv disc:// -t 1 m2ts://Movie.m2ts
 
-# rip a specific drive
-freemkv disc:///dev/sg4 mkv://Movie.mkv
+# rip a specific drive — main title only
+freemkv disc:///dev/sg4 -t 1 mkv://Movie.mkv
 
-# full-disc raw sector copy → ISO (auto-resumes)
+# full-disc raw sector copy → decrypted ISO (auto-resumes if interrupted)
 freemkv disc:// iso://Disc.iso
 
-# remux an ISO → MKV
+# full-disc raw sector copy → encrypted ISO (faithful disc image, no decryption)
+freemkv disc:// iso://Disc.iso --raw
+
+# multi-pass recovery → decrypted ISO (sweep, then patch bad sectors; re-run same command)
+freemkv disc:// iso://Disc.iso --multipass
+
+# remux a decrypted ISO → MKV
 freemkv iso://Disc.iso mkv://Movie.mkv
 
 # remux m2ts → MKV
@@ -71,30 +105,55 @@ freemkv network://0.0.0.0:9000 mkv://Movie.mkv
 # pipe to stdout
 freemkv disc:// stdio://
 
-# benchmark read speed (no output)
+# benchmark read speed (no output written)
 freemkv disc:// null://
 ```
 
-A `disc://` → `iso://` (or `null://`) pair performs a **raw sector copy**
-(`Disc::copy`), not a stream mux. Every other combination runs the title pipeline:
-read → PES frames → write the destination container.
+A `disc://` → `iso://` pair performs a **raw sector copy** (`Disc::copy`), not a stream
+mux. Every other combination runs the title pipeline: read → PES frames → write the
+destination container.
+
+### Which output should I use?
+
+| Goal | Command |
+|---|---|
+| **Clean disc, one movie file** | `freemkv disc:// mkv://Movie.mkv` |
+| **Damaged / marginal disc** | `freemkv disc:// iso://Disc.iso --multipass` (repeat until map is clean), then `freemkv iso://Disc.iso mkv://Movie.mkv` |
+| **Decrypted backup image** | `freemkv disc:// iso://Disc.iso` |
+| **Encrypted (faithful) backup image** | `freemkv disc:// iso://Disc.iso --raw` |
+| **Benchmark drive / read speed** | `freemkv disc:// null://` |
 
 ### Selecting titles
 
-By default all titles are ripped. Use `-t` / `--title` (1-based) to select one or more.
-Repeating the flag selects multiple titles; repeated values are de-duplicated:
+A disc holds several **titles** — the main feature, extras, trailers, and sometimes a
+"play-all" / scene-index chain. What freemkv rips **by default depends on the source:**
+
+- **`disc://` (a live drive)** rips the **main title only** (the main feature) to the file
+  you name. `freemkv disc:// mkv://Movie.mkv` and `freemkv disc:// -t 1 mkv://Movie.mkv`
+  do exactly the same thing.
+- **`iso://` / an image file** rips **every title** by default (one file each), so its
+  destination must be a **directory**.
+
+Use `-t` / `--title N` (1-based, repeatable) to choose titles explicitly:
 
 ```bash
-# main feature only → one file
-freemkv disc:// mkv://Movie.mkv -t 1
+# main feature only → one file (this is the disc:// default; -t 1 just makes it explicit)
+freemkv disc:// -t 1 mkv://Movie.mkv
 
-# titles 1 and 3 → directory dest; one MKV per title (Movie_t1.mkv, Movie_t3.mkv)
-freemkv disc:// mkv://Movies/ -t 1 -t 3
+# a specific title → one file
+freemkv disc:// -t 3 mkv://Extras.mkv
+
+# several titles → directory dest; one MKV per title (disc_t1.mkv, disc_t3.mkv)
+freemkv disc:// -t 1 -t 3 mkv://Movies/
 ```
 
-Selecting more than one title writes **one separate file per title** (never a merged file),
-so the destination must be a **directory**; freemkv names each `<name>_t<N>.<ext>`. A
-single-title selection writes one file as named.
+Selecting **more than one** title writes one file per title (never a merged file), so the
+destination must be a **directory**; freemkv names each `<name>_t<N>.<ext>`. A single title
+— or the `disc://` default — writes one file as named.
+
+**Tip:** run `freemkv info disc://` to list every title with its duration before ripping.
+The longest title isn't always the clean main feature — some discs author a play-all /
+scene-index chain that starts with menu cells, so check the list and pick the right number.
 
 ### Rip flags
 
@@ -102,18 +161,18 @@ These flags apply to the `<source> <dest>` form:
 
 | Flag | Description |
 |---|---|
-| `-t, --title N` | Select title N (1-based, repeatable). Default: all titles. |
+| `-t, --title N` | Select title N (1-based, repeatable). Default: the **main title** for `disc://`, **all titles** for `iso://`. |
 | `-k, --keydb PATH` | Path to a local key database file (overrides the default location). |
 | `--log-level N` | Write a diagnostic log file at this verbosity: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Without it (and without `--log-file` / `RUST_LOG`) **no log file is written and the terminal stays clean**; diagnostics never print to the terminal. Default log path is `./log.txt`. |
 | `--log-file PATH` | Write the diagnostic log to PATH (defaults to debug detail if `--log-level` is absent). For bug reports. |
 | `-q, --quiet` | Suppress progress and informational output. |
-| `--raw` | Skip decryption: raw encrypted bytes (`iso://` output only). |
-| `--multipass` | Write/update a mapfile for multipass recovery (disc → ISO). |
+| `--raw` | **`iso://` output only.** Write encrypted sectors — skip decryption and produce a faithful disc image. **Error with any other destination.** |
+| `--multipass` | **`iso://` output only.** Multi-pass recovery: sweep + targeted retries of bad sectors, with a mapfile sidecar for resume. **Error with any other destination** — rip to ISO first, then mux the ISO. |
 
 ### Multipass recovery with mapfiles
 
 `--multipass` turns a disc → ISO copy into a recoverable, resumable sweep backed by a
-mapfile (see **[How recovery works](/how-recovery-works/)**):
+**mapfile** (see **[How recovery works](/how-recovery-works/)**):
 
 ```bash
 # Run once to sweep the disc to an ISO; re-run the SAME command to patch the
@@ -121,19 +180,22 @@ mapfile (see **[How recovery works](/how-recovery-works/)**):
 freemkv disc:// iso://Disc.iso --multipass
 ```
 
-It's a single command you re-run, and it auto-detects the pass from the mapfile: the first run
-sweeps the whole disc; each later run re-reads only the ranges still marked bad. A plain
-`disc:// iso://Disc.iso` (without `--multipass`) also **auto-resumes** if interrupted.
+It's a single command you re-run. The first run sweeps the whole disc; each later run
+re-reads only the ranges still marked bad. A plain `disc:// iso://Disc.iso` (without
+`--multipass`) also **auto-resumes** if interrupted — the mapfile enables that too.
 
-By default the ISO is decrypted. Add `--raw` to write the disc's sectors **as-is**, without
-decrypting: an exact encrypted image. It combines with the sweep:
+**The mapfile holds sector-recovery state only — no decryption keys.** Keys are
+looked up fresh from your key sources (keydb / online service) each run.
+
+`--raw` combines with `--multipass` for an encrypted multi-pass image:
 
 ```bash
 freemkv disc:// iso://Disc.iso --raw --multipass
 ```
 
-`--multipass` only applies to the disc → ISO path. A direct disc → MKV/M2TS mux is
-single-pass; passing `--multipass` there prints a notice and is otherwise ignored.
+**`--multipass` is `iso://` only.** Passing it with `mkv://`, `null://`, or any other
+destination is an error with guidance: rip to an ISO with `--multipass` first, then mux
+the ISO.
 
 ### Interrupting a rip
 
@@ -141,6 +203,37 @@ A single Ctrl-C halts cleanly: the sweep stops, the drive tray is unlocked, and 
 ISO's mapfile is preserved so a later run can resume. A mux interrupted mid-write is
 **not** finalized; freemkv exits non-zero rather than presenting a truncated MKV as
 complete. A second Ctrl-C forces an immediate exit.
+
+## Decryption and keys
+
+**freemkv decrypts everything by default.** The only way to produce an encrypted output is
+`iso://` with `--raw`.
+
+Decryption keys come exclusively from your configured **key sources**:
+
+| Format | Encryption | Keys needed |
+|---|---|---|
+| DVD | CSS | None — keyless recovery (no file required) |
+| Blu-ray | AACS 1.0 | `keydb.cfg` or online key service |
+| 4K UHD | AACS 2.0 / 2.1 | `keydb.cfg` or online key service |
+
+DVDs decrypt automatically using built-in CSS recovery — no key file, no setup.
+Blu-ray and 4K UHD require AACS keys you supply; see **[Decryption Keys](/decryption-keys/)** for how to
+provide them.
+
+**If a needed key is not available, freemkv fails loudly and early** — a clear error
+message, non-zero exit, and no output file written. It never writes a silently-encrypted or
+partially-decrypted file.
+
+Listing titles (`freemkv info disc://`) reads only UDF navigation and **needs no key**,
+even on AACS discs.
+
+## Bad inputs fail loud and early
+
+freemkv validates inputs before writing any output. Bad flags (`--multipass` or `--raw`
+with a non-`iso://` destination), a missing or unreadable source ISO, an unopenable drive,
+an unwritable output path, an out-of-range title, or a missing AACS key all produce a clear
+error with a non-zero exit — never a silent failure or a corrupt output file.
 
 ## Inspecting a disc, image, or file
 
@@ -288,6 +381,6 @@ key material is always redacted.
 | Code | Meaning |
 |---|---|
 | `0` | Success (also `help` / `--help`). |
-| `1` | Operation failed (rip/mux error, scan failure, bad flag value, out-of-range title) or `verify` found unrecoverable sectors. |
+| `1` | Operation failed (rip/mux error, scan failure, bad flag value, out-of-range title, missing key) or `verify` found unrecoverable sectors. |
 | `2` | Bare invocation with no subcommand or URL (usage printed). |
 | `130` | Forced exit on a second Ctrl-C. |
