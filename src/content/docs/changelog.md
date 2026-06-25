@@ -13,24 +13,41 @@ The toolchain releases as a set: every component ships the same version
 number on each release, even when a given component has no functional
 change in that cycle.
 
-## 1.0.0-rc.5.2 (upcoming, unreleased)
+## 1.0.0-rc.5.2 (2026-06-24)
 
 A recovery and decryption-correctness round. Single-pass rips now recover
 marginal sectors the way multipass already did, large AACS Blu-ray titles
-that failed to decrypt now mux cleanly, and a 4K decode glitch on discs
-with non-seamless clip joins is fixed. **Not yet released.**
+that failed to decrypt now mux cleanly, the correct audio track is picked
+on DVDs with unusual sub-stream ordering, interlaced SD-DVD reports its
+full frame rate on Windows, and a 4K decode glitch on discs with
+non-seamless clip joins is fixed.
 
 ### Fixed
 
-- **Single-pass rips now recover marginal and transient sectors.** A
-  single-pass (direct disc → MKV) rip now retries marginal and transient
-  read errors before reporting a sector as unreadable, matching the
-  behavior of multipass mode. Discs with a few recoverable read errors
-  that previously failed (or lost data) in single-pass now complete.
+- **Windows Explorer now reports the full frame rate for interlaced
+  SD-DVD.** A field-duration hint added in the previous release backfired:
+  on interlaced (576i/480i) discs it made Windows Explorer report half the
+  frame rate and flipped tools such as MediaInfo to "variable". The hint is
+  no longer written; the frame-rate signal players trust is the full-frame
+  value, so Explorer now shows the correct rate and reports a constant frame
+  rate. Interlace signalling (top-field-first) is retained.
+- **Correct audio track selected on DVDs with non-standard sub-stream
+  ordering.** freemkv assumed a disc's first declared audio stream lives on
+  the first physical sub-stream. On discs where the 5.1 main mix sits
+  elsewhere and the first sub-stream carries a 2.0 down-mix (for example
+  *The Silence of the Lambs*), the 2.0 track was muxed under a "5.1" label.
+  freemkv now probes each physical sub-stream's actual channel count from
+  the disc and routes every declared stream onto the sub-stream that
+  genuinely matches.
 - **"Decryption failed" on large AACS Blu-ray titles.** The biggest
   titles on some AACS Blu-rays failed to decrypt and aborted the mux.
   The decryption unit alignment is now anchored to each clip, so these
   titles decrypt and mux correctly.
+- **Single-pass rips now recover marginal and transient sectors.** A
+  single-pass (direct disc → MKV) rip now gives the drive its full error
+  recovery budget on a bad sector before reporting it unreadable, matching
+  the behavior of multipass mode. Discs with a few recoverable read errors
+  that previously failed (or lost data) in single-pass now complete.
 - **4K playback glitches on discs with non-seamless clip joins.** Some
   UHD discs (for example the *Top Gun* class of titles) join clips
   non-seamlessly, which produced "Could not find ref" decode errors and
@@ -39,8 +56,31 @@ with non-seamless clip joins is fixed. **Not yet released.**
 
 ### Changed
 
-- **Expanded DVD test coverage.** Additional DVD test fixtures broaden
-  automated coverage of CSS decryption and DVD muxing.
+- **`freemkv-keysources` is now a pure key lookup.** The encrypted
+  content-sample reader and the candidate-key resolution loop moved into
+  `libfreemkv` (they read the disc and validate keys — decryption
+  mechanism, not lookup). A key source now only looks a key up and hands it
+  back.
+
+### Added
+
+- **`--log-level 3` is now self-sufficient for MKV and opening-frame
+  diagnosis.** The diagnostic pass now dumps the actual MKV track-header
+  elements written per track, and captures the first ~100 coded frames per
+  track to an `<output>.opening.bin` side file with a per-frame summary, so
+  container-metadata and opening-GOP issues are diagnosable from a log alone
+  without the disc. Both are gated to log level 3; a normal run writes
+  nothing extra.
+
+### Verified
+
+- **DVD opening-GOP / still-frame handling is correct (no change needed).**
+  The theory that a title's opening pictures get the wrong sequence header
+  or have their timestamps floored to zero was traced and ruled out: the
+  codec setup is the first sequence header, DVD structure guarantees each
+  title opens on a sequence header and I-frame, leading still-frames are
+  anchored to the disc's real timeline, and the muxer bases its timestamps
+  on the opening keyframe's real time. Regression tests pin all three.
 
 ## 1.0.0-rc.5.1 (2026-06-24)
 
