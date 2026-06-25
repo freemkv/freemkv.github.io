@@ -8,13 +8,14 @@ sector-level retry, AACS/CSS decryption, and MKV muxing. The [CLI](/cli/) and
 [autorip](/autorip/) are thin front ends over it. This page maps the library for developers
 embedding it; the [download page](/download/) covers the ready-to-run tools.
 
+- Source (authoritative): [github.com/freemkv/libfreemkv](https://github.com/freemkv/libfreemkv)
 - Crate: `libfreemkv` on [crates.io](https://crates.io/crates/libfreemkv)
-- API reference: [docs.rs/libfreemkv](https://docs.rs/libfreemkv)
 - License: AGPL-3.0
 
 :::note[Authoritative API reference]
-This page is a high-level map. For exact, version-specific signatures, consult
-[docs.rs/libfreemkv](https://docs.rs/libfreemkv).
+This page is a high-level map. For exact, current signatures, read the source on
+**[GitHub](https://github.com/freemkv/libfreemkv)** — it's the source of truth; the
+published crate and its generated docs can lag the latest source.
 :::
 
 ```toml
@@ -64,7 +65,7 @@ ISO copy, use `Disc::copy()` / `Disc::sweep()`, not the URL resolver.
 
 ## Public API surface
 
-A map of the main exports (see docs.rs for full signatures):
+A map of the main exports (see the [source](https://github.com/freemkv/libfreemkv) for full signatures):
 
 ### Disc and titles
 
