@@ -1,259 +1,145 @@
 ---
 title: CLI Reference
-description: Every freemkv subcommand, flag, and stream URL. The complete command-line reference.
+description: Every freemkv subcommand, flag, and stream URL.
 ---
 
 The `freemkv` binary has two forms:
 
 ```bash
-# Rip / remux: give a source and a destination. There is no command word —
-# the action is implied by passing two URLs.
+# Rip / remux: a source and a destination. No command word — the action is
+# implied by passing two URLs.
 freemkv <source> <destination> [flags]
 
 # Subcommand: the first argument is the command.
 freemkv <subcommand> [args]              # info, verify, update-keys, version, help
 ```
 
-A bare invocation prints usage and exits `2`. `freemkv help` exits `0`.
+A bare invocation prints usage and exits `2`.
 
 ## Stream URLs
 
 Every source and destination is a `scheme://` URL.
 
-| URL | Source | Sink | Notes |
+| URL | Source | Dest | Notes |
 |---|---|---|---|
-| `disc://` | ✓ | — | Auto-detected optical drive |
-| `disc:///dev/sg4` | ✓ | — | Specific drive (Linux: `/dev/sg*`) |
-| `disc://D:` | ✓ | — | Specific drive (Windows) |
-| `iso://path.iso` | ✓ | ✓ | Disc image file |
-| `mkv://path.mkv` | ✓ | ✓ | Matroska file |
-| `m2ts://path.m2ts` | ✓ | ✓ | Blu-ray transport-stream file |
-| `network://host:port` | ✓ | ✓ | TCP stream (listen or connect) |
+| `disc://` | ✓ | — | Optical drive (auto-detected; `disc:///dev/sg4` or `disc://D:` to target one) |
+| `iso://path.iso` | ✓ | ✓ | Disc image |
+| `mkv://path.mkv` | ✓ | ✓ | Matroska movie |
+| `m2ts://path.m2ts` | ✓ | ✓ | Blu-ray transport stream |
+| `network://host:port` | ✓ | ✓ | TCP (listen or connect) |
 | `stdio://` | ✓ | ✓ | Stdin / stdout |
 | `null://` | — | ✓ | Discard (read-speed benchmark) |
 | `dir://path/` | — | ✓ | **Planned** — decrypted file tree (VIDEO\_TS / BDMV) |
 
-`disk://` is accepted as an alias for `disc://`. A destination without a recognized scheme is rejected. File paths follow the scheme directly: `mkv://./Movie.mkv`, `iso://Disc.iso`.
+`disk://` is an alias for `disc://`. Everything is **decrypted by default**; `--raw` (`iso://` only) is the sole encrypted output. BD/UHD discs need an AACS key — see [Decryption Keys](/decryption-keys/); DVDs need none.
 
 ## Scheme details
 
-Every destination is **decrypted by default** — `--raw` (below) is the only way to get encrypted output. Most schemes need no explanation beyond the table above; the ones that do:
+Most schemes are self-explanatory; two have behavior worth calling out.
 
-### `iso://` — disc image
+### `disc://`
 
-A decrypted sector image by default. Two flags apply **only to `iso://`**:
+Rips the **main title** by default (`-t 1`). Pick others with `-t N` (repeatable).
 
-- **`--multipass`** — sweep the disc, then retry the bad sectors, tracking progress in a resumable **mapfile** sidecar. Re-run the same command until the rip is clean. The mapfile holds sector state only — never keys. (A plain `disc:// iso://` also auto-resumes if interrupted.)
-- **`--raw`** — write the sectors **encrypted**, a faithful disc image. You can't mux or benchmark ciphertext, which is why these two flags are rejected on every other destination.
+### `iso://`
 
-For a damaged disc the workflow is `disc:// iso:// --multipass` (recover), then `iso:// mkv://` (mux).
+As a **source**, rips **all titles** by default — the destination must be a directory. As a **destination**, writes a decrypted sector image, plus two flags that work **only with `iso://`**:
 
-### `dir://` — file tree *(planned)*
+- **`--multipass`** — sweep, then retry the bad sectors, with a resumable **mapfile** sidecar (sector state only — never keys). Re-run until clean. Damaged-disc workflow: `disc:// iso:// --multipass`, then `iso:// mkv://`.
+- **`--raw`** — write the sectors **encrypted**, a faithful image. You can't mux or benchmark ciphertext, so both flags error on any other destination.
 
-Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the given folder. Not yet available.
+A plain `disc:// iso://` auto-resumes if interrupted.
+
+### `dir://` *(planned)*
+
+Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the folder. Not yet available.
 
 ## Examples
 
 ```bash
-# disc → MKV (decrypt + mux, main title)
-freemkv disc:// mkv://Movie.mkv
-
-# disc → M2TS (main title)
-freemkv disc:// m2ts://Movie.m2ts
-
-# specific drive
-freemkv disc:///dev/sg4 mkv://Movie.mkv
-
-# disc → decrypted ISO (auto-resumes if interrupted)
-freemkv disc:// iso://Disc.iso
-
-# disc → encrypted ISO (faithful disc image)
-freemkv disc:// iso://Disc.iso --raw
-
-# multi-pass recovery: sweep + patch bad sectors; re-run same command until clean
-freemkv disc:// iso://Disc.iso --multipass
-
-# ISO → MKV
-freemkv iso://Disc.iso mkv://Movie.mkv
-
-# M2TS → MKV
-freemkv m2ts://Movie.m2ts mkv://Movie.mkv
-
-# stream to network receiver
-freemkv disc:// network://192.0.2.10:9000
-
-# receive network stream → MKV
-freemkv network://0.0.0.0:9000 mkv://Movie.mkv
-
-# pipe to stdout
-freemkv disc:// stdio://
-
-# benchmark read speed (no output)
-freemkv disc:// null://
+freemkv disc:// mkv://Movie.mkv             # disc → MKV (main title)
+freemkv disc:// -t 1 -t 3 mkv://Movies/     # specific titles → directory
+freemkv iso://Disc.iso mkv://Movie.mkv      # ISO → MKV
+freemkv disc:// iso://Disc.iso              # disc → decrypted ISO
+freemkv disc:// iso://Disc.iso --multipass  # recover a damaged disc (re-run until clean)
+freemkv disc:// network://10.0.0.5:9000     # stream to a receiver
+freemkv disc:// null://                     # benchmark read speed
 ```
 
-`disc:// → iso://` runs `Disc::copy` (raw sector copy), not a stream mux. Every other source/dest combination runs the title pipeline: read → PES frames → write the destination container.
+Multiple titles write one file each (`<disc>_t<N>.<ext>`), so the destination must be a directory. Run `freemkv info disc://` first to list titles.
 
-### Which output should I use?
+## Subcommands
 
-| Goal | Command |
-|---|---|
-| Clean disc, one movie file | `freemkv disc:// mkv://Movie.mkv` |
-| Damaged / marginal disc | `freemkv disc:// iso://Disc.iso --multipass` (repeat until clean), then `freemkv iso://Disc.iso mkv://Movie.mkv` |
-| Decrypted backup image | `freemkv disc:// iso://Disc.iso` |
-| Encrypted (faithful) backup | `freemkv disc:// iso://Disc.iso --raw` |
-| Benchmark drive speed | `freemkv disc:// null://` |
+### `info` — inspect a disc, image, or file
 
-### Selecting titles
-
-- **`disc://`** rips the **main title** by default. `-t 1` is equivalent.
-- **`iso://`** rips **all titles** by default; the destination must be a directory.
-
-Use `-t` / `--title N` (1-based, repeatable) to pick titles explicitly:
+Lists titles, durations, sizes, and stream details. A lone URL with no destination is the same as `freemkv info <url>`. Needs no key, even on AACS discs.
 
 ```bash
-freemkv disc:// -t 3 mkv://Extras.mkv           # title 3 → one file
-freemkv disc:// -t 1 -t 3 mkv://Movies/          # titles 1 and 3 → directory
+freemkv info disc://
+freemkv info iso://Disc.iso
 ```
-
-Multiple titles write one file each; the destination must be a directory. freemkv names each `<disc>_t<N>.<ext>`. Run `freemkv info disc://` to list all titles with durations before ripping.
-
-### Rip flags
 
 | Flag | Description |
 |---|---|
-| `-t, --title N` | Select title N (1-based, repeatable). Default: main title for `disc://`, all titles for `iso://`. |
-| `-k, --keydb PATH` | Path to a `keydb.cfg` (overrides the default search locations). |
-| `--key-url URL` | Enable the online key service at URL (`https://…`). When combined with `-k`, the local keydb is tried first. |
-| `--key-auth TOKEN` | Bearer token for the key service (`--key-url`). |
-| `--raw` | **`iso://` only.** Write encrypted sectors (skip decryption). Error with any other destination. |
-| `--multipass` | **`iso://` only.** Multi-pass recovery with a mapfile sidecar for resume. Error with any other destination. |
-| `-q, --quiet` | Suppress progress output. |
-| `--log-level N` | Write a diagnostic log file: 1 = warnings, 2 = info, 3 = debug, 4 = trace. Default path: `./log.txt`. |
-| `--log-file PATH` | Write the log to PATH (implies debug detail if `--log-level` is absent). |
+| `-d, --device PATH` | Target a specific device. |
+| `-f, --full` | All titles (default: first five + "+N more"). |
+| `-b, --basic` | Title rows only, no per-stream detail. |
+| `-v, --verbose` | Wider AACS / drive detail. |
+| `--share` | Capture the drive profile to a zip and print a ready-to-paste compatibility issue (`--mask` hides serials). Nothing is sent automatically. |
 
-### Multipass and interrupted rips
+### `verify` — check disc health
 
-`--multipass` turns a `disc:// → iso://` copy into a resumable sweep: the first run sweeps the whole disc; each re-run patches only the ranges still marked bad. Re-run the same command until the mapfile is clean.
-
-A plain `disc:// → iso://` (without `--multipass`) also **auto-resumes** if interrupted — the mapfile is written and picked up on the next run.
-
-**The mapfile holds sector-recovery state only — no keys.** Keys are resolved fresh each run from your key sources.
-
-`--raw` can be combined with `--multipass` for an encrypted multi-pass image:
+Scans the main title and reports good / slow / recovered / bad sectors, with chapter + timestamp per damaged region. Writes nothing. **Exits `1` if any sector is unrecoverable** — scriptable as a pass/fail gate. Defaults to `disc://`.
 
 ```bash
-freemkv disc:// iso://Disc.iso --raw --multipass
+freemkv verify
 ```
 
-### Interrupting a rip
+### `update-keys` — refresh the AACS key database
 
-One Ctrl-C halts cleanly: the sweep stops, the drive tray is unlocked, and the mapfile is preserved so the next run resumes. A mux interrupted mid-write is not finalized — freemkv exits non-zero rather than presenting a truncated container as complete. A second Ctrl-C forces an immediate exit (code `130`).
-
-## Decryption and keys
-
-**freemkv decrypts everything by default.** The only encrypted output is `iso://` with `--raw`.
-
-| Format | Encryption | Keys needed |
-|---|---|---|
-| DVD | CSS | None — keyless recovery built in |
-| Blu-ray | AACS 1.0 | `keydb.cfg` or online key service |
-| 4K UHD | AACS 2.0 / 2.1 | `keydb.cfg` or online key service |
-
-DVDs decrypt automatically using built-in CSS recovery. Blu-ray and UHD require AACS keys — see **[Decryption Keys](/decryption-keys/)**.
-
-**A missing key fails loudly and early** — a clear error, non-zero exit, and no output file written. freemkv never writes a silently-encrypted or partially-decrypted file.
-
-Listing titles (`freemkv info disc://`) reads only UDF navigation and needs no key, even on AACS discs.
-
-## Inspecting a disc, image, or file
-
-`freemkv info <url>` lists titles, durations, sizes, and stream details. A single URL with no destination is equivalent to `freemkv info <url>`.
-
-```bash
-freemkv info disc://              # auto-detected drive
-freemkv info disc:///dev/sg4      # specific drive
-freemkv info iso://Disc.iso       # ISO (no AACS key needed for title listing)
-freemkv info m2ts://Movie.m2ts
-freemkv info mkv://Movie.mkv
-```
-
-`info` flags (for `disc://` / `iso://` sources):
-
-| Flag | Description |
-|---|---|
-| `-d, --device PATH` | Target a specific device (alternative to embedding it in the URL). |
-| `-f, --full` | Show all titles (otherwise the first five, with a "+N more" footer). |
-| `-b, --basic` | Title rows only; omit per-stream detail. |
-| `-v, --verbose` | Widen on-screen AACS / drive detail. |
-| `-q, --quiet` | Suppress output. |
-
-### Sharing a drive profile
-
-`freemkv info disc:// --share` captures the drive's profile to a zip file and prints a ready-to-paste GitHub issue to submit to the community drive-compatibility database. Nothing is sent over the network automatically; submission is manual (or interactive with Y/n prompt if a token is compiled in).
-
-```bash
-freemkv info disc:// --share           # capture and print issue
-freemkv info disc:// --share --mask    # mask serial numbers
-```
-
-## Verifying disc health
-
-`freemkv verify` scans the main title and reports good / slow / recovered / bad sectors without writing any output. Defaults to `disc://` if no URL is given.
-
-```bash
-freemkv verify                    # auto-detected drive
-freemkv verify disc:///dev/sg4    # specific drive
-```
-
-Output includes a per-cluster breakdown with chapter and timestamp for each damaged region, and a final verdict. **Exit code is `1` if any sector is unrecoverable (`bad > 0`)**, making it scriptable as a pass/fail gate.
-
-## Refreshing your key database
-
-`freemkv update-keys` downloads an AACS key database, verifies it, and saves it to the default location. `--url` is required; there is no built-in default.
+Downloads, verifies, and installs an AACS keydb (`.txt` / `.zip` / `.gz`). `--url` is required.
 
 ```bash
 freemkv update-keys --url http://example.org/keydb_eng.zip
-freemkv update-keys -u http://example.org/keydb_eng.zip
 ```
 
-The downloader handles plain text, `.zip`, and `.gz` payloads and follows redirects. See **[Decryption Keys](/decryption-keys/)** for where the file is saved.
+### `version` / `help`
 
-## Global options
+```bash
+freemkv version    # also --version / -V
+freemkv help       # also --help / -h (exit 0)
+```
+
+## Flags
+
+Rip / remux flags (the `<source> <destination>` form):
 
 | Flag | Description |
 |---|---|
-| `--language CODE` | UI language (e.g. `--language de`; alias `--lang`). Parsed before everything else; never consumes a following URL or flag. |
-| `--log-level N` | Write a diagnostic **log file** at verbosity 1 = warnings, 2 = info, 3 = debug, 4 = trace. Terminal stays clean — diagnostics go to the file only. Default file: `./log.txt`. |
-| `--log-file PATH` | Write the log to PATH (implies debug detail if `--log-level` is absent). |
-| `-q, --quiet` | Suppress normal stdout output. |
-| `RUST_LOG` | Power-user filter override: if set, enables file logging and wins over `--log-level`. |
+| `-t, --title N` | Select title N (1-based, repeatable). Default: main for `disc://`, all for `iso://`. |
+| `-k, --keydb PATH` | Path to a `keydb.cfg`. |
+| `--key-url URL` | Online key service (`https://…`); local keydb tried first if both given. |
+| `--key-auth TOKEN` | Bearer token for `--key-url`. |
+| `--raw` | `iso://` only — write encrypted sectors. |
+| `--multipass` | `iso://` only — multi-pass recovery with a resumable mapfile. |
 
-The terminal shows only curated progress and results — never raw trace lines. With none of `--log-level`, `--log-file`, or `RUST_LOG` set, no log file is written at all.
+Global (any invocation):
 
-For bug reports, re-run with `--log-level 3`:
+| Flag | Description |
+|---|---|
+| `--language CODE` | UI language (alias `--lang`). |
+| `--log-level N` | Diagnostic **log file**, 1 = warn … 4 = trace (terminal stays clean; default `./log.txt`). For bug reports use `--log-level 3`. |
+| `--log-file PATH` | Write the log to PATH. |
+| `-q, --quiet` | Suppress stdout. |
+| `RUST_LOG` | Power-user filter; enables file logging and wins over `--log-level`. |
 
-```bash
-freemkv <source> <dest> --log-level 3              # writes ./log.txt
-freemkv <source> <dest> --log-level 3 --log-file freemkv-debug.log
-```
-
-**Keys are never written to logs.** Log output contains paths and disc metadata; CSS/AACS key material is always redacted.
-
-## Version and help
-
-```bash
-freemkv version    # print version
-freemkv help       # print usage (exit 0)
-```
-
-Both also accept `--version` / `-V` and `--help` / `-h`.
+Keys are never written to logs. One Ctrl-C halts a rip cleanly (tray unlocked, mapfile preserved); a second forces exit `130`.
 
 ## Exit codes
 
 | Code | Meaning |
 |---|---|
-| `0` | Success (also `help` / `--help`). |
-| `1` | Operation failed (rip/mux error, scan failure, bad flag value, out-of-range title, missing key) or `verify` found unrecoverable sectors. |
-| `2` | Bare invocation with no subcommand or URL (usage printed). |
-| `130` | Forced exit on a second Ctrl-C. |
+| `0` | Success. |
+| `1` | Failed (rip / mux / scan error, bad flag, missing key) or `verify` found unrecoverable sectors. |
+| `2` | No subcommand or URL (usage printed). |
+| `130` | Second Ctrl-C. |
