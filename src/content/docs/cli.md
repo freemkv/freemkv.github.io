@@ -35,7 +35,7 @@ Every source and destination is a `scheme://` URL.
 
 ## Scheme details
 
-What each scheme does, and when to reach for it. (`mkv://` and `m2ts://` are just "write the movie / transport stream" — nothing more to say.)
+What each scheme does, and when to reach for it.
 
 ### disc://
 
@@ -49,6 +49,14 @@ As a **source**, rips **all titles** by default — the destination must be a di
 - **`--raw`** — write the sectors **encrypted**, a faithful image. You can't mux or benchmark ciphertext, so both flags error on any other destination.
 
 A plain `disc:// iso://` auto-resumes if interrupted.
+
+### mkv://
+
+Writes one decrypted movie. With a **single title**, the destination is the file you name (`mkv://Movie.mkv`). With **multiple titles** (`-t 1 -t 3`), point the destination at a **directory** — freemkv writes one file per title named `<disc>_t<N>.mkv`, e.g. `Greenland_t1.mkv`, `Greenland_t3.mkv`.
+
+### m2ts://
+
+Same as `mkv://`, but writes a Blu-ray transport stream — one file for a single title, or `<disc>_t<N>.m2ts` per title into a directory.
 
 ### stdio://
 
@@ -82,7 +90,7 @@ freemkv disc:// network://10.0.0.5:9000     # stream to a receiver
 freemkv disc:// null://                     # benchmark read speed
 ```
 
-Multiple titles write one file each (`<disc>_t<N>.<ext>`), so the destination must be a directory. Run `freemkv info disc://` first to list titles.
+Run `freemkv info disc://` first to list titles with durations.
 
 ## Subcommands
 
