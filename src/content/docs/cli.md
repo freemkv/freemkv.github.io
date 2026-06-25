@@ -35,7 +35,7 @@ Every source and destination is a `scheme://` URL.
 
 ## Scheme details
 
-Most schemes are self-explanatory; two have behavior worth calling out.
+What each scheme does, and when to reach for it. (`mkv://` and `m2ts://` are just "write the movie / transport stream" — nothing more to say.)
 
 ### disc://
 
@@ -49,6 +49,22 @@ As a **source**, rips **all titles** by default — the destination must be a di
 - **`--raw`** — write the sectors **encrypted**, a faithful image. You can't mux or benchmark ciphertext, so both flags error on any other destination.
 
 A plain `disc:// iso://` auto-resumes if interrupted.
+
+### stdio://
+
+Writes the muxed output to stdout (or reads it from stdin), so you can chain freemkv into a pipe with no intermediate file. The classic use is transcoding on the fly with ffmpeg:
+
+```bash
+freemkv disc:// stdio:// | ffmpeg -i - -c:v libx265 Movie.mkv
+```
+
+### network://host:port
+
+Streams a rip over TCP instead of to a file: one end listens (`network://0.0.0.0:9000`), the other connects (`network://192.0.2.10:9000`). Rip on the machine with the drive and mux or store on another — no shared filesystem needed.
+
+### null://
+
+Reads and discards everything — a read-speed benchmark or dry run, with no output written.
 
 ### dir:// *(planned)*
 
