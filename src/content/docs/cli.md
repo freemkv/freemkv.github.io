@@ -41,21 +41,15 @@ File paths follow the scheme directly: `mkv://./Movie.mkv`, `m2ts://./Movie.m2ts
 
 When a URL is the **destination**, the scheme determines what freemkv writes:
 
-| Destination | What it writes | Decrypted? | `--multipass` | `--raw` |
+| Destination | Writes | Decrypted? | `--multipass` | `--raw` |
 |---|---|---|---|---|
-| `iso://PATH` | Raw sector image of the disc | **Yes** (default) | Supported | Supported — writes encrypted sectors instead |
-| `mkv://PATH` | Single muxed movie file | **Yes** | **Error** ¹ | **Error** ² |
-| `null://` | Nothing (discard sink) | N/A | **Error** ¹ | **Error** ² |
-| `dir://PATH/` | Decrypted file tree (VIDEO\_TS / BDMV) | **Yes** | **Error** ¹ | **Error** ² |
+| `iso://PATH` | Disc sector image | **Yes** (default) | ✓ | ✓ → encrypted |
+| `mkv://PATH` | Muxed movie | **Yes** | Error ¹ | Error ² |
+| `null://` | Discard sink | — | Error ¹ | Error ² |
+| `dir://PATH/` | File tree (VIDEO\_TS / BDMV) | **Yes** | Error ¹ | Error ² |
 
-> ¹ **`--multipass` requires `iso://` output.** Multi-pass recovery writes a mapfile sidecar to
-> track sector state across runs. There is no equivalent for streaming outputs — muxing or
-> benchmarking ciphertext makes no sense. If you want multi-pass recovery, rip to an ISO
-> first (`disc:// iso:// --multipass`), then mux the ISO (`iso:// mkv://`).
->
-> ² **`--raw` requires `iso://` output.** `--raw` keeps disc sectors encrypted — you
-> cannot mux or benchmark ciphertext. Pass `--raw` only when you want a faithful
-> encrypted disc image.
+> ¹ **`--multipass` is `iso://`-only** — recovery needs the mapfile sidecar. For a damaged disc, rip to ISO first (`disc:// iso:// --multipass`), then mux it (`iso:// mkv://`).
+> ² **`--raw` is `iso://`-only** — keeps sectors encrypted (a faithful disc image). You can't mux or benchmark ciphertext.
 
 :::note[dir:// is planned]
 `dir://` (a decrypted VIDEO\_TS / BDMV file tree) is not yet available. It is listed here
