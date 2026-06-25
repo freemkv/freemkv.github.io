@@ -162,8 +162,8 @@ const docs = '/overview/';
             <pre class="terminal-body"><code><span class="c"># Inspect the disc and its titles</span>
 <span class="p">$</span> freemkv info disc://
 
-<span class="c"># Rip a disc straight to MKV (decrypt + mux)</span>
-<span class="p">$</span> freemkv disc:// mkv://Movie.mkv
+<span class="c"># Rip a disc straight to MKV — main title only (decrypt + mux)</span>
+<span class="p">$</span> freemkv disc:// -t 1 mkv://Movie.mkv
 
 <span class="c"># Recover to ISO with multipass bad-sector recovery (re-run to patch)</span>
 <span class="p">$</span> freemkv disc:// iso://Disc.iso --multipass
@@ -181,6 +181,11 @@ const docs = '/overview/';
             <pre class="terminal-body"><code><span class="c"># Run the autorip binary as a daemon, then open http://&lt;host&gt;:8080</span>
 <span class="p">$</span> ./autorip</code></pre>
           </div>
+          <p class="showcase-note">
+            <code>-t 1</code> selects the main title — which is also the <code>disc://</code>
+            default, made explicit. Run <code>freemkv info disc://</code> to list all titles with
+            durations if you want a different one.
+          </p>
           <p class="showcase-note">
             autorip runs on Linux, macOS, and Windows as a single binary (or a Linux container).
             <a href="/download/">Download autorip</a> · see the

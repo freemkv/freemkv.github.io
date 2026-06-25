@@ -9,7 +9,7 @@ freemkv is a Rust workspace. This page maps the pieces and links to the detailed
 
 The core engine. It owns the mapfile and multipass recovery model, sector-level retry, AACS and CSS decryption, and MKV muxing. Everything else consumes it.
 
-Published on [crates.io](https://crates.io/crates/libfreemkv); API docs at [docs.rs/libfreemkv](https://docs.rs/libfreemkv).
+Published on [crates.io](https://crates.io/crates/libfreemkv). For current API signatures, see the source on [GitHub](https://github.com/freemkv/libfreemkv) — the generated docs on docs.rs can lag the latest source.
 
 See the [library overview](/libfreemkv/).
 

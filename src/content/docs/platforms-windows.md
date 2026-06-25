@@ -77,7 +77,7 @@ That's the autorip control panel. Insert a disc and it takes over from there. Fo
 
 ```powershell
 .\freemkv.exe --version
-.\freemkv.exe disc-info
+.\freemkv.exe info disc://
 ```
 
 :::tip["...is not recognized" error?]

@@ -48,7 +48,6 @@ If `freemkv info disc://` reports no drive:
   freemkv info disc:///dev/sg4
   ```
 
-- List candidate devices with `-d` / `--device` and pick the correct one.
 - Confirm your user has permission to access the device node.
 
 ## Missing key database

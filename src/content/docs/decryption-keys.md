@@ -45,9 +45,7 @@ freemkv disc:// -t 1 mkv://Movie.mkv --key-url https://keys.example/keys
 freemkv disc:// -t 1 mkv://Movie.mkv --key-url https://keys.example/keys --key-auth <TOKEN>
 ```
 
-On a `disc://` drive, freemkv rips the **main title** by default (one file). An `iso://`
-image instead rips **every** title — one file each, to a directory. Add `-t N` to choose a
-specific title; run `freemkv info disc://` to list them with durations.
+For title selection and source/destination behavior, see the [CLI reference](/cli/#scheme-details).
 
 If you supply **both** `--key-url` and `--keydb`, the local keydb is consulted first
 (local-first) and the service is only queried when the keydb has no key for the disc.
