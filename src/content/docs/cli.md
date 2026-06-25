@@ -43,7 +43,7 @@ Rips the **main title** by default. Pick others with `-t N`, or several at once:
 
 ```bash
 freemkv disc:// mkv://Movie.mkv          # main title → one file
-freemkv disc:// -t 1 -t 3 mkv://out/     # titles 1 and 3 → out/ (a directory)
+freemkv disc:// mkv://out/ -t 1 -t 3     # titles 1 and 3 → out/ (a directory)
 ```
 
 ### iso://
@@ -52,7 +52,7 @@ freemkv disc:// -t 1 -t 3 mkv://out/     # titles 1 and 3 → out/ (a directory)
 
 ```bash
 freemkv iso://Movie.iso mkv://out/             # every title → out/Movie_t1.mkv, out/Movie_t2.mkv, …
-freemkv iso://Movie.iso -t 1 mkv://Movie.mkv   # just title 1 → a single file
+freemkv iso://Movie.iso mkv://Movie.mkv -t 1   # just title 1 → a single file
 ```
 
 **As a destination** (`iso://Movie.iso`), it writes a decrypted sector image of the disc:
@@ -74,7 +74,7 @@ Writes one decrypted movie. A **single title** goes to the file you name; **mult
 
 ```bash
 freemkv disc:// mkv://Movie.mkv          # single title → Movie.mkv
-freemkv disc:// -t 1 -t 3 mkv://out/     # → out/Greenland_t1.mkv, out/Greenland_t3.mkv
+freemkv disc:// mkv://out/ -t 1 -t 3     # → out/Greenland_t1.mkv, out/Greenland_t3.mkv
 ```
 
 ### m2ts://
@@ -148,7 +148,7 @@ Key sources (for a rip that needs decryption keys):
 
 | Flag | Description |
 |---|---|
-| `-k, --keydb PATH` | **Optional** override for the keydb location. Without it, freemkv searches the default locations — see [Decryption Keys](/decryption-keys/). Only Blu-ray/UHD need a keydb; DVDs use none. |
+| `--keydb PATH` | **Optional** override for the keydb location. Without it, freemkv searches the default locations — see [Decryption Keys](/decryption-keys/). Only Blu-ray/UHD need a keydb; DVDs use none. |
 | `--key-url URL` | Online key service (`https://…`); the local keydb is tried first if both are given. |
 | `--key-auth TOKEN` | Bearer token for `--key-url`. |
 
@@ -158,9 +158,9 @@ Global (any command):
 
 | Flag | Description |
 |---|---|
-| `--language CODE` | UI language (alias `--lang`). |
-| `--log-level N` | Diagnostic **log file**, 1 = warn … 4 = trace (terminal stays clean; default `./log.txt`). For bug reports use `--log-level 3`. |
-| `--log-file PATH` | Write the log to PATH. |
+| `--language CODE` | UI language — freemkv is fully localized in **7**: `en` `de` `es` `fr` `it` `nl` `pt` (alias `--lang`). |
+| `--log-level N` | Enable a diagnostic **log file**: 1 = warn … 4 = trace (the terminal stays clean). For bug reports use `--log-level 3`. |
+| `--log-file PATH` | Where to write the log (default `./log.txt`). |
 | `-q, --quiet` | Suppress stdout. |
 | `RUST_LOG` | Power-user filter; enables file logging and wins over `--log-level`. |
 
