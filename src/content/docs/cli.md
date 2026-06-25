@@ -35,28 +35,24 @@ Every source and destination is a `scheme://` URL.
 
 `disk://` is accepted as an alias for `disc://`. A destination without a recognized scheme is rejected. File paths follow the scheme directly: `mkv://./Movie.mkv`, `iso://Disc.iso`.
 
-## Output formats
+## Scheme details
 
-When a URL is the **destination**, the scheme determines what freemkv writes:
+Every destination is **decrypted by default** — `--raw` (below) is the only way to get encrypted output. Most schemes need no explanation beyond the table above; the ones that do:
 
-| Destination | Writes | Decrypted? | `--multipass` | `--raw` |
-|---|---|---|---|---|
-| `iso://PATH` | Sector image | **Yes** (default) | ✓ | ✓ → encrypted |
-| `mkv://PATH` | Muxed movie | **Yes** | Error ¹ | Error ² |
-| `m2ts://PATH` | Transport stream | **Yes** | Error ¹ | Error ² |
-| `null://` | Discard | — | Error ¹ | Error ² |
-| `dir://PATH/` | File tree | **Yes** | Error ¹ | Error ² |
+### `iso://` — disc image
 
-> ¹ **`--multipass` is `iso://`-only.** For a damaged disc: rip to ISO first (`disc:// iso:// --multipass`), then mux (`iso:// mkv://`).
-> ² **`--raw` is `iso://`-only.** Keeps sectors encrypted — a faithful disc image. You can't mux or benchmark ciphertext.
+A decrypted sector image by default. Two flags apply **only to `iso://`**:
 
-**Everything is decrypted by default.** The only encrypted output is `iso://` with `--raw`. See [Decryption and keys](#decryption-and-keys).
+- **`--multipass`** — sweep the disc, then retry the bad sectors, tracking progress in a resumable **mapfile** sidecar. Re-run the same command until the rip is clean. The mapfile holds sector state only — never keys. (A plain `disc:// iso://` also auto-resumes if interrupted.)
+- **`--raw`** — write the sectors **encrypted**, a faithful disc image. You can't mux or benchmark ciphertext, which is why these two flags are rejected on every other destination.
 
-:::note[dir:// is planned]
-`dir://` is not yet available. It is listed here as a roadmap item.
-:::
+For a damaged disc the workflow is `disc:// iso:// --multipass` (recover), then `iso:// mkv://` (mux).
 
-## Ripping and remuxing
+### `dir://` — file tree *(planned)*
+
+Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the given folder. Not yet available.
+
+## Examples
 
 ```bash
 # disc → MKV (decrypt + mux, main title)
