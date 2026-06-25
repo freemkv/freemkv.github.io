@@ -37,11 +37,11 @@ Every source and destination is a `scheme://` URL.
 
 Most schemes are self-explanatory; two have behavior worth calling out.
 
-### `disc://`
+### disc://
 
-Rips the **main title** by default (`-t 1`). Pick others with `-t N` (repeatable).
+Rips the **main title** by default (`-t 1`). Pick others with `-t N`, or several at once: `-t 1 -t 3 -t 5`.
 
-### `iso://`
+### iso://
 
 As a **source**, rips **all titles** by default — the destination must be a directory. As a **destination**, writes a decrypted sector image, plus two flags that work **only with `iso://`**:
 
@@ -50,7 +50,7 @@ As a **source**, rips **all titles** by default — the destination must be a di
 
 A plain `disc:// iso://` auto-resumes if interrupted.
 
-### `dir://` *(planned)*
+### dir:// *(planned)*
 
 Extracts the decrypted on-disc file tree (`VIDEO_TS/` or `BDMV/`) straight into the folder. Not yet available.
 
@@ -70,7 +70,7 @@ Multiple titles write one file each (`<disc>_t<N>.<ext>`), so the destination mu
 
 ## Subcommands
 
-### `info` — inspect a disc, image, or file
+### info — inspect a disc, image, or file
 
 Lists titles, durations, sizes, and stream details. A lone URL with no destination is the same as `freemkv info <url>`. Needs no key, even on AACS discs.
 
@@ -87,7 +87,7 @@ freemkv info iso://Disc.iso
 | `-v, --verbose` | Wider AACS / drive detail. |
 | `--share` | Capture the drive profile to a zip and print a ready-to-paste compatibility issue (`--mask` hides serials). Nothing is sent automatically. |
 
-### `verify` — check disc health
+### verify — check disc health
 
 Scans the main title and reports good / slow / recovered / bad sectors, with chapter + timestamp per damaged region. Writes nothing. **Exits `1` if any sector is unrecoverable** — scriptable as a pass/fail gate. Defaults to `disc://`.
 
@@ -95,7 +95,7 @@ Scans the main title and reports good / slow / recovered / bad sectors, with cha
 freemkv verify
 ```
 
-### `update-keys` — refresh the AACS key database
+### update-keys — refresh the AACS key database
 
 Downloads, verifies, and installs an AACS keydb (`.txt` / `.zip` / `.gz`). `--url` is required.
 
@@ -103,7 +103,7 @@ Downloads, verifies, and installs an AACS keydb (`.txt` / `.zip` / `.gz`). `--ur
 freemkv update-keys --url http://example.org/keydb_eng.zip
 ```
 
-### `version` / `help`
+### version / help
 
 ```bash
 freemkv version    # also --version / -V
